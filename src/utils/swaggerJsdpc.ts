@@ -9,7 +9,7 @@ const getOpenapiSpecification = () => {
         version: "1.0.0",
       },
     },
-    apis: ["./src/middleware/controllers/*/*.ts"],
+    apis: ["./src/controllers/*/*.ts"],
   };
   return swaggerJsdoc(options);
 };

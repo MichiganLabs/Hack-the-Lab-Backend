@@ -16,6 +16,30 @@ This is the API for Hack the Lab 2024. It's written with Typescript for Node.js 
 
 ## How things are organized
 
-- `package.json`: This contains all of the dependencies and helpful scripts for the project. You can run any of these scripts with `npm run <script-name>`, or create your own. They will always run as though you're running them from the root of the project, via terminal. We can use these commands to help speed up tasks, and automate deployments.
+`package.json`: This contains all of the dependencies and helpful scripts for the project. You can run any of these scripts with `npm run <script-name>`, or create your own. They will always run as though you're running them from the root of the project, via terminal. We can use these commands to help speed up tasks, and automate deployments.
 
 ![package.json scripts](resources/deps.png)
+
+`index.ts`: This is the entry point for the server. It sets up the Express app, and starts the server. It applies our middleware, routes, and interceptors. Below is a snippet from the `index.ts` file, showing how simple versioning is implemented, as well as a top level route for Swagger docs. This top level route bypasses our versioning and middleware, so that anyone can access it.
+
+![Versioning and route logic](resources/route.png)
+
+The `middleware` folder contains just our interceptors for now. These are used to handle requests and responses, and to apply logic to them and "intercept" the request for further processing. Below is the `middleware/interceptors/index.ts` file, showing how some basic necessities are setup:
+
+![interceptor](resources/interceptor.png)
+
+The `controllers` folder contains our route handlers. These are the functions that are called when a route is hit. They are responsible for processing the request, and returning a response. Below is part of the `maze-controller.ts`. 
+
+In this backend project, we follow this pattern: `/v1/route/command`. Every route is a higher level grouping of commands. `maze-controller` is the `route` portion of this pattern, and sets up what commands are available for the `maze` route.
+
+Notice also how Swagger annotation is applied above the function declaration. This is picked up automatically by our Swagger doc generator, and used to create the documentation for the API.
+
+![controller](resources/controller.png)
+
+`getMaze` is one of our basic commands under the `maze-controller`. It's a `GET` request, and it's used to retrieve a maze. Below is the function signature, and the Swagger annotation for it:
+
+![getMaze](resources/getMaze.png)
+
+`swagger-spec.json` is a generated Swagger structure. It's used to create the Swagger documentation for the API. It's generated automatically, and is based on the annotations in the code. This is where proper tagging and organization is important, as it dictates how we can interact with the API via the Swagger page outputted in your console when you run `npm run dev`.
+
+![swagger](resources/swagger.png)

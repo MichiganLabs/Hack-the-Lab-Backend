@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import { log } from "./utils/logger";
 import { interceptors } from "./middleware/interceptors";
 import { myIPv4 } from "./utils/ipv4";
-import { getControllers } from "./middleware/controllers/controllers";
+import { getControllers } from "./controllers/controllers";
 import bodyParser from "body-parser";
 import swaggerUi from "swagger-ui-express";
 import getOpenapiSpecification from "./utils/swaggerJsdpc";
