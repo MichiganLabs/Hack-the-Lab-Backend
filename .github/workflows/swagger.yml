@@ -1,0 +1,26 @@
+name: Swagger UI
+
+on:
+  push:
+    branches: [none]
+  pull_request:
+    branches: [none]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate Swagger Docs from Spec
+        uses: Legion2/swagger-ui-action@v1.2.0
+        with:
+          spec-file: "swagger-output.json"
+          output: swagger-ui
+      - name: Deploy Swagger Docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: swagger-ui
