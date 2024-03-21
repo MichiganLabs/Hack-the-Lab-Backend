@@ -1,0 +1,9 @@
+config:
+  target: 'http://10.42.100.145:8080' # replace with your server URL
+  phases:
+    - duration: 60
+      arrivalRate: 20
+scenarios:
+  - flow:
+    - post:
+        url: "/v1/maze/getMaze"
