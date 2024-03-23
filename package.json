@@ -1,5 +1,5 @@
 {
-  "name": "truelife-backend",
+  "name": "hack-the-lab-backend",
   "description": "Backend api servicing Michigan Lab's Hack the Lab 2024 Hackathon Event",
   "main": "dist/index.js",
   "scripts": {
