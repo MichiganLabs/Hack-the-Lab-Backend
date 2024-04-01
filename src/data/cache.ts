@@ -1,7 +1,9 @@
 import { createClient } from "redis";
 
+const { REDIS_HOST, REDIS_PORT, REDIS_USER, REDIS_PASS } = process.env;
+
 var client = createClient({
-  // client options here when this is no longer hosted on localhost
+  url: `redis://${REDIS_USER}:${REDIS_PASS}@${REDIS_HOST}:${REDIS_PORT}`,
 });
 
 client.connect();

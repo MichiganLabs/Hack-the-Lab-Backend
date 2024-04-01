@@ -2,19 +2,19 @@ import { Pool } from "pg";
 import { setQueryCache } from "./cache";
 
 const {
-  POSTGRES_HOST: PG_HOST,
-  POSTGRES_DB: PG_DBNAME,
-  POSTGRES_USER: PG_USER,
-  POSTGRES_PASSWORD: PG_PASS,
-  POSTGRES_PORT: PG_PORT,
+  POSTGRES_HOST,
+  POSTGRES_DB,
+  POSTGRES_USER,
+  POSTGRES_PASSWORD,
+  POSTGRES_PORT,
 } = process.env;
 
 const pool = new Pool({
-  user: PG_USER,
-  host: PG_HOST,
-  database: PG_DBNAME,
-  password: PG_PASS,
-  port: parseInt(PG_PORT),
+  user: POSTGRES_USER,
+  host: POSTGRES_HOST,
+  database: POSTGRES_DB,
+  password: POSTGRES_PASSWORD,
+  port: parseInt(POSTGRES_PORT),
 });
 
 export const _query = async (text: string, params: any, hash: string) => {
