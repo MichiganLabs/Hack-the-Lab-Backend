@@ -22,4 +22,4 @@ BEGIN
 END;
 $$;
 
-CALL create_new_user('CREATEUSER');
+CALL create_new_user('TESTUSER');

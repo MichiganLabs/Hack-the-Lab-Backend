@@ -1,9 +1,7 @@
 import { createClient } from "redis";
 
-var client = createClient();
-
-client.on("error", (err) => {
-  console.error("[Redis] Error: " + err);
+var client = createClient({
+  // client options here when this is no longer hosted on localhost
 });
 
 client.connect();
