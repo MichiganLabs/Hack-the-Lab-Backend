@@ -51,7 +51,7 @@ Notice also how Swagger annotation is applied above the function declaration. Th
 
 
 # .env File
-This file is used to define secrets used by the app. Rather than defining these sytem wide, the .env file allows them to be used and changed per directory.
+This file is used to define secrets used by the app. Rather than defining these system wide, the .env file allows them to be used and changed per directory.
 
 If you are using the docker infrastructure, the docker-compose.yaml will also use this file to configure the postgres container.
 

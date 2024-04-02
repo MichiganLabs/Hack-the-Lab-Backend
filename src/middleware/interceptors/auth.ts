@@ -11,7 +11,7 @@ export const authorize: Interceptor = async (req, res, next) => {
     return;
   }
 
-  const rows = await db.query("SELECT * FROM users WHERE api_key::text = $1;", [
+  const rows: AuthUser[] = await db.query("SELECT * FROM users WHERE api_key::text = $1;", [
     apiKey,
   ]);
 
@@ -20,7 +20,7 @@ export const authorize: Interceptor = async (req, res, next) => {
     return;
   }
 
-  let user = rows[0] as unknown as AuthUser;
+  let user = rows[0];
 
   if (user.disabled) {
     res.sendStatus(401);
