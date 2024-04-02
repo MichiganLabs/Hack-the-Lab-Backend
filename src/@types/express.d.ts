@@ -8,7 +8,7 @@ declare global {
       authenticated: boolean;
 
       /** If authenticated: Contains user data.  */
-      auth?: AuthUser;
+      user?: AuthUser;
     }
   }
 }

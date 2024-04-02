@@ -11,7 +11,7 @@ export const authorize: Interceptor = async (req, res, next) => {
     return;
   }
 
-  const rows: AuthUser[] = await db.query("SELECT * FROM users WHERE api_key::text = $1;", [
+  const rows: AuthUser[] = await db.query("SELECT * FROM users WHERE api_key::text = $1;", [ 
     apiKey,
   ]);
 
@@ -28,7 +28,7 @@ export const authorize: Interceptor = async (req, res, next) => {
   }
 
   req.authenticated = true;
-  req.auth = rows[0];
+  req.user = rows[0];
 
   next();
 };

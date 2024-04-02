@@ -17,7 +17,7 @@ const pool = new Pool({
   port: parseInt(POSTGRES_PORT),
 });
 
-export const _query = async (text: string, params: any, hash: string) => {
+export const pgQuery = async (text: string, params: any, hash: string) => {
   const start = Date.now();
 
   let result = await pool.query(text, params);
