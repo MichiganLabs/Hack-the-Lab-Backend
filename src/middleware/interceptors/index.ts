@@ -9,3 +9,5 @@ export const interceptors: Array<Interceptor> = [
   // We can insert additional interceptor functions here
   authorize,
 ];
+
+export { hasRole } from "./role-authorize";
