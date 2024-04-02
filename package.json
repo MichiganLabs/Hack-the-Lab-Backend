@@ -3,7 +3,8 @@
   "description": "Backend api servicing Michigan Lab's Hack the Lab 2024 Hackathon Event",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "npm run swagger && nodemon",
+    "dev": "npm run swagger && npm run docker && nodemon",
+    "docker": "docker compose up -d",
     "build": "node_modules/.bin/rimraf ./dist && npx tsc",
     "start": "npm run build && npm run swagger && node dist/index.js",
     "swagger": "node ./swagger.js",
@@ -43,7 +44,7 @@
     "typescript": "^5.3.2"
   },
   "engines": {
-    "node": "v18.18.2"
+    "node": "v21.6.2"
   },
   "author": "davealdon (https://github.com/davealdon)"
 }

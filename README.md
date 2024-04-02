@@ -4,11 +4,11 @@ This is the API for Hack the Lab 2024. It's written with Typescript for Node.js 
 
 ## Getting started
 
-- Install Node v18.18.2 via the Node Version Manager tool:
+- Install Node v21.6.2 via the Node Version Manager tool:
   - Install nvm: `brew install nvm`
-  - Install Node v18.18.2: `nvm install 18.18.2`
-  - Set Node v18.18.2 as the default version: `nvm alias default 18.18.2`
-  - Verify that Node v18.18.2 is installed: `node -v`
+  - Install Node v21.6.2: `nvm install 21.6.2`
+  - Set Node v21.6.2 as the default version: `nvm alias default 21.6.2`
+  - Verify that Node v21.6.2 is installed: `node -v`
 - (Optional: for local development) Install [Docker](https://docs.docker.com/get-docker/)
   - Using homebrew: `brew install docker`
   - Verify that docker is installed: `docker run hello-world`
