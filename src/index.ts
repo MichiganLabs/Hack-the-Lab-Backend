@@ -36,3 +36,10 @@ const httpServer = http.createServer(app);
 httpServer.listen(port, () => {
   log(`⚡️ Server is running at http://${myIPv4()}:${port}/api-docs`);
 });
+
+process.on('SIGTSTP', () => {
+  httpServer.close(() => {
+    console.log(`Server closed. Port ${port} freed up.`);
+    process.exit(0);
+  });
+});
