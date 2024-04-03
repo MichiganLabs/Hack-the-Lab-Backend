@@ -4,13 +4,18 @@ This is the API for Hack the Lab 2024. It's written with Typescript for Node.js 
 
 ## Getting started
 
-- Install Node v18.18.2 via the Node Version Manager tool:
+- Install Node v21.6.2 via the Node Version Manager tool:
   - Install nvm: `brew install nvm`
-  - Install Node v18.18.2: `nvm install 18.18.2`
-  - Set Node v18.18.2 as the default version: `nvm alias default 18.18.2`
-  - Verify that Node v18.18.2 is installed: `node -v`
+  - Install Node v21.6.2: `nvm install 21.6.2`
+  - Set Node v21.6.2 as the default version: `nvm alias default 21.6.2`
+  - Verify that Node v21.6.2 is installed: `node -v`
+- (Optional: for local development) Install [Docker](https://docs.docker.com/get-docker/)
+  - Using homebrew: `brew install docker`
+  - Verify that docker is installed: `docker run hello-world`
+  - The alternative is to configure the backend to use remote postgres & redis servers. More on that below
 - Clone the repository: `git clone https://github.com/MichiganLabs/Hack-the-Lab-Backend.git`
 - Navigate to the project directory: `cd Hack-the-Lab-Backend`
+- Edit your environment file (`.env`) in the root directory of the project directory.
 - Install the dependencies: `npm i`
 - Run the server locally: `npm run dev`
 
@@ -43,3 +48,22 @@ Notice also how Swagger annotation is applied above the function declaration. Th
 `swagger-spec.json` is a generated Swagger structure. It's used to create the Swagger documentation for the API. It's generated automatically, and is based on the annotations in the code. This is where proper tagging and organization is important, as it dictates how we can interact with the API via the Swagger page outputted in your console when you run `npm run dev`.
 
 ![swagger](resources/swagger.png)
+
+
+# .env File
+This file is used to define secrets used by the app. Rather than defining these system wide, the .env file allows them to be used and changed per directory.
+
+If you are using the docker infrastructure, the docker-compose.yaml will also use this file to configure the postgres container.
+
+Here is an example .dotenv file.
+```conf
+POSTGRES_HOST=localhost
+POSTGRES_DB=hackthelab
+POSTGRES_USER=root
+POSTGRES_PASSWORD=tomato
+POSTGRES_PORT=5432
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_USER=
+REDIS_PASS=
+```
