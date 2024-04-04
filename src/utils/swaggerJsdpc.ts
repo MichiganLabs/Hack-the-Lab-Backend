@@ -8,18 +8,20 @@ const getOpenapiSpecification = () => {
         title: "Hack the Lab 2024 API",
         version: "1.0.0",
       },
-      security: [{
-        apiKey: []
-      }],
+      security: [
+        {
+          apiKey: [],
+        },
+      ],
       components: {
         securitySchemes: {
           apiKey: {
-            type: 'apiKey',
-            in: 'header',
-            name: 'X-API-KEY'
-          }
-        }
-      }
+            type: "apiKey",
+            in: "header",
+            name: "X-API-KEY",
+          },
+        },
+      },
     },
     apis: ["./src/controllers/**/*.ts", "./src/@types/**/*.d.ts"],
   };

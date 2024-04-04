@@ -27,8 +27,12 @@ app.use("/v1", v1Router);
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(getOpenapiSpecification())
+  swaggerUi.setup(undefined, { swaggerOptions: { url: '/swagger.json'}})
 );
+
+app.use('/swagger.json', (req, res) => {
+  res.send(getOpenapiSpecification())
+})
 
 // Create an HTTP service
 const httpServer = http.createServer(app);
