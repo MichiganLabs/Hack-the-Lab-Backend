@@ -3,11 +3,10 @@
   "description": "Backend api servicing Michigan Lab's Hack the Lab 2024 Hackathon Event",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "npm run swagger && npm run docker && nodemon",
+    "dev": "npm run docker && nodemon",
     "docker": "docker compose up -d",
     "build": "node_modules/.bin/rimraf ./dist && npx tsc",
     "start": "npm run build && npm run swagger && node dist/index.js",
-    "swagger": "node ./swagger.js",
     "kill": "kill -9 $(lsof -ti:8080)",
     "clean-unimported": "npx unimported --fix",
     "cloud": "npm run build && pm2 start dist/index.js --log output.log",
@@ -26,11 +25,9 @@
     "artillery": "^2.0.8",
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
-    "nodemon": "^3.1.0",
     "pg": "^8.11.4",
     "redis": "^4.6.13",
     "rimraf": "^5.0.5",
-    "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "ts-node": "^10.9.2",
@@ -41,6 +38,7 @@
     "@types/node": "^20.10.0",
     "@types/pg": "^8.11.4",
     "@types/redis": "^4.0.11",
+    "nodemon": "^3.1.0",
     "typescript": "^5.3.2"
   },
   "engines": {

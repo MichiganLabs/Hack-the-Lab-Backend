@@ -1,4 +1,4 @@
-const swaggerJsdoc = require("swagger-jsdoc");
+import swaggerJsdoc from "swagger-jsdoc";
 
 const getOpenapiSpecification = () => {
   const options = {
@@ -8,8 +8,22 @@ const getOpenapiSpecification = () => {
         title: "Hack the Lab 2024 API",
         version: "1.0.0",
       },
+      security: [
+        {
+          apiKey: [],
+        },
+      ],
+      components: {
+        securitySchemes: {
+          apiKey: {
+            type: "apiKey",
+            in: "header",
+            name: "X-API-KEY",
+          },
+        },
+      },
     },
-    apis: ["./src/controllers/*/*.ts"],
+    apis: ["./src/controllers/**/*.ts", "./src/@types/**/*.d.ts"],
   };
   return swaggerJsdoc(options);
 };

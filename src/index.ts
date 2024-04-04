@@ -27,12 +27,23 @@ app.use("/v1", v1Router);
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(getOpenapiSpecification())
+  swaggerUi.setup(undefined, { swaggerOptions: { url: '/swagger.json'}})
 );
+
+app.use('/swagger.json', (req, res) => {
+  res.send(getOpenapiSpecification())
+})
 
 // Create an HTTP service
 const httpServer = http.createServer(app);
 
 httpServer.listen(port, () => {
   log(`⚡️ Server is running at http://${myIPv4()}:${port}/api-docs`);
+});
+
+process.on('SIGTSTP', () => {
+  httpServer.close(() => {
+    console.log(`Server closed. Port ${port} freed up.`);
+    process.exit(0);
+  });
 });

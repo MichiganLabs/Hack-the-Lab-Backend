@@ -45,7 +45,7 @@ Notice also how Swagger annotation is applied above the function declaration. Th
 
 ![getMaze](resources/getMaze.png)
 
-`swagger-spec.json` is a generated Swagger structure. It's used to create the Swagger documentation for the API. It's generated automatically, and is based on the annotations in the code. This is where proper tagging and organization is important, as it dictates how we can interact with the API via the Swagger page outputted in your console when you run `npm run dev`.
+The generated swagger will aggregate all the annotations and render the dynamic spec json at `/api-docs`
 
 ![swagger](resources/swagger.png)
 
