@@ -8,4 +8,18 @@ declare module "hackthelab" {
     api_key: string;
     disabled: boolean;
   }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     Cell:
+   *       type: object
+   *       properties:
+   *         cellType:
+   *           $ref: '#/components/schemas/CellType'
+   */
+  interface Cell {
+    cellType: CellType;
+  }
 }

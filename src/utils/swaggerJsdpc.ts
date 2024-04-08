@@ -23,7 +23,7 @@ const getOpenapiSpecification = () => {
         },
       },
     },
-    apis: ["./src/controllers/**/*.ts", "./src/@types/**/*.d.ts"],
+    apis: ["./src/controllers/**/*.ts", "./src/@types/**/*.d.ts", "./src/enums/**/*.ts"],
   };
   return swaggerJsdoc(options);
 };
