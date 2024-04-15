@@ -1,5 +1,5 @@
 import { Interceptor } from "express";
-import { Role } from "../../enums";
+import { Role } from "@enums";
 
 const roleHierarchy: Role[] = [Role.Participant, Role.Developer, Role.Admin];
 

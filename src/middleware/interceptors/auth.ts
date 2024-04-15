@@ -1,6 +1,6 @@
 import { Interceptor } from "express";
 import { AuthUser } from "hackthelab";
-import * as db from "../../data";
+import * as db from "@data";
 
 export const authorize: Interceptor = async (req, res, next) => {
   var apiKey = req.headers["x-api-key"];
