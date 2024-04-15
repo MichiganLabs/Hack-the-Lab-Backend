@@ -1,4 +1,4 @@
-import { Role } from "../enums";
+import { Role } from "@enums";
 
 declare module "hackthelab" {
   interface AuthUser {
