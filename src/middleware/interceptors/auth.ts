@@ -20,7 +20,7 @@ export const authorize: Interceptor = async (req, res, next) => {
 
   const user = rows[0];
 
-  if (user.disabled) {
+  if (user?.disabled) {
     res.sendStatus(401);
     return;
   }

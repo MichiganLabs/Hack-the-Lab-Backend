@@ -1,5 +1,4 @@
 import { Pool } from "pg";
-import { setQueryCache } from "./cache";
 
 const { POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT } = process.env;
 
@@ -11,15 +10,13 @@ const pool = new Pool({
   port: parseInt(POSTGRES_PORT),
 });
 
-export const pgQuery = async (text: string, params: any, hash: string) => {
+export const pgQuery = async (text: string, params: any) => {
   const start = Date.now();
 
   const result = await pool.query(text, params);
 
   const duration = Date.now() - start;
   console.log("executed query", { text, duration, rows: result.rowCount });
-
-  await setQueryCache(hash, result.rows);
 
   return result.rows;
 };
