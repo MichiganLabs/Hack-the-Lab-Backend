@@ -19,7 +19,7 @@
       ".env"
     ],
     "ext": ".ts",
-    "exec": "node -r ts-node/register --env-file=.env ./src/index.ts"
+    "exec": "node -r ts-node/register -r tsconfig-paths/register --env-file=.env ./src/index.ts"
   },
   "dependencies": {
     "artillery": "^2.0.8",
@@ -38,7 +38,9 @@
     "@types/node": "^20.10.0",
     "@types/pg": "^8.11.4",
     "@types/redis": "^4.0.11",
+    "@types/swagger-ui-express": "^4.1.6",
     "nodemon": "^3.1.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.2"
   },
   "engines": {
