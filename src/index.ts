@@ -27,7 +27,7 @@ app.use("/v1", v1Router);
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(undefined, { swaggerOptions: { url: '/swagger.json'}})
+  swaggerUi.setup(undefined, { swaggerOptions: { url: '/swagger.json', validatorUrl: null }})
 );
 
 app.use('/swagger.json', (req, res) => {

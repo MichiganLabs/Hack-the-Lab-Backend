@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 
 /**
  * @swagger
- * /v1/maze/getMaze:
+ * /v1/maze:
  *   get:
  *     tags: [Maze]
  *     summary: Returns a maze
@@ -11,8 +11,11 @@ import { RequestHandler } from "express";
  *         description: Fetch successful
  */
 const getMaze: RequestHandler = async (req, res, next) => {
-  console.log("getMaze");
-  res.status(200).json({ response: "A simple maze: | |" });
+  res
+    .status(200)
+    .json(
+      { response: "A simple maze: [ ]" }
+    );
   next();
   return;
 };
