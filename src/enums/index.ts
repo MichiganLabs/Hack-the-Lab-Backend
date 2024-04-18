@@ -18,5 +18,21 @@ export enum CellType {
   Wall = "WALL",
   Cheese = "CHEESE",
   Entrance = "ENTRANCE",
-  Exit = "EXIT",
-}
+  Exit = "EXIT"
+};
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Direction:
+ *       type: string
+ *       enum: [north, east, south, west]
+ *       example: north
+ */
+export enum Direction {
+  North = "north",
+  East = "east",
+  South = "south",
+  West = "west",
+};

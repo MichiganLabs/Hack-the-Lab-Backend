@@ -1,11 +1,5 @@
 import { createHash } from "crypto";
-import {
-  delCache,
-  getCache,
-  getQueryCache,
-  setCache,
-  setQueryCache,
-} from "./cache";
+import { delCache, getCache, getQueryCache, setCache, setQueryCache, } from "./cache";
 import { pgQuery } from "./db";
 
 export const query = async (text: string, params: any) => {
@@ -22,7 +16,7 @@ export const query = async (text: string, params: any) => {
     if (result) {
       return result;
     }
-  } catch {}
+  } catch { }
 
   // Could not read from cache, or expired, query the database.
   result = await pgQuery(text, params);
@@ -33,11 +27,10 @@ export const query = async (text: string, params: any) => {
   return result;
 };
 
-const getRatCacheKey = (user_id: string, mazeId: string) =>
-  `rat:pos-${user_id}-${mazeId}`;
+const getRatCacheKey = (user_id: string, mazeId: string) => `rat:pos-${user_id}-${mazeId}`;
 
 // Rat position result is not stored in cache on query, but instead on update.
-export const getRatPosition = async (user_id: string, mazeId: string) => {
+export const getRatPosition = async (user_id: string, mazeId: string): Promise<any> => {
   var result: any;
   let cacheKey = getRatCacheKey(user_id, mazeId);
 
@@ -47,11 +40,11 @@ export const getRatPosition = async (user_id: string, mazeId: string) => {
     if (result) {
       return result;
     }
-  } catch {}
+  } catch { }
 
   // Could not read from cache, or expired, query the database.
   let rs = await pgQuery(
-    "SELECT curr FROM moves WHERE maze_id = $1 AND user_id = $2 ORDER BY time_ts DESC LIMIT 1",
+    "SELECT curr FROM actions WHERE maze_id = $1 AND user_id = $2 ORDER BY time_ts DESC LIMIT 1",
     [mazeId, user_id]
   );
 
@@ -64,11 +57,7 @@ export const getRatPosition = async (user_id: string, mazeId: string) => {
   return rs[0].curr;
 };
 
-export const setRatPosition = async (
-  key: string,
-  mazeId: string,
-  data: any
-) => {
+export const setRatPosition = async (key: string, mazeId: string, data: any): Promise<void> => {
   let cacheKey = getRatCacheKey(key, mazeId);
 
   await delCache(cacheKey);
