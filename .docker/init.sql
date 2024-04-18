@@ -4,14 +4,14 @@ CREATE TABLE users
 (
     id       SERIAL PRIMARY KEY,
     name     VARCHAR(50) UNIQUE                                         NOT NULL,
-    role     VARCHAR(20) CHECK (role IN ('participant', 'developer', 'admin')),
+    role     VARCHAR(20) CHECK (role IN ('PARTICIPANT', 'DEVELOPER', 'ADMIN')),
     api_key  TEXT    DEFAULT replace(uuid_generate_v4()::text, '-', '') NOT NULL,
     disabled BOOLEAN DEFAULT FALSE
 );
 
 CREATE OR REPLACE PROCEDURE create_api_key(
     IN p_name VARCHAR(50),
-    IN p_role VARCHAR(50) DEFAULT 'participant')
+    IN p_role VARCHAR(50) DEFAULT 'PARTICIPANT')
     LANGUAGE plpgsql
 AS
 $$
@@ -74,6 +74,6 @@ END;
 $$;
 
 
-CALL create_api_key('Test User', 'participant');
-CALL create_api_key('Test Developer', 'developer');
-CALL create_api_key('Test Admin', 'admin');
+CALL create_api_key('Test User', 'PARTICIPANT');
+CALL create_api_key('Test Developer', 'DEVELOPER');
+CALL create_api_key('Test Admin', 'ADMIN');

@@ -1,7 +1,7 @@
 export enum Role {
-    Participant = "participant",
-    Developer = "developer",
-    Admin = "admin"
+    Participant = "PARTICIPANT",
+    Developer = "DEVELOPER",
+    Admin = "ADMIN"
 };
 
 /**
@@ -14,9 +14,9 @@ export enum Role {
  *       example: open
  */
 export enum CellType {
-    open = "OPEN",
-    wall = "WALL",
-    cheese = "CHEESE",
-    entrance = "ENTRANCE",
-    exit = "EXIT"
+    Open = "OPEN",
+    Wall = "WALL",
+    Cheese = "CHEESE",
+    Entrance = "ENTRANCE",
+    Exit = "EXIT"
 };
