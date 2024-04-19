@@ -1,5 +1,5 @@
 import { Router } from "express";
 
 export interface Controller {
-  initialize(_router: Router): void;
+  initialize(router: Router): void;
 }
