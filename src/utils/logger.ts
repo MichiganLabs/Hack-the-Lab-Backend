@@ -1,6 +1,6 @@
-import winston, { format, Logger } from "winston";
 import path from "path";
-const { combine, timestamp, label, printf } = format;
+import winston, { format, Logger } from "winston";
+const { combine, timestamp, printf } = format;
 
 /**
  * Also all logs levels are written in the same file,
@@ -34,7 +34,7 @@ function projectName() {
 let loggerDay: number = -1;
 let _logger: Logger;
 
-const myFormat = printf(({ level, message, label, timestamp }) => {
+const myFormat = printf(({ level, message, _label, timestamp }) => {
   return `${timestamp} [${level}]: ${message}`;
 });
 export function logger() {
@@ -43,14 +43,8 @@ export function logger() {
     loggerDay = currentDay;
     _logger?.close();
 
-    const logsFilename = `${new Date().getFullYear()}-${
-      new Date().getMonth() + 1
-    }-${new Date().getDate()}.log`; // filename example: "2022-10-8.log"
-    const logsPathAndFilename = path.join(
-      `../logs`,
-      projectName(),
-      logsFilename
-    );
+    const logsFilename = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}.log`; // filename example: "2022-10-8.log"
+    const logsPathAndFilename = path.join(`../logs`, projectName(), logsFilename);
     const format = combine(timestamp(), myFormat);
 
     _logger = winston.createLogger({

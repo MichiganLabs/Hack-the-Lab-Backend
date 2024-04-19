@@ -3,11 +3,11 @@ import { getQueryCache } from "./cache";
 import { pgQuery } from "./db";
 
 export const query = async (text: string, params: any) => {
-  var hash = createHash("sha1")
+  const hash = createHash("sha1")
     .update(text + params.toString())
     .digest("hex");
 
-  var result: any;
+  let result: any;
 
   // Attempt to find the result in cache first.
   try {

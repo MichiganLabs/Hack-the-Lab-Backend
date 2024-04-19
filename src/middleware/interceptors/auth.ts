@@ -1,9 +1,9 @@
+import * as db from "@data";
 import { Interceptor } from "express";
 import { AuthUser } from "hackthelab";
-import * as db from "@data";
 
 export const authorize: Interceptor = async (req, res, next) => {
-  var apiKey = req.headers["x-api-key"];
+  const apiKey = req.headers["x-api-key"];
 
   // No API Key provided, immediately return 401 (UNAUTHORIZED)
   if (apiKey == undefined) {
@@ -11,16 +11,14 @@ export const authorize: Interceptor = async (req, res, next) => {
     return;
   }
 
-  const rows: AuthUser[] = await db.query("SELECT * FROM users WHERE api_key::text = $1;", [ 
-    apiKey,
-  ]);
+  const rows: AuthUser[] = await db.query("SELECT * FROM users WHERE api_key::text = $1;", [apiKey]);
 
   if (0 == rows.length) {
     res.sendStatus(401);
     return;
   }
 
-  let user = rows[0];
+  const user = rows[0];
 
   if (user.disabled) {
     res.sendStatus(401);

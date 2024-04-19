@@ -1,6 +1,6 @@
-import { RequestHandler } from "express";
-import { Cell, Surroundings } from "hackthelab";
 import { CellType } from "@enums";
+import { RequestHandler } from "express";
+import { Surroundings } from "hackthelab";
 
 /**
  * @swagger
@@ -19,18 +19,16 @@ import { CellType } from "@enums";
  *                 surroundings:
  *                   $ref: '#/components/schemas/Surroundings'
  */
-const postMove: RequestHandler = async (req, res, next) => {
+const postMove: RequestHandler = async (_req, res, next) => {
   const surroundings: Surroundings = {
     originCell: CellType.Cheese,
     northCell: CellType.Open,
     eastCell: CellType.Exit,
     southCell: CellType.Open,
-    westCell: CellType.Wall
-  }
+    westCell: CellType.Wall,
+  };
 
-  res
-    .status(200)
-    .json(surroundings);
+  res.status(200).json(surroundings);
 
   next();
   return;

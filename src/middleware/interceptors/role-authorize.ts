@@ -1,5 +1,5 @@
-import { Interceptor } from "express";
 import { Role } from "@enums";
+import { Interceptor } from "express";
 
 const roleHierarchy: Role[] = [Role.Participant, Role.Developer, Role.Admin];
 
@@ -10,8 +10,8 @@ export const hasRole = (requiredRole: Role): Interceptor => {
       return;
     }
 
-    let requiredRoleIndex = roleHierarchy.indexOf(requiredRole);
-    let userRoleIndex = roleHierarchy.indexOf(req.user.role);
+    const requiredRoleIndex = roleHierarchy.indexOf(requiredRole);
+    const userRoleIndex = roleHierarchy.indexOf(req.user.role);
 
     if (userRoleIndex < requiredRoleIndex) {
       res.sendStatus(403);
