@@ -6,17 +6,24 @@ This is the API for Hack the Lab 2024. It's written with Typescript for Node.js 
 
 - Install Node v21.6.2 via the Node Version Manager tool:
   - Install nvm: `brew install nvm`
+    - Pay close attention to the install output, there is an important step at the end to complete installation.
+        ```
+        postgres_server  | psql:/docker-entrypoint-initdb.d/1-schema.sql:89: NOTICE:  New ... key created with id # and api_key: "..."
+        ```
+        
+
   - Install Node v21.6.2: `nvm install 21.6.2`
   - Set Node v21.6.2 as the default version: `nvm alias default 21.6.2`
   - Verify that Node v21.6.2 is installed: `node -v`
 - (Optional: for local development) Install [Docker](https://docs.docker.com/get-docker/)
-  - Using homebrew: `brew install docker`
+  - Using homebrew: `brew install --cask docker`
   - Verify that docker is installed: `docker run hello-world`
   - The alternative is to configure the backend to use remote postgres & redis servers. More on that below
 - Clone the repository: `git clone https://github.com/MichiganLabs/Hack-the-Lab-Backend.git`
 - Navigate to the project directory: `cd Hack-the-Lab-Backend`
-- Edit your environment file (`.env`) in the root directory of the project directory.
+- Edit your environment file (`.env`) in the root directory of the project directory. (Reference below, you can also copy the `.env.example`)
 - Install the dependencies: `npm i`
+- If you have docker installed, start the containers: `docker compose up --detach` (or `-d`) (You do not need to do this between server restarts.)
 - Run the server locally: `npm run dev`
 
 ## How things are organized
