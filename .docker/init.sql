@@ -5,7 +5,7 @@ CREATE TABLE users
     id       SERIAL PRIMARY KEY,
     name     VARCHAR(50) UNIQUE                                         NOT NULL,
     role     VARCHAR(20) CHECK (role IN ('PARTICIPANT', 'DEVELOPER', 'ADMIN')),
-    api_key  TEXT    DEFAULT replace(uuid_generate_v4()::text, '-', '') NOT NULL,
+    api_key  TEXT    DEFAULT replace(uuid_generate_v4()::text, '-', '') UNIQUE NOT NULL,
     disabled BOOLEAN DEFAULT FALSE
 );
 

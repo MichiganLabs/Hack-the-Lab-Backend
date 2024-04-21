@@ -2,7 +2,7 @@ export enum Role {
   Participant = "PARTICIPANT",
   Developer = "DEVELOPER",
   Admin = "ADMIN",
-}
+};
 
 /**
  * @swagger
@@ -10,15 +10,15 @@ export enum Role {
  *   schemas:
  *     CellType:
  *       type: string
- *       enum: [open, wall, cheese, entrance, exit]
- *       example: open
+ *       enum: [OPEN, WALL, CHEESE, ENTRANCE, EXIT]
+ *       example: OPEN
  */
 export enum CellType {
   Open = "OPEN",
   Wall = "WALL",
   Cheese = "CHEESE",
   Entrance = "ENTRANCE",
-  Exit = "EXIT"
+  Exit = "EXIT",
 };
 
 /**
@@ -27,12 +27,12 @@ export enum CellType {
  *   schemas:
  *     Direction:
  *       type: string
- *       enum: [north, east, south, west]
- *       example: north
+ *       enum: [NORTH, EAST, SOUTH, WEST]
+ *       example: NORTH
  */
 export enum Direction {
-  North = "north",
-  East = "east",
-  South = "south",
-  West = "west",
+  North = "NORTH",
+  East = "EAST",
+  South = "SOUTH",
+  West = "WEST",
 };

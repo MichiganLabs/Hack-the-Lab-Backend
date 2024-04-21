@@ -50,11 +50,11 @@ export const moveRat = async (userId: string, mazeId: string, direction: Directi
         );
 
         surroundings = {
-            originCell: CellType.cheese,
-            northCell: CellType.open,
-            eastCell: CellType.exit,
-            southCell: CellType.open,
-            westCell: CellType.wall,
+            originCell: CellType.Cheese,
+            northCell: CellType.Open,
+            eastCell: CellType.Exit,
+            southCell: CellType.Open,
+            westCell: CellType.Wall,
         };
     }
 
