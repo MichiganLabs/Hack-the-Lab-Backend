@@ -1,12 +1,13 @@
+import bodyParser from "body-parser";
 import express, { Express } from "express";
-import { log } from "./utils/logger";
+import http from "http";
+import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
+import { getControllers } from "./controllers/controllers";
 import { interceptors } from "./middleware/interceptors";
 import { myIPv4 } from "./utils/ipv4";
-import { getControllers } from "./controllers/controllers";
-import bodyParser from "body-parser";
-import swaggerUi from "swagger-ui-express";
+import { log } from "./utils/logger";
 import getOpenapiSpecification from "./utils/swaggerJsdpc";
-import http from "http";
 
 const app: Express = express();
 const port = process.env.PORT || 8080;
@@ -24,10 +25,14 @@ getControllers().forEach(controller => {
 
 app.use("/v1", v1Router);
 
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan("dev"));
+}
+
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(undefined, { swaggerOptions: { url: "/swagger.json", validatorUrl: null } }),
+  swaggerUi.setup(undefined, { swaggerOptions: { url: '/swagger.json', validatorUrl: null } })
 );
 
 app.use("/swagger.json", (req, res) => {
