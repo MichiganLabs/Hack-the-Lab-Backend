@@ -78,9 +78,9 @@ CALL create_api_key('Test User', 'PARTICIPANT');
 CALL create_api_key('Test Developer', 'DEVELOPER');
 CALL create_api_key('Test Admin', 'ADMIN');
 
-CREATE TABLE moves
+CREATE TABLE actions
 (
-    move_id   SERIAL PRIMARY KEY,
+    action_id   SERIAL PRIMARY KEY,
     user_id   SERIAL REFERENCES users (id) ON DELETE CASCADE,
     maze_id   VARCHAR,
     direction VARCHAR,
@@ -89,4 +89,4 @@ CREATE TABLE moves
     time_ts   TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_user_maze ON moves (user_id, maze_id, time_ts DESC);
+CREATE INDEX idx_user_maze ON actions (user_id, maze_id, time_ts DESC);

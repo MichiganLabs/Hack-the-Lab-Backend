@@ -17,10 +17,10 @@ declare module "hackthelab" {
    *       type: object
    *       properties:
    *         x:
-   *           type: Int
+   *           type: integer
    *           example: 0
    *         y:
-   *           type: Int
+   *           type: integer
    *           example: 0
    *         surroundings:
    *           $ref: '#/components/schemas/Surroundings'
@@ -54,5 +54,56 @@ declare module "hackthelab" {
     eastCell: CellType;
     southCell: CellType;
     westCell: CellType;
+  }
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Action:
+ *       type: object
+ *       properties:
+ *         actionId:
+ *           type: integer
+ *           example: 23
+ *         userId:
+ *           type: integer
+ *           example: 34
+ *         mazeId:
+ *           type: string
+ *           example: "practice-maze-0"
+ *         actionType:
+ *           type: string
+ *           example: "Move"
+ *         prev:
+ *           type: object
+ *           properties:
+ *             x:
+ *               type: integer
+ *               example: 15
+ *             y:
+ *               type: integer
+ *               example: 20
+ *         curr:
+ *           type: object
+ *           properties:
+ *             x:
+ *               type: integer
+ *               example: 16
+ *             y:
+ *               type: integer
+ *               example: 20
+ *         timeTs:
+ *           type: string
+ *           example: "2024-01-01T12:00:00.001Z"
+ */
+  interface Action {
+    actionId: string;
+    userId: string;
+    mazeId: string;
+    actionType: string;
+    previousCell: Cell;
+    currentCell: Cell;
+    time: Date;
   }
 }

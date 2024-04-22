@@ -3,7 +3,7 @@ import { Router } from "express";
 import { hasRole } from "@middleware/interceptors";
 import { Role } from "@enums";
 import getMaze from "./getMaze";
-import getActions from "./getActions";
+import getActions, { actionsSchema } from "./getActions";
 
 /**
  * @swagger
@@ -14,6 +14,6 @@ import getActions from "./getActions";
 export class MazeController implements Controller {
   initialize(router: Router): void {
     router.get("/maze", hasRole(Role.Admin), getMaze);
-    router.get("/maze/actions", hasRole(Role.Admin), getActions);
+    router.get("/maze/actions", hasRole(Role.Admin), actionsSchema, getActions);
   }
 }

@@ -12,7 +12,7 @@ export const moveRat = async (userId: string, mazeId: string, direction: Directi
     var prevPosition = position;
 
     if (!position) {
-        // This should be the start of the maze.
+        // TODO: This should be the start of the maze.
         position = { x: 0, y: 0 };
     }
 
@@ -45,8 +45,8 @@ export const moveRat = async (userId: string, mazeId: string, direction: Directi
         // This insert could also be distributed through redis events to a
         // different process, to reduce response times.
         await pgQuery(
-            "INSERT INTO actions (user_id, maze_id, direction, prev, curr) VALUES ($1, $2, $3, $4, $5)",
-            [userId, mazeId, direction, prevPosition, position]
+            "INSERT INTO actions (user_id, maze_id, prev, curr) VALUES ($1, $2, $3, $4)",
+            [userId, mazeId, prevPosition, position]
         );
 
         surroundings = {

@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import humps from "humps";
 
 const { POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT } = process.env;
 
@@ -15,8 +16,10 @@ export const pgQuery = async (text: string, params: any) => {
 
   const result = await pool.query(text, params);
 
+  result.rows = result.rows.map((row) => humps.camelizeKeys(row));
+
   const duration = Date.now() - start;
-  console.log("executed query", { text, duration, rows: result.rowCount });
+  console.log("executed query", { text, params, duration, rows: result.rowCount });
 
   return result.rows;
 };

@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import { moveRat } from "services/rat-service";
 import { body, matchedData, validationResult } from "utils/custom-validator";
+import * as RatService from "services/rat-service";
 
 
 /**
@@ -52,6 +52,7 @@ const move: RequestHandler = async (req, res, next) => {
   // Check to see if the request is valid.
   const errors = validationResult(req);
 
+  // If there were request validation errors.
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -60,15 +61,14 @@ const move: RequestHandler = async (req, res, next) => {
 
   // TODO: Verify `data.mazeId` is a valid maze ID. If not, return with error.
 
-
-  const newCell = moveRat(req.user.id, data.mazeId, data.direction);
-
   try {
-    if (newCell != null) {
-      res.status(200).json(newCell);
-    } else {
-      res.sendStatus(409);
+    const newCell = await RatService.moveRat(req.user.id, data.mazeId, data.direction);
+
+    if (newCell == null) {
+      return res.sendStatus(409);
     }
+
+    res.status(200).json(newCell);
   } catch {
     res.status(500).json({ error: "Internal server error" });
   }
