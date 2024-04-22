@@ -18,7 +18,7 @@ for (let i = 0; i < interceptors.length; i++) {
   v1Router.use(interceptors[i]);
 }
 
-getControllers().forEach((controller) => {
+getControllers().forEach(controller => {
   controller.initialize(v1Router);
 });
 
@@ -27,12 +27,12 @@ app.use("/v1", v1Router);
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(undefined, { swaggerOptions: { url: '/swagger.json', validatorUrl: null }})
+  swaggerUi.setup(undefined, { swaggerOptions: { url: "/swagger.json", validatorUrl: null } }),
 );
 
-app.use('/swagger.json', (req, res) => {
-  res.send(getOpenapiSpecification())
-})
+app.use("/swagger.json", (req, res) => {
+  res.send(getOpenapiSpecification());
+});
 
 // Create an HTTP service
 const httpServer = http.createServer(app);
@@ -41,7 +41,7 @@ httpServer.listen(port, () => {
   log(`⚡️ Server is running at http://${myIPv4()}:${port}/api-docs`);
 });
 
-process.on('SIGTSTP', () => {
+process.on("SIGTSTP", () => {
   httpServer.close(() => {
     console.log(`Server closed. Port ${port} freed up.`);
     process.exit(0);

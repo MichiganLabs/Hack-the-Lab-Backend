@@ -11,11 +11,9 @@ import { RequestHandler } from "express";
  *         description: Smell successful
  */
 const postSmell: RequestHandler = async (req, res, next) => {
-  res
-    .status(200)
-    .json({
-       response: "smell successful."
-      });
+  res.status(200).json({
+    response: "smell successful.",
+  });
 
   next();
   return;

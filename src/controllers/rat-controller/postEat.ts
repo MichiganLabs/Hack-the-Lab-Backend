@@ -11,11 +11,9 @@ import { RequestHandler } from "express";
  *         description: Eat successful
  */
 const postEat: RequestHandler = async (req, res, next) => {
-  res
-    .status(200)
-    .json({
-       response: "eat successful."
-      });
+  res.status(200).json({
+    response: "eat successful.",
+  });
 
   next();
   return;

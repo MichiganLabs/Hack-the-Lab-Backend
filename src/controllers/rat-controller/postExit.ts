@@ -11,11 +11,9 @@ import { RequestHandler } from "express";
  *         description: Exit successful
  */
 const postExit: RequestHandler = async (req, res, next) => {
-  res
-    .status(200)
-    .json({
-       response: "exit successful."
-      });
+  res.status(200).json({
+    response: "exit successful.",
+  });
 
   next();
   return;

@@ -2,7 +2,7 @@ import { createClient } from "redis";
 
 const { REDIS_HOST, REDIS_PORT, REDIS_USER, REDIS_PASS } = process.env;
 
-var client = createClient({
+const client = createClient({
   url: `redis://${REDIS_USER}:${REDIS_PASS}@${REDIS_HOST}:${REDIS_PORT}`,
 });
 

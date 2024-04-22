@@ -11,11 +11,9 @@ import { RequestHandler } from "express";
  *         description: reset successful
  */
 const postReset: RequestHandler = async (req, res, next) => {
-  res
-    .status(200)
-    .json({
-       response: "reset successful."
-      });
+  res.status(200).json({
+    response: "reset successful.",
+  });
 
   next();
   return;

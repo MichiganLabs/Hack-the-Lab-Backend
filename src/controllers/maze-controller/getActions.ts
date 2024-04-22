@@ -11,9 +11,7 @@ import { RequestHandler } from "express";
  *         description: Actions successful
  */
 const getActions: RequestHandler = async (req, res, next) => {
-  res
-    .status(200)
-    .json("All actions");
+  res.status(200).json("All actions");
   next();
   return;
 };

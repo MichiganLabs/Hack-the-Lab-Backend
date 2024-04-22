@@ -1,4 +1,4 @@
-import { Response, Request, NextFunction } from "express";
+import "express";
 import { AuthUser } from "hackthelab";
 
 declare global {

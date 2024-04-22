@@ -1,8 +1,8 @@
 export enum Role {
-    Participant = "PARTICIPANT",
-    Developer = "DEVELOPER",
-    Admin = "ADMIN"
-};
+  Participant = "PARTICIPANT",
+  Developer = "DEVELOPER",
+  Admin = "ADMIN",
+}
 
 /**
  * @swagger
@@ -14,9 +14,9 @@ export enum Role {
  *       example: open
  */
 export enum CellType {
-    Open = "OPEN",
-    Wall = "WALL",
-    Cheese = "CHEESE",
-    Entrance = "ENTRANCE",
-    Exit = "EXIT"
-};
+  Open = "OPEN",
+  Wall = "WALL",
+  Cheese = "CHEESE",
+  Entrance = "ENTRANCE",
+  Exit = "EXIT",
+}

@@ -40,7 +40,7 @@ The `middleware` folder contains just our interceptors for now. These are used t
 
 ![interceptor](resources/interceptor.png)
 
-The `controllers` folder contains our route handlers. These are the functions that are called when a route is hit. They are responsible for processing the request, and returning a response. Below is part of the `maze-controller.ts`. 
+The `controllers` folder contains our route handlers. These are the functions that are called when a route is hit. They are responsible for processing the request, and returning a response. Below is part of the `maze-controller.ts`.
 
 In this backend project, we follow this pattern: `/v1/route/command`. Every route is a higher level grouping of commands. `maze-controller` is the `route` portion of this pattern, and sets up what commands are available for the `maze` route.
 
@@ -56,13 +56,14 @@ The generated swagger will aggregate all the annotations and render the dynamic 
 
 ![swagger](resources/swagger.png)
 
-
 # .env File
+
 This file is used to define secrets used by the app. Rather than defining these system wide, the .env file allows them to be used and changed per directory.
 
 If you are using the docker infrastructure, the docker-compose.yaml will also use this file to configure the postgres container.
 
 Here is an example .dotenv file.
+
 ```conf
 POSTGRES_HOST=localhost
 POSTGRES_DB=hackthelab

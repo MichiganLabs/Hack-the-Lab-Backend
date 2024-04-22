@@ -11,11 +11,7 @@ import { RequestHandler } from "express";
  *         description: Fetch successful
  */
 const getMaze: RequestHandler = async (req, res, next) => {
-  res
-    .status(200)
-    .json(
-      { response: "A simple maze: [ ]" }
-    );
+  res.status(200).json({ response: "A simple maze: [ ]" });
   next();
   return;
 };
