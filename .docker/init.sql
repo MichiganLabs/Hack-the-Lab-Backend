@@ -82,12 +82,12 @@ CALL create_api_key('Test Admin', 'ADMIN');
 CREATE TABLE
     actions
 (
-    action_id SERIAL PRIMARY KEY,
-    user_id   SERIAL REFERENCES users (id) ON DELETE CASCADE,
-    maze_id   VARCHAR,
+    action_id   SERIAL PRIMARY KEY,
+    user_id     SERIAL REFERENCES users (id) ON DELETE CASCADE,
+    maze_id     VARCHAR,
     action_type VARCHAR,
-    position  json,
-    time_ts   timestamptz DEFAULT CURRENT_TIMESTAMP
+    position    json,
+    time_ts     timestamptz DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_user_maze ON actions (user_id, maze_id, time_ts DESC);
