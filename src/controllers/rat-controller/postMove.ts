@@ -1,3 +1,4 @@
+import { Direction } from "@enums";
 import { RequestHandler } from "express";
 import * as RatService from "services/rat-service";
 import { body, matchedData, validationResult } from "utils/custom-validator";
@@ -15,6 +16,11 @@ import { body, matchedData, validationResult } from "utils/custom-validator";
  *         direction:
  *           $ref: '#/components/schemas/Direction'
  */
+interface MoveRequestBody {
+  mazeId: string;
+  direction: Direction;
+}
+
 export const moveSchema = [body("mazeId").isString(), body("direction").isDirection()];
 
 /**
@@ -39,6 +45,10 @@ export const moveSchema = [body("mazeId").isString(), body("direction").isDirect
  *               $ref: '#/components/schemas/Surroundings'
  *       400:
  *         description: Bad request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BadRequestResponse'
  *       409:
  *         description: Move unsuccessful.
  *       500:
@@ -53,7 +63,7 @@ const postMove: RequestHandler = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const data = matchedData(req);
+  const data = matchedData(req) as MoveRequestBody;
 
   // TODO: Verify `data.mazeId` is a valid maze ID. If not, return with error.
 
@@ -61,10 +71,10 @@ const postMove: RequestHandler = async (req, res, next) => {
     const newCell = await RatService.moveRat(req.user.id, data.mazeId, data.direction);
 
     if (newCell == null) {
-      return res.sendStatus(409);
+      res.sendStatus(409);
+    } else {
+      res.status(200).json(newCell);
     }
-
-    res.status(200).json(newCell);
   } catch {
     res.status(500).json({ error: "Internal server error" });
   }

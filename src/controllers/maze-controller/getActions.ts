@@ -17,6 +17,11 @@ import { body } from "utils/custom-validator";
  *           type: string
  *           example: "prod-maze-2"
  */
+interface ActionsRequestBody {
+  userId: number;
+  mazeId: string;
+}
+
 export const actionsSchema = [
   body("userId").isNumeric().withMessage("'userId' must be included in the body of the request."),
   body("mazeId").isString().withMessage("'mazeId' must be included in the body of the request."),
@@ -44,6 +49,12 @@ export const actionsSchema = [
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Action'
+ *       400:
+ *         description: The request body is invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BadRequestResponse'
  *       401:
  *         description: Unauthorized. You must be authorized to access this endpoint.
  *       403:
@@ -56,11 +67,15 @@ const getActions: RequestHandler = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const data = matchedData(req);
+  const data = matchedData(req) as ActionsRequestBody;
 
-  const actions = await MazeService.getActions(data.userId, data.mazeId);
+  try {
+    const actions = await MazeService.getActions(data.userId, data.mazeId);
 
-  res.status(200).json(actions);
+    res.status(200).json(actions);
+  } catch {
+    res.sendStatus(500).json({ error: "Internal server error" });
+  }
 
   next();
   return;
