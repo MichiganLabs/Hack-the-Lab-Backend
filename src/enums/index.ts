@@ -2,7 +2,7 @@ export enum Role {
   Participant = "PARTICIPANT",
   Developer = "DEVELOPER",
   Admin = "ADMIN",
-};
+}
 
 /**
  * @swagger
@@ -19,7 +19,7 @@ export enum CellType {
   Cheese = "CHEESE",
   Entrance = "ENTRANCE",
   Exit = "EXIT",
-};
+}
 
 /**
  * @swagger
@@ -35,4 +35,4 @@ export enum Direction {
   East = "EAST",
   South = "SOUTH",
   West = "WEST",
-};
+}

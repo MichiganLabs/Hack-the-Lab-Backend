@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import { delCache, getCache, getQueryCache, setCache, setQueryCache, } from "./cache";
+import { delCache, getCache, getQueryCache, setCache, setQueryCache } from "./cache";
 import { pgQuery } from "./db";
 
 export const query = async (text: string, params: any) => {
@@ -13,13 +13,13 @@ export const query = async (text: string, params: any) => {
   try {
     result = await getQueryCache(hash);
 
-    if (result) {
-      return result;
+    if (!result) {
+      result = await pgQuery(text, params);
     }
-  } catch { }
-
-  // Could not read from cache, or expired, query the database.
-  result = await pgQuery(text, params);
+  } catch {
+    // Could not read from cache, or expired, query the database.
+    result = await pgQuery(text, params);
+  }
 
   // Write new value to cache.
   await setQueryCache(hash, result);
@@ -31,8 +31,8 @@ const getRatCacheKey = (user_id: string, mazeId: string) => `rat:pos-${user_id}-
 
 // Rat position result is not stored in cache on query, but instead on update.
 export const getRatPosition = async (user_id: string, mazeId: string): Promise<any> => {
-  var result: any;
-  let cacheKey = getRatCacheKey(user_id, mazeId);
+  let result: any;
+  const cacheKey = getRatCacheKey(user_id, mazeId);
 
   try {
     result = await getCache(cacheKey);
@@ -40,12 +40,14 @@ export const getRatPosition = async (user_id: string, mazeId: string): Promise<a
     if (result) {
       return result;
     }
-  } catch { }
+  } catch {
+    /* empty */
+  }
 
   // Could not read from cache, or expired, query the database.
-  let rs = await pgQuery(
+  const rs = await pgQuery(
     "SELECT curr FROM actions WHERE maze_id = $1 AND user_id = $2 ORDER BY time_ts DESC LIMIT 1",
-    [mazeId, user_id]
+    [mazeId, user_id],
   );
 
   if (0 == rs.length) {
@@ -58,10 +60,10 @@ export const getRatPosition = async (user_id: string, mazeId: string): Promise<a
 };
 
 export const setRatPosition = async (key: string, mazeId: string, data: any): Promise<void> => {
-  let cacheKey = getRatCacheKey(key, mazeId);
+  const cacheKey = getRatCacheKey(key, mazeId);
 
   await delCache(cacheKey);
   await setCache(cacheKey, data);
 };
 
-export { releaseLock, acquireLock } from "./cache";
+export { acquireLock, releaseLock } from "./cache";

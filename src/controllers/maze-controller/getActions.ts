@@ -60,9 +60,7 @@ const getActions: RequestHandler = async (req, res, next) => {
 
   const actions = await MazeService.getActions(data.userId, data.mazeId);
 
-  res
-    .status(200)
-    .json(actions);
+  res.status(200).json(actions);
 
   next();
   return;

@@ -9,7 +9,7 @@ const client = createClient({
 client.connect();
 
 const sleep = (seconds: number): Promise<void> =>
-  new Promise((resolve) => {
+  new Promise(resolve => {
     setTimeout(resolve, seconds * 1000);
   });
 
@@ -37,8 +37,6 @@ export const delCache = async (key: string) => {
   await client.del(key);
 };
 
-export const getQueryCache = async (key: string): Promise<any> =>
-  getCache(`postgres:${key}`);
+export const getQueryCache = async (key: string): Promise<any> => getCache(`postgres:${key}`);
 
-export const setQueryCache = async (key: string, data: any) =>
-  setCache(`postgres:${key}`, data);
+export const setQueryCache = async (key: string, data: any) => setCache(`postgres:${key}`, data);

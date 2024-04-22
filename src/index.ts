@@ -25,14 +25,14 @@ getControllers().forEach(controller => {
 
 app.use("/v1", v1Router);
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(undefined, { swaggerOptions: { url: '/swagger.json', validatorUrl: null } })
+  swaggerUi.setup(undefined, { swaggerOptions: { url: "/swagger.json", validatorUrl: null } }),
 );
 
 app.use("/swagger.json", (req, res) => {

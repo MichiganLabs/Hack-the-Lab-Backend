@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
-import { body, matchedData, validationResult } from "utils/custom-validator";
 import * as RatService from "services/rat-service";
-
+import { body, matchedData, validationResult } from "utils/custom-validator";
 
 /**
  * @swagger
@@ -16,10 +15,7 @@ import * as RatService from "services/rat-service";
  *         direction:
  *           $ref: '#/components/schemas/Direction'
  */
-export const moveSchema = [
-  body("mazeId").isString(),
-  body("direction").isDirection(),
-];
+export const moveSchema = [body("mazeId").isString(), body("direction").isDirection()];
 
 /**
  * @swagger
@@ -48,7 +44,7 @@ export const moveSchema = [
  *       500:
  *         description: Internal server error.
  */
-const move: RequestHandler = async (req, res, next) => {
+const postMove: RequestHandler = async (req, res, next) => {
   // Check to see if the request is valid.
   const errors = validationResult(req);
 
@@ -77,4 +73,4 @@ const move: RequestHandler = async (req, res, next) => {
   return;
 };
 
-export default move;
+export default postMove;

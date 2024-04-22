@@ -1,64 +1,66 @@
-import { Surroundings } from "hackthelab";
 import { acquireLock, getRatPosition, releaseLock, setRatPosition } from "@data";
 import { CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
+import { Surroundings } from "hackthelab";
 
 export const moveRat = async (userId: string, mazeId: string, direction: Direction): Promise<Surroundings | null> => {
-    let lock = `lock-${userId}-${mazeId}`;
+  const lock = `lock-${userId}-${mazeId}`;
 
-    await acquireLock(lock);
+  await acquireLock(lock);
 
-    var position = await getRatPosition(userId, mazeId);
-    var prevPosition = position;
+  let position = await getRatPosition(userId, mazeId);
+  const prevPosition = position;
 
-    if (!position) {
-        // TODO: This should be the start of the maze.
-        position = { x: 0, y: 0 };
-    }
+  if (!position) {
+    // TODO: This should be the start of the maze.
+    position = { x: 0, y: 0 };
+  }
 
-    console.log(`Rat is currently at (${position.x}, ${position.y})`);
+  console.log(`Rat is currently at (${position.x}, ${position.y})`);
 
-    var didMove = true;
+  const didMove = true;
 
-    // TODO: Do maze logic to check whether the rat can move and return cell data.
-    switch (direction) {
-        case Direction.North:
-            position.y -= 1;
-            break;
-        case Direction.East:
-            position.x += 1;
-            break;
-        case Direction.South:
-            position.y += 1;
-            break;
-        case Direction.West:
-            position.x -= 1;
-            break;
-    }
+  // TODO: Do maze logic to check whether the rat can move and return cell data.
+  switch (direction) {
+    case Direction.North:
+      position.y -= 1;
+      break;
+    case Direction.East:
+      position.x += 1;
+      break;
+    case Direction.South:
+      position.y += 1;
+      break;
+    case Direction.West:
+      position.x -= 1;
+      break;
+  }
 
-    let surroundings: Surroundings = null;
+  let surroundings: Surroundings = null;
 
-    if (didMove) {
-        // If the rat moved, update the position
-        await setRatPosition(userId, mazeId, position);
+  if (didMove) {
+    // If the rat moved, update the position
+    await setRatPosition(userId, mazeId, position);
 
-        // This insert could also be distributed through redis events to a
-        // different process, to reduce response times.
-        await pgQuery(
-            "INSERT INTO actions (user_id, maze_id, prev, curr) VALUES ($1, $2, $3, $4)",
-            [userId, mazeId, prevPosition, position]
-        );
+    // This insert could also be distributed through redis events to a
+    // different process, to reduce response times.
+    await pgQuery("INSERT INTO actions (user_id, maze_id, prev, curr) VALUES ($1, $2, $3, $4)", [
+      userId,
+      mazeId,
+      prevPosition,
+      position,
+    ]);
 
-        surroundings = {
-            originCell: CellType.Cheese,
-            northCell: CellType.Open,
-            eastCell: CellType.Exit,
-            southCell: CellType.Open,
-            westCell: CellType.Wall,
-        };
-    }
+    surroundings = {
+      originCell: CellType.Cheese,
+      northCell: CellType.Open,
+      eastCell: CellType.Exit,
+      southCell: CellType.Open,
+      westCell: CellType.Wall,
+    };
+  }
 
-    releaseLock(lock);
+  releaseLock(lock);
 
-    return surroundings;
+  return surroundings;
 };
