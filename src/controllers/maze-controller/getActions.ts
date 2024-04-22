@@ -22,6 +22,7 @@ interface ActionsRequestBody {
   mazeId: string;
 }
 
+// prettier-ignore
 export const actionsSchema = [
   body("userId").isNumeric().withMessage("'userId' must be included in the body of the request."),
   body("mazeId").isString().withMessage("'mazeId' must be included in the body of the request."),
@@ -73,7 +74,8 @@ const getActions: RequestHandler = async (req, res, next) => {
     const actions = await MazeService.getActions(data.userId, data.mazeId);
 
     res.status(200).json(actions);
-  } catch {
+  } catch (e) {
+    console.error(e);
     res.sendStatus(500).json({ error: "Internal server error" });
   }
 

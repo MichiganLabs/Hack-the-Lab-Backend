@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import { delCache, getCache, getQueryCache, setCache, setQueryCache } from "./cache";
+import cache from "./cache";
 import { pgQuery } from "./db";
 
 export const query = async (text: string, params: any) => {
@@ -7,11 +7,13 @@ export const query = async (text: string, params: any) => {
     .update(text + params.toString())
     .digest("hex");
 
+  const cacheKey = `postgres:${hash}`;
+
   let result: any;
 
   // Attempt to find the result in cache first.
   try {
-    result = await getQueryCache(hash);
+    result = await cache.getCache(cacheKey);
 
     if (!result) {
       result = await pgQuery(text, params);
@@ -22,20 +24,20 @@ export const query = async (text: string, params: any) => {
   }
 
   // Write new value to cache.
-  await setQueryCache(hash, result);
+  await cache.setCache(cacheKey, result);
 
   return result;
 };
 
-const getRatCacheKey = (user_id: string, mazeId: string) => `rat:pos-${user_id}-${mazeId}`;
+const getRatPositionCacheKey = (user_id: string, mazeId: string) => `rat:pos-${user_id}-${mazeId}`;
 
-// Rat position result is not stored in cache on query, but instead on update.
+// Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
 export const getRatPosition = async (user_id: string, mazeId: string): Promise<any> => {
   let result: any;
-  const cacheKey = getRatCacheKey(user_id, mazeId);
+  const cacheKey = getRatPositionCacheKey(user_id, mazeId);
 
   try {
-    result = await getCache(cacheKey);
+    result = await cache.getCache(cacheKey);
 
     if (result) {
       return result;
@@ -46,24 +48,25 @@ export const getRatPosition = async (user_id: string, mazeId: string): Promise<a
 
   // Could not read from cache, or expired, query the database.
   const rs = await pgQuery(
-    "SELECT curr FROM actions WHERE maze_id = $1 AND user_id = $2 ORDER BY time_ts DESC LIMIT 1",
+    "SELECT position FROM actions WHERE maze_id = $1 AND user_id = $2 ORDER BY time_ts DESC LIMIT 1",
     [mazeId, user_id],
   );
 
+  // TODO: After (https://msljira.atlassian.net/browse/HTL-12) is implemented, this should maybe throw an exception.
   if (0 == rs.length) {
     return undefined;
   }
 
-  console.log(rs[0].curr);
-
-  return rs[0].curr;
+  return rs[0].position;
 };
 
-export const setRatPosition = async (key: string, mazeId: string, data: any): Promise<void> => {
-  const cacheKey = getRatCacheKey(key, mazeId);
+// Update the cached value for the rat position.
+export const saveRatPositionToCache = async (key: string, mazeId: string, data: any): Promise<void> => {
+  const cacheKey = getRatPositionCacheKey(key, mazeId);
 
-  await delCache(cacheKey);
-  await setCache(cacheKey, data);
+  await cache.delCache(cacheKey);
+  await cache.setCache(cacheKey, data);
 };
 
-export { acquireLock, releaseLock } from "./cache";
+const { acquireLock, releaseLock } = cache;
+export { acquireLock, releaseLock };

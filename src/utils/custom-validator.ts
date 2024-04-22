@@ -1,5 +1,5 @@
-import { ExpressValidator } from "express-validator";
 import { Direction } from "@enums";
+import { ExpressValidator } from "express-validator";
 
 export const { matchedData, body, validationResult } = new ExpressValidator({
   isDirection: async (value: any) => {
@@ -7,6 +7,6 @@ export const { matchedData, body, validationResult } = new ExpressValidator({
       return value as Direction;
     }
 
-    throw new Error("Direction is not valid!");
+    throw new Error("Invalid direction");
   },
 });

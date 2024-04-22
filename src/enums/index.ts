@@ -36,3 +36,17 @@ export enum Direction {
   South = "SOUTH",
   West = "WEST",
 }
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ActionType:
+ *       type: string
+ *       enum: [MOVE]
+ *       example: NORTH
+ */
+export enum ActionType {
+  Move = "MOVE",
+  Start = "START",
+}

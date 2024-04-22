@@ -1,4 +1,4 @@
-import { Role, CellType } from "@enums";
+import { CellType, Role } from "@enums";
 
 declare module "hackthelab" {
   interface AuthUser {
@@ -75,16 +75,7 @@ declare module "hackthelab" {
    *         actionType:
    *           type: string
    *           example: "Move"
-   *         prev:
-   *           type: object
-   *           properties:
-   *             x:
-   *               type: integer
-   *               example: 15
-   *             y:
-   *               type: integer
-   *               example: 20
-   *         curr:
+   *         position:
    *           type: object
    *           properties:
    *             x:
@@ -102,8 +93,7 @@ declare module "hackthelab" {
     userId: string;
     mazeId: string;
     actionType: string;
-    previousCell: Cell;
-    currentCell: Cell;
+    position: Cell;
     time: Date;
   }
 }

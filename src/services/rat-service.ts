@@ -1,38 +1,45 @@
-import { acquireLock, getRatPosition, releaseLock, setRatPosition } from "@data";
-import { CellType, Direction } from "@enums";
+import { acquireLock, getRatPosition, releaseLock, saveRatPositionToCache } from "@data";
+import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
 import { Surroundings } from "hackthelab";
 
 export const moveRat = async (userId: string, mazeId: string, direction: Direction): Promise<Surroundings | null> => {
-  const lock = `lock-${userId}-${mazeId}`;
+  // This lock is used to prevent the rat from moving while processing this move.
+  const ratLock = `lock-rat-move-${userId}-${mazeId}`;
 
-  await acquireLock(lock);
+  await acquireLock(ratLock);
 
   let position = await getRatPosition(userId, mazeId);
-  const prevPosition = position;
 
+  // Should be obsolete after initialize middleware is implemented (https://msljira.atlassian.net/browse/HTL-12).
   if (!position) {
     // TODO: This should be the start of the maze.
     position = { x: 0, y: 0 };
+
+    // Insert an action denoting the rat has started the maze.
+    await insertAction(userId, mazeId, ActionType.Start, position);
   }
 
-  console.log(`Rat is currently at (${position.x}, ${position.y})`);
+  // Keep track of whether the rat moved, or not.
+  let didMove = false;
 
-  const didMove = true;
-
-  // TODO: Do maze logic to check whether the rat can move and return cell data.
+  // TODO: Do maze logic to check whether the rat can move in the maze.
   switch (direction) {
     case Direction.North:
       position.y -= 1;
+      didMove = true;
       break;
     case Direction.East:
       position.x += 1;
+      didMove = true;
       break;
     case Direction.South:
       position.y += 1;
+      didMove = true;
       break;
     case Direction.West:
       position.x -= 1;
+      didMove = true;
       break;
   }
 
@@ -40,17 +47,11 @@ export const moveRat = async (userId: string, mazeId: string, direction: Directi
 
   if (didMove) {
     // If the rat moved, update the position
-    await setRatPosition(userId, mazeId, position);
+    await saveRatPositionToCache(userId, mazeId, position);
 
-    // This insert could also be distributed through redis events to a
-    // different process, to reduce response times.
-    await pgQuery("INSERT INTO actions (user_id, maze_id, prev, curr) VALUES ($1, $2, $3, $4)", [
-      userId,
-      mazeId,
-      prevPosition,
-      position,
-    ]);
+    await insertAction(userId, mazeId, ActionType.Move, position);
 
+    // TODO return surroundings based on where the rat is in the maze.
     surroundings = {
       originCell: CellType.Cheese,
       northCell: CellType.Open,
@@ -60,7 +61,16 @@ export const moveRat = async (userId: string, mazeId: string, direction: Directi
     };
   }
 
-  releaseLock(lock);
+  releaseLock(ratLock);
 
   return surroundings;
+};
+
+const insertAction = async (userId: string, mazeId: string, actionType: ActionType, position: object): Promise<any> => {
+  await pgQuery("INSERT INTO actions (user_id, maze_id, action_type, position) VALUES ($1, $2, $3, $4)", [
+    userId,
+    mazeId,
+    actionType,
+    position,
+  ]);
 };

@@ -8,35 +8,37 @@ const client = createClient({
 
 client.connect();
 
-const sleep = (seconds: number): Promise<void> =>
+const sleep = (ms: number) =>
   new Promise(resolve => {
-    setTimeout(resolve, seconds * 1000);
+    setTimeout(resolve, ms);
   });
 
-export const acquireLock = async (lock: string) => {
+const acquireLock = async (lock: string) => {
   while (!(await client.setNX(lock, "1"))) {
-    await sleep(0.5);
+    // Sleep for 50ms before trying again.
+    await sleep(50);
   }
+
+  // Expire the lock after 8 seconds
+  await client.expire(lock, 8);
 };
 
-export const releaseLock = async (lock: string) => {
+const releaseLock = async (lock: string) => {
   await client.del(lock);
 };
 
-export const getCache = async (key: string): Promise<any> => {
+const getCache = async (key: string): Promise<any> => {
   const result = await client.get(key);
   return JSON.parse(result);
 };
 
-// Set to expire after 60 seconds
-export const setCache = async (key: string, data: any) => {
+const setCache = async (key: string, data: any) => {
+  // Set to expire after 60 seconds
   await client.setEx(key, 60, JSON.stringify(data));
 };
 
-export const delCache = async (key: string) => {
+const delCache = async (key: string) => {
   await client.del(key);
 };
 
-export const getQueryCache = async (key: string): Promise<any> => getCache(`postgres:${key}`);
-
-export const setQueryCache = async (key: string, data: any) => setCache(`postgres:${key}`, data);
+export default { acquireLock, releaseLock, getCache, setCache, delCache };

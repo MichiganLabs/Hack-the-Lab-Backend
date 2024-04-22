@@ -21,7 +21,11 @@ interface MoveRequestBody {
   direction: Direction;
 }
 
-export const moveSchema = [body("mazeId").isString(), body("direction").isDirection()];
+// prettier-ignore
+export const moveSchema = [
+  body("mazeId").isString(),
+  body("direction").isDirection()
+];
 
 /**
  * @swagger
@@ -68,14 +72,16 @@ const postMove: RequestHandler = async (req, res, next) => {
   // TODO: Verify `data.mazeId` is a valid maze ID. If not, return with error.
 
   try {
-    const newCell = await RatService.moveRat(req.user.id, data.mazeId, data.direction);
+    // Attempt to move user's rat in mazeId with provided direction. If cannot, returns null.
+    const cell = await RatService.moveRat(req.user.id, data.mazeId, data.direction);
 
-    if (newCell == null) {
+    if (cell == null) {
       res.sendStatus(409);
     } else {
-      res.status(200).json(newCell);
+      res.status(200).json(cell);
     }
-  } catch {
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ error: "Internal server error" });
   }
 
