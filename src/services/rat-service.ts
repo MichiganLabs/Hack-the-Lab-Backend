@@ -4,7 +4,7 @@ import { pgQuery } from "data/db";
 import { Surroundings } from "hackthelab";
 
 export const moveRat = async (userId: string, mazeId: string, direction: Direction): Promise<Surroundings | null> => {
-  // This lock is used to prevent the rat from moving while processing this move.
+  // This lock is used to prevent the rat from moving, in the same maze, while processing this move.
   const ratLock = `lock-rat-move-${userId}-${mazeId}`;
 
   await acquireLock(ratLock);
@@ -49,9 +49,10 @@ export const moveRat = async (userId: string, mazeId: string, direction: Directi
     // If the rat moved, update the position
     await saveRatPositionToCache(userId, mazeId, position);
 
+    // Insert an action denoting the rat has moved.
     await insertAction(userId, mazeId, ActionType.Move, position);
 
-    // TODO return surroundings based on where the rat is in the maze.
+    // TODO: return surroundings based on where the rat is in the maze.
     surroundings = {
       originCell: CellType.Cheese,
       northCell: CellType.Open,
@@ -61,11 +62,13 @@ export const moveRat = async (userId: string, mazeId: string, direction: Directi
     };
   }
 
+  // Important: release lock to allow next move request to process.
   releaseLock(ratLock);
 
   return surroundings;
 };
 
+// Helper method used to insert action record in the database.
 const insertAction = async (userId: string, mazeId: string, actionType: ActionType, position: object): Promise<any> => {
   await pgQuery("INSERT INTO actions (user_id, maze_id, action_type, position) VALUES ($1, $2, $3, $4)", [
     userId,

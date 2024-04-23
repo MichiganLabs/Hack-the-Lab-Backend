@@ -32,7 +32,7 @@ export const moveSchema = [
  * /v1/rat/move:
  *   post:
  *     tags: [Rat]
- *     summary: Moves a rat in a direction for a specific maze
+ *     summary: Moves a rat in a direction for a specific maze.
  *     requestBody:
  *       description: Move request.
  *       required: true
@@ -48,21 +48,25 @@ export const moveSchema = [
  *             schema:
  *               $ref: '#/components/schemas/Surroundings'
  *       400:
- *         description: Bad request.
+ *         description: Invalid request.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/BadRequestResponse'
+ *       401:
+ *         description: Unauthorized.
+ *       403:
+ *         description: Forbidden
  *       409:
  *         description: Move unsuccessful.
  *       500:
  *         description: Internal server error.
  */
 const postMove: RequestHandler = async (req, res, next) => {
-  // Check to see if the request is valid.
+  // Validate the request body against `moveSchema`.
   const errors = validationResult(req);
 
-  // If there were request validation errors.
+  // If there were request validation errors, return 400 with errors.
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -72,7 +76,7 @@ const postMove: RequestHandler = async (req, res, next) => {
   // TODO: Verify `data.mazeId` is a valid maze ID. If not, return with error.
 
   try {
-    // Attempt to move user's rat in mazeId with provided direction. If cannot, returns null.
+    // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
     const cell = await RatService.moveRat(req.user.id, data.mazeId, data.direction);
 
     if (cell == null) {

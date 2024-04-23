@@ -15,13 +15,14 @@ export const query = async (text: string, params: any) => {
   try {
     result = await cache.getCache(cacheKey);
 
-    if (!result) {
-      result = await pgQuery(text, params);
+    if (result) {
+      return result;
     }
   } catch {
     // Could not read from cache, or expired, query the database.
-    result = await pgQuery(text, params);
   }
+
+  result = await pgQuery(text, params);
 
   // Write new value to cache.
   await cache.setCache(cacheKey, result);

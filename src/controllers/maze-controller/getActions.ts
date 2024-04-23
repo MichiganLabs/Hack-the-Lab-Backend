@@ -33,7 +33,7 @@ export const actionsSchema = [
  * /v1/maze/actions:
  *   get:
  *     tags: [Maze]
- *     summary: Returns a specific maze actions information for all rats
+ *     summary: Returns recorded actions for a specific rat in a maze.
  *     requestBody:
  *       description: Actions request.
  *       required: true
@@ -51,15 +51,15 @@ export const actionsSchema = [
  *               items:
  *                 $ref: '#/components/schemas/Action'
  *       400:
- *         description: The request body is invalid.
+ *         description: Invalid request body.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/BadRequestResponse'
  *       401:
- *         description: Unauthorized. You must be authorized to access this endpoint.
+ *         description: Unauthorized.
  *       403:
- *         description: Forbidden. You do not have access to this resource.
+ *         description: Forbidden.
  */
 const getActions: RequestHandler = async (req, res, next) => {
   const errors = validationResult(req);
