@@ -73,8 +73,7 @@ declare module "hackthelab" {
    *           type: string
    *           example: "practice-maze-0"
    *         actionType:
-   *           type: string
-   *           example: "Move"
+   *           $ref: '#/components/schemas/ActionType'
    *         position:
    *           type: object
    *           properties:
@@ -92,7 +91,7 @@ declare module "hackthelab" {
     actionId: string;
     userId: string;
     mazeId: string;
-    actionType: string;
+    actionType: ActionType;
     position: Cell;
     time: Date;
   }
