@@ -1,5 +1,5 @@
-import humps from "humps";
 import { Pool } from "pg";
+import { camelizeKeys } from "utils";
 
 const { POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT } = process.env;
 
@@ -17,7 +17,7 @@ export const pgQuery = async (text: string, params: any) => {
   const result = await pool.query(text, params);
 
   // Convert snake_case column names to camelCase for interfaces.
-  result.rows = result.rows.map(row => humps.camelizeKeys(row));
+  result.rows = result.rows.map(row => camelizeKeys(row));
 
   const duration = Date.now() - start;
 

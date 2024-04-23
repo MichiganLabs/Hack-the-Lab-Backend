@@ -30,10 +30,10 @@ export const query = async (text: string, params: any) => {
   return result;
 };
 
-const getRatPositionCacheKey = (user_id: string, mazeId: string) => `rat:pos-${user_id}-${mazeId}`;
+const getRatPositionCacheKey = (user_id: number, mazeId: string) => `rat:pos-${user_id}-${mazeId}`;
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
-export const getRatPosition = async (user_id: string, mazeId: string): Promise<any> => {
+export const getRatPosition = async (user_id: number, mazeId: string): Promise<any> => {
   let result: any;
   const cacheKey = getRatPositionCacheKey(user_id, mazeId);
 
@@ -62,7 +62,7 @@ export const getRatPosition = async (user_id: string, mazeId: string): Promise<a
 };
 
 // Update the cached value for the rat position.
-export const saveRatPositionToCache = async (key: string, mazeId: string, data: any): Promise<void> => {
+export const saveRatPositionToCache = async (key: number, mazeId: string, data: any): Promise<void> => {
   const cacheKey = getRatPositionCacheKey(key, mazeId);
 
   await cache.delCache(cacheKey);

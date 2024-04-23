@@ -3,7 +3,7 @@ import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
 import { Surroundings } from "hackthelab";
 
-export const moveRat = async (userId: string, mazeId: string, direction: Direction): Promise<Surroundings | null> => {
+export const moveRat = async (userId: number, mazeId: string, direction: Direction): Promise<Surroundings | null> => {
   // This lock is used to prevent the rat from moving, in the same maze, while processing this move.
   const ratLock = `lock-rat-move-${userId}-${mazeId}`;
 
@@ -69,7 +69,7 @@ export const moveRat = async (userId: string, mazeId: string, direction: Directi
 };
 
 // Helper method used to insert action record in the database.
-const insertAction = async (userId: string, mazeId: string, actionType: ActionType, position: object): Promise<any> => {
+const insertAction = async (userId: number, mazeId: string, actionType: ActionType, position: object): Promise<any> => {
   await pgQuery("INSERT INTO actions (user_id, maze_id, action_type, position) VALUES ($1, $2, $3, $4)", [
     userId,
     mazeId,
