@@ -20,7 +20,7 @@ const acquireLock = async (lock: string) => {
   }
 
   // Expire the lock after 8 seconds (arbitrary value, may be changed later).
-  // Prevents a rat from not being able to move if an exception occurs while the lock is in use.
+  // Prevents a deadlock if an exception occurs while the lock is in use.
   await client.expire(lock, 8);
 };
 
