@@ -16,18 +16,46 @@ declare module "hackthelab" {
    *     Cell:
    *       type: object
    *       properties:
+   *         type:
+   *           $ref: '#/components/schemas/CellType'
+   *         surroundings:
+   *           $ref: '#/components/schemas/Surroundings'
+   */
+
+  interface Cell {
+    type: CellType;
+    surroundings: Surroundings;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     CellResponse:
+   *       allOf:
+   *         - $ref: '#/components/schemas/ActionResponse'
+   *         - $ref: '#/components/schemas/Cell'
+   */
+
+  type CellResponse = ApiResponse<Cell>;
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     Coordinate:
+   *       type: object
+   *       properties:
    *         x:
    *           type: integer
    *           example: 0
    *         y:
    *           type: integer
    *           example: 0
-   *         surroundings:
-   *           $ref: '#/components/schemas/Surroundings'
    */
-  interface Cell extends Surroundings {
-    x: Int;
-    y: Int;
+  interface Coordinate {
+    x: number;
+    y: number;
   }
 
   /**
@@ -37,23 +65,57 @@ declare module "hackthelab" {
    *     Surroundings:
    *       type: object
    *       properties:
-   *         originCell:
+   *         north:
    *           $ref: '#/components/schemas/CellType'
-   *         northCell:
+   *         east:
    *           $ref: '#/components/schemas/CellType'
-   *         eastCell:
+   *         south:
    *           $ref: '#/components/schemas/CellType'
-   *         southCell:
+   *         west:
    *           $ref: '#/components/schemas/CellType'
-   *         westCell:
-   *           $ref: '#/components/schemas/CellType'
+   *       example:
+   *         north: OPEN
+   *         east: WALL
+   *         south: START
+   *         west: WALL
    */
   interface Surroundings {
-    originCell: CellType;
-    northCell: CellType;
-    eastCell: CellType;
-    southCell: CellType;
-    westCell: CellType;
+    north: CellType;
+    east: CellType;
+    south: CellType;
+    west: CellType;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     ActionResponse:
+   *       type: object
+   *       properties:
+   *         success:
+   *           type: boolean
+   *           example: true
+   */
+  interface ActionResponse<T> extends T {
+    success: boolean;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     AdminCell:
+   *       allOf:
+   *         - $ref: '#/components/schemas/Cell'
+   *         - type: object
+   *           properties:
+   *             coordinates:
+   *               $ref: '#/components/schemas/Coordinate'
+   *
+   */
+  interface AdminCell extends Cell {
+    coordinates: Coordinates;
   }
 
   /**
@@ -75,14 +137,7 @@ declare module "hackthelab" {
    *         actionType:
    *           $ref: '#/components/schemas/ActionType'
    *         position:
-   *           type: object
-   *           properties:
-   *             x:
-   *               type: integer
-   *               example: 16
-   *             y:
-   *               type: integer
-   *               example: 20
+   *           $ref: '#/components/schemas/Coordinate'
    *         timeTs:
    *           type: string
    *           example: "2024-01-01T12:00:00.001Z"
@@ -92,7 +147,7 @@ declare module "hackthelab" {
     userId: string;
     mazeId: string;
     actionType: ActionType;
-    position: Cell;
+    position: Coordinate;
     time: Date;
   }
 }

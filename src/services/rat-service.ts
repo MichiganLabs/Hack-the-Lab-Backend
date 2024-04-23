@@ -1,9 +1,9 @@
 import { acquireLock, getRatPosition, releaseLock, saveRatPositionToCache } from "@data";
 import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
-import { Surroundings } from "hackthelab";
+import { CellResponse, Coordinate } from "hackthelab";
 
-export const moveRat = async (userId: number, mazeId: string, direction: Direction): Promise<Surroundings | null> => {
+export const moveRat = async (userId: number, mazeId: string, direction: Direction): Promise<CellResponse> => {
   // This lock is used to prevent the rat from moving, in the same maze, while processing this move.
   const ratLock = `lock-rat-move-${userId}-${mazeId}`;
 
@@ -43,37 +43,46 @@ export const moveRat = async (userId: number, mazeId: string, direction: Directi
       break;
   }
 
-  let surroundings: Surroundings = null;
-
   if (didMove) {
     // If the rat moved, update the position
     await saveRatPositionToCache(userId, mazeId, position);
-
-    // Insert an action denoting the rat has moved.
-    await insertAction(userId, mazeId, ActionType.Move, position);
-
-    // TODO: return surroundings based on where the rat is in the maze.
-    surroundings = {
-      originCell: CellType.Cheese,
-      northCell: CellType.Open,
-      eastCell: CellType.Exit,
-      southCell: CellType.Open,
-      westCell: CellType.Wall,
-    };
   }
+
+  // Insert an action denoting the rat has moved.
+  await insertAction(userId, mazeId, ActionType.Move, position, didMove);
+
+  // TODO: return surroundings based on where the rat is in the maze.
+
+  const returnedCell = {
+    success: didMove,
+    type: CellType.Cheese,
+    surroundings: {
+      north: CellType.Open,
+      east: CellType.Exit,
+      south: CellType.Open,
+      west: CellType.Wall,
+    },
+  };
 
   // Important: release lock to allow next move request to process.
   releaseLock(ratLock);
 
-  return surroundings;
+  return returnedCell;
 };
 
 // Helper method used to insert action record in the database.
-const insertAction = async (userId: number, mazeId: string, actionType: ActionType, position: object): Promise<any> => {
-  await pgQuery("INSERT INTO actions (user_id, maze_id, action_type, position) VALUES ($1, $2, $3, $4)", [
+const insertAction = async (
+  userId: number,
+  mazeId: string,
+  actionType: ActionType,
+  position: Coordinate,
+  success: boolean = true,
+): Promise<any> => {
+  await pgQuery("INSERT INTO actions (user_id, maze_id, action_type, position, success) VALUES ($1, $2, $3, $4, $5)", [
     userId,
     mazeId,
     actionType,
     position,
+    success,
   ]);
 };

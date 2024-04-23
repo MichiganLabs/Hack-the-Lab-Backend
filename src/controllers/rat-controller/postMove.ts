@@ -46,7 +46,7 @@ export const moveSchema = [
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Surroundings'
+ *               $ref: '#/components/schemas/CellResponse'
  *       400:
  *         description: Invalid request.
  *         content:
@@ -57,8 +57,6 @@ export const moveSchema = [
  *         description: Unauthorized.
  *       403:
  *         description: Forbidden
- *       409:
- *         description: Move unsuccessful.
  *       500:
  *         description: Internal server error.
  */
@@ -77,13 +75,9 @@ const postMove: RequestHandler = async (req, res, next) => {
 
   try {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
-    const cell = await RatService.moveRat(req.user.id, data.mazeId, data.direction);
+    const moveResponse = await RatService.moveRat(req.user.id, data.mazeId, data.direction);
 
-    if (cell == null) {
-      res.sendStatus(409);
-    } else {
-      res.status(200).json(cell);
-    }
+    res.status(200).json(moveResponse);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Internal server error" });

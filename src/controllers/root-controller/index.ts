@@ -24,7 +24,6 @@ let counter: number = 1;
  *           location:
  *             type: string
  *             example: body
- *
  */
 export class RootController implements Controller {
   initialize(router: Router): void {
