@@ -64,11 +64,11 @@ export const moveSchema = [
  */
 const postMove: RequestHandler = async (req, res, next) => {
   // Validate the request body against `moveSchema`.
-  const errors = validationResult(req);
+  const results = validationResult(req);
 
   // If there were request validation errors, return 400 with errors.
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+  if (!results.isEmpty()) {
+    return res.status(400).json({ errors: results.array() });
   }
 
   const data = matchedData(req) as MoveRequestBody;

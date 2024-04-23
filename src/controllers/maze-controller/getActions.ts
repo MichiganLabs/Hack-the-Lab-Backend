@@ -62,10 +62,10 @@ export const actionsSchema = [
  *         description: Forbidden.
  */
 const getActions: RequestHandler = async (req, res, next) => {
-  const errors = validationResult(req);
+  const results = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+  if (!results.isEmpty()) {
+    return res.status(400).json({ errors: results.array() });
   }
 
   const data = matchedData(req) as ActionsRequestBody;
