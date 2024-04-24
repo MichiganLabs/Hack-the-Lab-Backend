@@ -5,7 +5,7 @@ CREATE TABLE users
     id       SERIAL PRIMARY KEY,
     name     VARCHAR(50) UNIQUE                                         NOT NULL,
     role     VARCHAR(20) CHECK (role IN ('PARTICIPANT', 'DEVELOPER', 'ADMIN')),
-    api_key  TEXT    DEFAULT replace(uuid_generate_v4()::text, '-', '') NOT NULL,
+    api_key  TEXT    DEFAULT REPLACE(uuid_generate_v4()::TEXT, '-', '') NOT NULL,
     disabled BOOLEAN DEFAULT FALSE
 );
 
@@ -38,8 +38,7 @@ BEGIN
         IF user_object.disabled THEN
             RAISE WARNING 'User % is already disabled.', p_name;
         ELSE
-            UPDATE users SET disabled = true where name = p_name;
-
+            UPDATE users SET disabled = TRUE WHERE name = p_name;
             RAISE NOTICE 'User % has been disabled.', p_name;
         END IF;
     ELSE
@@ -62,7 +61,7 @@ BEGIN
         IF NOT user_object.disabled THEN
             RAISE WARNING 'User % is already enabled.', p_name;
         ELSE
-            UPDATE users SET disabled = false where name = p_name;
+            UPDATE users SET disabled = FALSE WHERE name = p_name;
 
             RAISE NOTICE 'User % has been enabled.', p_name;
         END IF;
@@ -75,5 +74,21 @@ $$;
 
 
 CALL create_api_key('Test User', 'PARTICIPANT');
+
 CALL create_api_key('Test Developer', 'DEVELOPER');
+
 CALL create_api_key('Test Admin', 'ADMIN');
+
+CREATE TABLE
+    actions
+(
+    action_id   SERIAL PRIMARY KEY,
+    user_id     SERIAL REFERENCES users (id) ON DELETE CASCADE,
+    maze_id     VARCHAR,
+    action_type VARCHAR,
+    position    json,
+    time_ts     timestamptz DEFAULT CURRENT_TIMESTAMP,
+    success     BOOLEAN     DEFAULT TRUE
+);
+
+CREATE INDEX idx_user_maze ON actions (user_id, maze_id, time_ts DESC);

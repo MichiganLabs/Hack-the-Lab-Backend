@@ -10,8 +10,8 @@ export enum Role {
  *   schemas:
  *     CellType:
  *       type: string
- *       enum: [open, wall, cheese, entrance, exit]
- *       example: open
+ *       enum: [OPEN, WALL, CHEESE, ENTRANCE, EXIT]
+ *       example: OPEN
  */
 export enum CellType {
   Open = "OPEN",
@@ -19,4 +19,34 @@ export enum CellType {
   Cheese = "CHEESE",
   Entrance = "ENTRANCE",
   Exit = "EXIT",
+}
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Direction:
+ *       type: string
+ *       enum: [NORTH, EAST, SOUTH, WEST]
+ *       example: NORTH
+ */
+export enum Direction {
+  North = "NORTH",
+  East = "EAST",
+  South = "SOUTH",
+  West = "WEST",
+}
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ActionType:
+ *       type: string
+ *       enum: [MOVE]
+ *       example: NORTH
+ */
+export enum ActionType {
+  Move = "MOVE",
+  Start = "START",
 }

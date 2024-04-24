@@ -20,13 +20,13 @@ export const authorize: Interceptor = async (req, res, next) => {
 
   const user = rows[0];
 
-  if (user.disabled) {
+  if (user == null || user.disabled) {
     res.sendStatus(401);
     return;
   }
 
   req.authenticated = true;
-  req.user = rows[0];
+  req.user = user;
 
   next();
 };

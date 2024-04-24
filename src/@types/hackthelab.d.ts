@@ -1,11 +1,11 @@
-import { Role, CellType } from "@enums";
+import { CellType, Role } from "@enums";
 
 declare module "hackthelab" {
   interface AuthUser {
-    id: string;
+    id: number;
     name: string;
     role: Role;
-    api_key: string;
+    apiKey: string;
     disabled: boolean;
   }
 
@@ -16,18 +16,46 @@ declare module "hackthelab" {
    *     Cell:
    *       type: object
    *       properties:
-   *         x:
-   *           type: Int
-   *           example: 0
-   *         y:
-   *           type: Int
-   *           example: 0
+   *         type:
+   *           $ref: '#/components/schemas/CellType'
    *         surroundings:
    *           $ref: '#/components/schemas/Surroundings'
    */
-  interface Cell extends Surroundings {
-    x: Int;
-    y: Int;
+
+  interface Cell {
+    type: CellType;
+    surroundings: Surroundings;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     CellResponse:
+   *       allOf:
+   *         - $ref: '#/components/schemas/ActionResponse'
+   *         - $ref: '#/components/schemas/Cell'
+   */
+
+  type CellResponse = ApiResponse<Cell>;
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     Coordinate:
+   *       type: object
+   *       properties:
+   *         x:
+   *           type: integer
+   *           example: 0
+   *         y:
+   *           type: integer
+   *           example: 0
+   */
+  interface Coordinate {
+    x: number;
+    y: number;
   }
 
   /**
@@ -37,22 +65,89 @@ declare module "hackthelab" {
    *     Surroundings:
    *       type: object
    *       properties:
-   *         originCell:
+   *         north:
    *           $ref: '#/components/schemas/CellType'
-   *         northCell:
+   *         east:
    *           $ref: '#/components/schemas/CellType'
-   *         eastCell:
+   *         south:
    *           $ref: '#/components/schemas/CellType'
-   *         southCell:
+   *         west:
    *           $ref: '#/components/schemas/CellType'
-   *         westCell:
-   *           $ref: '#/components/schemas/CellType'
+   *       example:
+   *         north: OPEN
+   *         east: WALL
+   *         south: START
+   *         west: WALL
    */
   interface Surroundings {
-    originCell: CellType;
-    northCell: CellType;
-    eastCell: CellType;
-    southCell: CellType;
-    westCell: CellType;
+    north: CellType;
+    east: CellType;
+    south: CellType;
+    west: CellType;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     ActionResponse:
+   *       type: object
+   *       properties:
+   *         success:
+   *           type: boolean
+   *           example: true
+   */
+  interface ActionResponse<T> extends T {
+    success: boolean;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     AdminCell:
+   *       allOf:
+   *         - $ref: '#/components/schemas/Cell'
+   *         - type: object
+   *           properties:
+   *             coordinates:
+   *               $ref: '#/components/schemas/Coordinate'
+   *
+   */
+  interface AdminCell extends Cell {
+    coordinates: Coordinates;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     Action:
+   *       type: object
+   *       properties:
+   *         actionId:
+   *           type: integer
+   *           example: 23
+   *         userId:
+   *           type: integer
+   *           example: 34
+   *         mazeId:
+   *           type: string
+   *           example: "practice-maze-0"
+   *         actionType:
+   *           $ref: '#/components/schemas/ActionType'
+   *         position:
+   *           $ref: '#/components/schemas/Coordinate'
+   *         timeTs:
+   *           type: string
+   *           example: "2024-01-01T12:00:00.001Z"
+   */
+  interface Action {
+    actionId: string;
+    userId: string;
+    mazeId: string;
+    actionType: ActionType;
+    position: Coordinate;
+    time: Date;
   }
 }
