@@ -13,6 +13,50 @@ declare module "hackthelab" {
    * @swagger
    * components:
    *   schemas:
+   *     Maze:
+   *       type: object
+   *       properties:
+   *         type:
+   *           type: array
+   *           items:
+   *             $ref: '#/components/schemas/AdminCell'
+   *         cheese:
+   *           type: array
+   *           items:
+   *             $ref: '#/components/schemas/Coordinate'
+   *         exit:
+   *           $ref: '#/components/schemas/Coordinate'
+   *         start:
+   *           $ref: '#/components/schemas/Coordinate'
+   *         dimensions:
+   *           type: object
+   *           properties:
+   *             horizontal:
+   *               type: integer
+   *               example: 7
+   *             vertical:
+   *               type: integer
+   *               example: 7
+   *         open_square_count:
+   *           type: integer
+   *           example: 7
+   */
+  interface Maze {
+    cells: AdminCell[];
+    cheese: Coordinate[];
+    exit: Coordinate;
+    start: Coordinate;
+    dimensions: {
+      horizontal: number;
+      vertical: number;
+    };
+    open_square_count: number;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
    *     Cell:
    *       type: object
    *       properties:
@@ -74,10 +118,10 @@ declare module "hackthelab" {
    *         west:
    *           $ref: '#/components/schemas/CellType'
    *       example:
-   *         north: OPEN
-   *         east: WALL
-   *         south: START
-   *         west: WALL
+   *         north: Open
+   *         east: Wall
+   *         south: Start
+   *         west: Wall
    */
   interface Surroundings {
     north: CellType;
