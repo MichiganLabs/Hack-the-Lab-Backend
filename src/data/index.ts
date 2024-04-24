@@ -34,31 +34,31 @@ const getRatPositionCacheKey = (user_id: number, mazeId: string) => `rat:pos-${u
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
 export const getRatPosition = async (user_id: number, mazeId: string): Promise<any> => {
-  let result: any;
+  let cachePosition: any;
   const cacheKey = getRatPositionCacheKey(user_id, mazeId);
 
   try {
-    result = await cache.getCache(cacheKey);
+    cachePosition = await cache.getCache(cacheKey);
 
-    if (result) {
-      return result;
+    if (cachePosition) {
+      return cachePosition;
     }
   } catch {
     /* empty */
   }
 
   // Could not read from cache, or expired, query the database.
-  const rs = await pgQuery(
+  const dbPositionRows = await pgQuery(
     "SELECT position FROM actions WHERE maze_id = $1 AND user_id = $2 ORDER BY time_ts DESC LIMIT 1",
     [mazeId, user_id],
   );
 
   // TODO: After (https://msljira.atlassian.net/browse/HTL-12) is implemented, this should maybe throw an exception.
-  if (0 == rs.length) {
+  if (0 == dbPositionRows.length) {
     return undefined;
   }
 
-  return rs[0].position;
+  return dbPositionRows[0].position;
 };
 
 // Update the cached value for the rat position.
