@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "npm run docker && NODE_ENV=development nodemon",
     "docker": "docker compose up -d",
-    "build": "node_modules/.bin/rimraf ./dist && npx tsc",
+    "build": "node_modules/.bin/rimraf ./dist && npx tsc && npx tsc-alias",
     "start": "npm run build && npm run swagger && node dist/index.js",
     "kill": "kill -9 $(lsof -ti:8080)",
     "clean-unimported": "npx unimported --fix",
@@ -66,6 +66,7 @@
     "morgan": "^1.10.0",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
+    "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.2"
   },
