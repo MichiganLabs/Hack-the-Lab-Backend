@@ -1,11 +1,16 @@
+import path, { dirname } from "path";
 import swaggerJsdoc from "swagger-jsdoc";
 
 const getOpenapiSpecification = () => {
-  let apis = ["./controllers/**/*.js", "./@types/**/*.d.js", "./enums/**/*.js"];
+  const rootDir = dirname(require.main.filename);
+
+  let apis = ["./controllers/rat-controller/*.js", "./enums/**/*.js"];
 
   if ("development" === process.env.NODE_ENV) {
-    apis = apis.map(api => api.replace("./", "./src/").replace(".js", ".ts"));
+    apis = ["./controllers/**/*.ts", "./enums/**/*.ts", "./@types/**/*.d.ts"];
   }
+
+  apis = apis.map(p => path.join(rootDir, p));
 
   const options = {
     definition: {
