@@ -3,7 +3,7 @@ import * as fs from "fs/promises";
 import { Action, AdminCell, Coordinate, Maze } from "hackthelab";
 import path from "path";
 
-const mazeDir = __dirname + "/mazes";
+const mazeDir = __dirname + "/../mazes";
 const mazes: { [key: string]: Maze } = {};
 
 export const getActions = (userId: number, mazeId: string): Promise<Action[]> => {
@@ -23,7 +23,10 @@ export const getMazeById = async (mazeId: string): Promise<Maze | null> => {
 };
 
 export const getCellAtPosition = (maze: Maze, position: Coordinate): AdminCell => {
-  return maze.cells.find(c => c.coordinates.x == position.x && c.coordinates.y == position.y);
+  const cols = maze.dimensions.horizontal;
+  const index = position.y * cols + position.x;
+
+  return maze.cells[index];
 };
 
 export const mazeExists = async (mazeId: string): Promise<boolean> => (await getMazeById(mazeId)) !== undefined;
@@ -34,11 +37,12 @@ const loadMazes = async () => {
     for (const fileName of fileNames) {
       const mazeId = fileName.replace(".json", "");
 
-      const mazeData = await fs.readFile(path.join(mazeDir, fileName), "utf8");
+      // Only load mazes that have not already been loaded.
+      if (!Object.hasOwnProperty.call(mazes, mazeId)) {
+        const mazeData = await fs.readFile(path.join(mazeDir, fileName), "utf8");
 
-      const maze = JSON.parse(mazeData) as Maze;
-
-      mazes[mazeId] = maze;
+        mazes[mazeId] = JSON.parse(mazeData) as Maze;
+      }
     }
   } catch (e) {
     console.error(e);
