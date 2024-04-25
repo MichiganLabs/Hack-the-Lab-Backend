@@ -1,6 +1,12 @@
 import swaggerJsdoc from "swagger-jsdoc";
 
 const getOpenapiSpecification = () => {
+  let apis = ["./controllers/**/*.js", "./@types/**/*.d.js", "./enums/**/*.js"];
+
+  if ("development" === process.env.NODE_ENV) {
+    apis = apis.map(api => api.replace("./", "./src/").replace(".js", ".ts"));
+  }
+
   const options = {
     definition: {
       openapi: "3.0.0",
@@ -23,7 +29,7 @@ const getOpenapiSpecification = () => {
         },
       },
     },
-    apis: ["./src/controllers/**/*.ts", "./src/@types/**/*.d.ts", "./src/enums/**/*.ts"],
+    apis,
   };
   return swaggerJsdoc(options);
 };
