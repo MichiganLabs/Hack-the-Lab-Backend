@@ -63,6 +63,60 @@ export const moveRat = async (userId: number, maze: Maze, position: Coordinate, 
   };
 };
 
+/*
+  * This function is used to consume cheese if the rat is on a cell with cheese.
+  * @param userId The ID of the user that is controlling the rat.
+  * @param mazeId The ID of the maze the rat is in.
+  * @returns A CellResponse object representing the cell the rat is in after eating cheese.
+  */
+export const eatCheese = async (userId: number, mazeId: string): Promise<CellResponse> => {
+  // This lock is used to prevent the rat from eating, in the same maze, while processing this eat.
+  const ratLock = `lock-rat-eat-${userId}-${mazeId}`;
+
+  await acquireLock(ratLock);
+
+  try {
+    let position = await getRatPosition(userId, mazeId);
+
+    // Should be obsolete after initialize middleware is implemented (https://msljira.atlassian.net/browse/HTL-12).
+    if (!position) {
+      // TODO: This should be the start of the maze.
+      position = { x: 0, y: 0 };
+
+      // Insert an action denoting the rat has started the maze.
+      await insertAction(userId, mazeId, ActionType.Start, position);
+    }
+
+    // Keep track of whether the rat moved, or not.
+    let didEat = position.type == CellType.Cheese;
+
+    if (didEat) {
+      // If the rat moved, update the position
+      await saveRatPositionToCache(userId, mazeId, position);
+    }
+
+    // Insert an action denoting the rat attempted to eat.
+    await insertAction(userId, mazeId, ActionType.Eat, position, didEat);
+
+    // TODO: return surroundings based on where the rat is in the maze.
+
+    const returnedCell = {
+      success: didEat,
+      type: CellType.Cheese,
+      surroundings: {
+        north: CellType.Open,
+        east: CellType.Exit,
+        south: CellType.Open,
+        west: CellType.Wall,
+      },
+    };
+
+  } finally {
+    // Important: release lock to allow next move request to process.
+    releaseLock(ratLock);
+  }
+}
+
 // Helper method used to insert action record in the database.
 export const insertAction = async (
   userId: number,
