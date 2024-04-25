@@ -6,7 +6,7 @@
     "dev": "npm run docker && NODE_ENV=development nodemon",
     "docker": "docker compose up -d",
     "build": "node_modules/.bin/rimraf ./dist && npx tsc && npx tsc-alias",
-    "start": "npm run build && npm run swagger && node dist/index.js",
+    "start": "npm run build && node dist/index.js",
     "kill": "kill -9 $(lsof -ti:8080)",
     "clean-unimported": "npx unimported --fix",
     "format:check": "prettier --check .",
