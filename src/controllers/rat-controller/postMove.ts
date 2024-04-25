@@ -1,6 +1,6 @@
 import { Direction } from "@enums";
 import { RequestHandler } from "express";
-import * as RatService from "services/rat-service";
+import { MazeService, RatService } from "services";
 import { body, matchedData, validationResult } from "utils/custom-validator";
 
 /**
@@ -71,7 +71,10 @@ const postMove: RequestHandler = async (req, res, next) => {
 
   const data = matchedData(req) as MoveRequestBody;
 
-  // TODO: Verify `data.mazeId` is a valid maze ID. If not, return with error.
+  // Verify `data.mazeId` is a valid maze ID. If not, return with error.
+  if (!(await MazeService.mazeExists(data.mazeId))) {
+    return res.status(400).json({ errors: [`Maze '${data.mazeId}' does not exist.`] });
+  }
 
   try {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
