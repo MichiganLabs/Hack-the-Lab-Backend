@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "npm run docker && NODE_ENV=development nodemon",
     "docker": "docker compose up -d",
-    "build": "node_modules/.bin/rimraf ./dist && npx tsc && npx tsc-alias && npm run build:swagger",
+    "build": "node_modules/.bin/rimraf ./dist && npx tsc && npm run post:build",
     "start": "npm run build && node dist/index.js",
     "build:swagger": "node ./swagger.js",
     "kill": "kill -9 $(lsof -ti:8080)",
@@ -14,7 +14,9 @@
     "format:write": "prettier --write .",
     "lint:check": "eslint .",
     "lint:fix": "eslint --fix .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "post:build": "npx tsc-alias && npm run build:swagger && npm run copy-mazes",
+    "copy-mazes": "cp -r ./src/mazes ./dist/mazes"
   },
   "nodemonConfig": {
     "watch": [
