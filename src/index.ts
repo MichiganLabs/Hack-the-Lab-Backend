@@ -2,12 +2,12 @@ import bodyParser from "body-parser";
 import express, { Express } from "express";
 import http from "http";
 import morgan from "morgan";
+import path from "path";
 import swaggerUi from "swagger-ui-express";
 import { getControllers } from "./controllers/controllers";
 import { interceptors } from "./middleware/interceptors";
 import { myIPv4 } from "./utils/ipv4";
 import { log } from "./utils/logger";
-import getOpenapiSpecification from "./utils/swaggerJsdpc";
 
 const app: Express = express();
 const port = process.env.PORT || 8080;
@@ -36,7 +36,12 @@ app.use(
 );
 
 app.use("/swagger.json", (req, res) => {
-  res.send(getOpenapiSpecification());
+  if (process.env.NODE_ENV === "development") {
+    const additionalApis = ["./src/controllers/**/*.ts"];
+    res.send(require("../swagger").getOpenapiSpecification(additionalApis));
+  } else {
+    res.sendFile("./swagger.json", { root: path.join(__dirname) });
+  }
 });
 
 // Create an HTTP service
