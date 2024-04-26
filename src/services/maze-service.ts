@@ -35,6 +35,10 @@ const loadMazes = async () => {
   try {
     const fileNames = await fs.readdir(mazeDir);
     for (const fileName of fileNames) {
+      if (!fileName.endsWith(".json")) {
+        continue;
+      }
+
       const mazeId = fileName.replace(".json", "");
 
       // Only load mazes that have not already been loaded.
