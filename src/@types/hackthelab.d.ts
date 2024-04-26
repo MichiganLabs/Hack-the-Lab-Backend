@@ -16,7 +16,7 @@ declare module "hackthelab" {
    *     Maze:
    *       type: object
    *       properties:
-   *         type:
+   *         cells:
    *           type: array
    *           items:
    *             $ref: '#/components/schemas/AdminCell'
