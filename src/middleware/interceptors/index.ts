@@ -1,5 +1,5 @@
-import { Interceptor } from "express";
 import bodyParser from "body-parser";
+import { Interceptor } from "express";
 import { authorize } from "./auth";
 
 export const interceptors: Array<Interceptor> = [
@@ -10,4 +10,6 @@ export const interceptors: Array<Interceptor> = [
   authorize,
 ];
 
+export { schemaWithMazeId, validateMazeId } from "./maze-sanitize";
 export { hasRole } from "./role-authorize";
+export { validate } from "./validate";

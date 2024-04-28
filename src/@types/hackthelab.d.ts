@@ -42,6 +42,7 @@ declare module "hackthelab" {
    *           example: 7
    */
   interface Maze {
+    id: string;
     cells: AdminCell[];
     cheese: Coordinate[];
     exit: Coordinate;

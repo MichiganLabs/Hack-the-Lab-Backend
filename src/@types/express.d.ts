@@ -1,5 +1,5 @@
 import "express";
-import { AuthUser } from "hackthelab";
+import { AuthUser, Maze } from "hackthelab";
 
 declare global {
   namespace Express {
@@ -9,6 +9,9 @@ declare global {
 
       /** If authenticated: Contains user data.  */
       user?: AuthUser;
+
+      // For endpoints that act on mazes (undefined if not).
+      maze?: Maze;
     }
   }
 }

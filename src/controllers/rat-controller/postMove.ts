@@ -1,7 +1,8 @@
 import { Direction } from "@enums";
+import { schemaWithMazeId } from "@middleware/interceptors";
 import { RequestHandler } from "express";
-import { MazeService, RatService } from "services";
-import { body, matchedData, validationResult } from "utils/custom-validator";
+import { RatService } from "services";
+import { body, matchedData } from "utils/custom-validator";
 
 /**
  * @swagger
@@ -22,10 +23,9 @@ interface MoveRequestBody {
 }
 
 // prettier-ignore
-export const moveSchema = [
-  body("mazeId").isString(),
+export const moveSchema = schemaWithMazeId([
   body("direction").isDirection()
-];
+]);
 
 /**
  * @swagger
@@ -61,20 +61,7 @@ export const moveSchema = [
  *         description: Internal server error.
  */
 const postMove: RequestHandler = async (req, res, next) => {
-  // Validate the request body against `moveSchema`.
-  const results = validationResult(req);
-
-  // If there were request validation errors, return 400 with errors.
-  if (!results.isEmpty()) {
-    return res.status(400).json({ errors: results.array() });
-  }
-
   const data = matchedData(req) as MoveRequestBody;
-
-  // Verify `data.mazeId` is a valid maze ID. If not, return with error.
-  if (!(await MazeService.mazeExists(data.mazeId))) {
-    return res.status(400).json({ errors: [`Maze '${data.mazeId}' does not exist.`] });
-  }
 
   try {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.

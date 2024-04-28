@@ -45,7 +45,10 @@ const loadMazes = async () => {
       if (!Object.hasOwnProperty.call(mazes, mazeId)) {
         const mazeData = await fs.readFile(path.join(mazeDir, fileName), "utf8");
 
-        mazes[mazeId] = JSON.parse(mazeData) as Maze;
+        mazes[mazeId] = {
+          id: mazeId,
+          ...JSON.parse(mazeData),
+        };
       }
     }
   } catch (e) {
