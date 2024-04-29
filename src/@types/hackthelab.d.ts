@@ -1,4 +1,5 @@
 import { CellType, Role } from "@enums";
+import { Request } from "express";
 
 declare module "hackthelab" {
   interface AuthUser {
@@ -16,7 +17,11 @@ declare module "hackthelab" {
    *     Maze:
    *       type: object
    *       properties:
-   *         cells:
+   *        id:
+   *           type: string
+   *           example: "practice-maze-0"
+   *           description: The unique identifier for the maze.
+   *        cells:
    *           type: array
    *           items:
    *             $ref: '#/components/schemas/AdminCell'
@@ -194,5 +199,22 @@ declare module "hackthelab" {
     actionType: ActionType;
     position: Coordinate;
     time: Date;
+  }
+
+  /**
+   * 
+   * 
+   * 
+   */
+  interface MazeRequest extends Request {
+    maze: Maze;
+  }
+
+  /**
+   * 
+   */
+  interface RatActionRequest extends MazeRequest {
+    /** If action endpoint: Contains rat position data. */
+    ratPosition: Coordinate;
   }
 }

@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { MazeRequest } from "hackthelab";
 import * as MazeService from "services/maze-service";
 import { matchedData, param } from "utils/custom-validator";
 
@@ -9,7 +9,6 @@ interface ActionsRequestBody {
 // prettier-ignore
 export const actionsSchema = [
   param("userId").isNumeric().withMessage("'userId' must be included in the body of the request."),
-  param("mazeId").isMaze().withMessage("'mazeId' must be included in the body of the request.")
 ];
 
 /**
@@ -49,7 +48,7 @@ export const actionsSchema = [
  *       403:
  *         description: Forbidden.
  */
-const getActions: RequestHandler = async (req, res, next) => {
+const getActions = async (req: MazeRequest, res, next) => {
   const data = matchedData(req) as ActionsRequestBody;
 
   try {

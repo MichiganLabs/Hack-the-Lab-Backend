@@ -1,10 +1,4 @@
-import { RequestHandler } from "express";
-import { param } from "utils/custom-validator";
-
-// prettier-ignore
-export const mazeSchema = [
-  param("mazeId").isMaze().withMessage("'mazeId' must be included in the body of the request.")
-]
+import { MazeRequest } from "hackthelab";
 
 /**
  * @swagger
@@ -27,7 +21,7 @@ export const mazeSchema = [
  *             schema:
  *               $ref: '#/components/schemas/Maze'
  */
-const getMaze: RequestHandler = async (req, res, next) => {
+const getMaze = async (req: MazeRequest, res, next) => {
   res.status(200).json(req.maze);
 
   return next();

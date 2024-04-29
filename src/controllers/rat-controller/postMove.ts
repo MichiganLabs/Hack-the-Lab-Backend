@@ -1,6 +1,5 @@
 import { Direction } from "@enums";
-import { schemaWithMazeId } from "@middleware/interceptors";
-import { RequestHandler } from "express";
+import { RatActionRequest } from "hackthelab";
 import { RatService } from "services";
 import { body, matchedData } from "utils/custom-validator";
 
@@ -18,14 +17,13 @@ import { body, matchedData } from "utils/custom-validator";
  *           $ref: '#/components/schemas/Direction'
  */
 interface MoveRequestBody {
-  mazeId: string;
   direction: Direction;
 }
 
 // prettier-ignore
-export const moveSchema = schemaWithMazeId([
+export const moveSchema = [
   body("direction").isDirection()
-]);
+];
 
 /**
  * @swagger
@@ -60,12 +58,12 @@ export const moveSchema = schemaWithMazeId([
  *       500:
  *         description: Internal server error.
  */
-const postMove: RequestHandler = async (req, res, next) => {
+const postMove = async (req: RatActionRequest, res, next) => {
   const data = matchedData(req) as MoveRequestBody;
 
   try {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
-    const moveResponse = await RatService.moveRat(req.user.id, data.mazeId, data.direction);
+    const moveResponse = await RatService.moveRat(req.user.id, req.maze, req.ratPosition, data.direction);
 
     res.status(200).json(moveResponse);
   } catch (e) {
