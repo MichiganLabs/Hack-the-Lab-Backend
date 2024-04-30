@@ -5,7 +5,7 @@ import {
   preActionMiddleware,
   ratControllerLocking,
   resolveMaze,
-  validate
+  validate,
 } from "@middleware/interceptors";
 import { Router } from "express";
 import { Controller } from "../index";
@@ -23,19 +23,21 @@ import postSmell from "./postSmell";
  */
 export class RatController implements Controller {
   initialize(router: Router): void {
+    const ratMiddleware = [];
+
     // Validate the mazeId and inject the `maze` object into the request
-    router.use(validate(mazeBodySchema), resolveMaze);
+    ratMiddleware.push(validate(mazeBodySchema), resolveMaze);
 
-    // Prevent the same user (key) from performing an action while another action is being processed
-    router.use(ratControllerLocking);
+    // // Prevent the same user (key) from performing an action while another action is being processed
+    ratMiddleware.push(ratControllerLocking);
 
-    // Initialize the maze (if necessary) and inject the rat's current position into the request
-    router.use(preActionMiddleware);
+    // // Initialize the maze (if necessary) and inject the rat's current position into the request
+    ratMiddleware.push(preActionMiddleware);
 
-    router.post("/rat/move", hasRole(Role.Participant), validate(moveSchema), postMove);
-    router.post("/rat/smell", hasRole(Role.Participant), postSmell);
-    router.post("/rat/eat", hasRole(Role.Participant), postEat);
-    router.post("/rat/exit", hasRole(Role.Participant), postExit);
-    router.post("/rat/reset", hasRole(Role.Developer), postReset);
+    router.post("/rat/move", hasRole(Role.Participant), ...ratMiddleware, validate(moveSchema), postMove);
+    router.post("/rat/smell", hasRole(Role.Participant), ...ratMiddleware, postSmell);
+    router.post("/rat/eat", hasRole(Role.Participant), ...ratMiddleware, postEat);
+    router.post("/rat/exit", hasRole(Role.Participant), ...ratMiddleware, postExit);
+    router.post("/rat/reset", hasRole(Role.Developer), ...ratMiddleware, postReset);
   }
 }
