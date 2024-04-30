@@ -9,10 +9,9 @@ import { body, matchedData } from "utils/custom-validator";
  *   schemas:
  *     MoveRequestBody:
  *       type: object
+ *       allOf:
+ *         - $ref: '#/components/schemas/MazeRequestBodySchema'
  *       properties:
- *         mazeId:
- *           type: string
- *           example: 1234
  *         direction:
  *           $ref: '#/components/schemas/Direction'
  */

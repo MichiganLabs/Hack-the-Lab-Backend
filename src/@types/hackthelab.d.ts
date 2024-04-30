@@ -17,11 +17,11 @@ declare module "hackthelab" {
    *     Maze:
    *       type: object
    *       properties:
-   *        id:
+   *         id:
    *           type: string
    *           example: "practice-maze-0"
    *           description: The unique identifier for the maze.
-   *        cells:
+   *         cells:
    *           type: array
    *           items:
    *             $ref: '#/components/schemas/AdminCell'
@@ -202,16 +202,16 @@ declare module "hackthelab" {
   }
 
   /**
-   * 
-   * 
-   * 
+   *
+   *
+   *
    */
   interface MazeRequest extends Request {
     maze: Maze;
   }
 
   /**
-   * 
+   *
    */
   interface RatActionRequest extends MazeRequest {
     /** If action endpoint: Contains rat position data. */

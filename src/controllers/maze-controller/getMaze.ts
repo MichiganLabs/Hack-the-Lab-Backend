@@ -7,12 +7,7 @@ import { MazeRequest } from "hackthelab";
  *     tags: [Maze]
  *     summary: Returns a maze
  *     parameters:
- *       - in: path
- *         name: mazeId
- *         schema:
- *           type: string
- *         required: true
- *         description: Maze identifier.
+ *       - $ref: '#/components/parameters/MazeRequestPathBase'
  *     responses:
  *       200:
  *         description: Fetch successful

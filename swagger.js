@@ -1,3 +1,4 @@
+/* eslint-env node */
 const swaggerJsdoc = require("swagger-jsdoc");
 const fs = require("fs");
 
@@ -13,6 +14,7 @@ exports.getOpenapiSpecification = additionalApis => {
     "./src/controllers/rat-controller/*.ts",
     "./src/enums/**/*.ts",
     "./src/@types/**/*.d.ts",
+    "./src/middleware/interceptors/**/*.ts",
     ...additionalApis,
   ];
 

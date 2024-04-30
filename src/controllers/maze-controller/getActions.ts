@@ -18,11 +18,7 @@ export const actionsSchema = [
  *     tags: [Maze]
  *     summary: Returns recorded actions for a specific rat in a maze.
  *     parameters:
- *       - in: path
- *         name: mazeId
- *         schemas:
- *           type: string
- *         required: true
+ *       - $ref: '#/components/parameters/MazeRequestPathBase'
  *       - in: path
  *         name: userId
  *         schemas:

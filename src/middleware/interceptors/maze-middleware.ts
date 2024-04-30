@@ -2,10 +2,35 @@ import { MazeRequest } from "hackthelab";
 import { MazeService } from "services";
 import { body, matchedData, param } from "utils/custom-validator";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     MazeRequestBodySchema:
+ *       properties:
+ *         mazeId:
+ *           type: string
+ *           example: prod-maze-2
+ *       required:
+ *         - mazeId
+ *
+ */
 export const mazeBodySchema = [
   body("mazeId").isString().withMessage("'mazeId' must be included in the body of the request."),
 ];
 
+/**
+ * @swagger
+ * components:
+ *   parameters:
+ *     MazeRequestPathBase:
+ *       in: path
+ *       name: mazeId
+ *       schema:
+ *         type: string
+ *       required: true
+ *
+ */
 // prettier-ignore
 export const mazePathSchema = [
   param("mazeId").isMaze().withMessage("mazeId must be included in the path of the url request.")
