@@ -1,3 +1,4 @@
+import { ActionType } from "@enums";
 import { createHash } from "crypto";
 import cache from "./cache";
 import { pgQuery } from "./db";
@@ -59,7 +60,12 @@ export const getRatPosition = async (user_id: number, mazeId: string): Promise<a
     return undefined;
   }
 
-  return dbPositionRows[0].position;
+  const position = dbPositionRows[0].position;
+
+  // Save the result to cache so that we don't have to retrieve it again from the DB.
+  saveRatPositionToCache(user_id, mazeId, position);
+
+  return position;
 };
 
 // Update the cached value for the rat position.
@@ -68,6 +74,39 @@ export const saveRatPositionToCache = async (key: number, mazeId: string, data: 
 
   await cache.delCache(cacheKey);
   await cache.setCache(cacheKey, data);
+};
+
+// Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
+export const getEatenCheesePositions = async (user_id: number, mazeId: string): Promise<any[]> => {
+  let cachePositions: any[];
+  const cacheKey = getEatenCheeseCacheKey(user_id, mazeId);
+
+  try {
+    cachePositions = await cache.getCache(cacheKey);
+
+    if (cachePositions) {
+      return cachePositions;
+    }
+  } catch {
+    /* empty */
+  }
+
+  // Could not read from cache, or expired, query the database.
+  const dbPositionRows = await pgQuery(
+    "SELECT position FROM actions WHERE maze_id = $1 AND user_id = $2 AND action_type = $3 AND success = true",
+    [mazeId, user_id, ActionType.Eat],
+  );
+
+  if (0 == dbPositionRows.length) {
+    return [];
+  }
+
+  const positions = dbPositionRows.map((row) => row.position);
+
+  // Save the result to cache so that we don't have to retrieve it again from the DB.
+  saveEatenCheeseToCache(user_id, mazeId, positions);
+
+  return positions;
 };
 
 // Update the cached value for the eaten cheese.

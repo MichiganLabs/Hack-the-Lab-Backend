@@ -1,4 +1,4 @@
-import { getRatPosition } from "@data";
+import { getEatenCheesePositions, getRatPosition } from "@data";
 import { ActionType } from "@enums";
 import { RatActionRequest } from "hackthelab";
 import { insertAction } from "services/rat-service";
@@ -23,6 +23,9 @@ export const preActionMiddleware = async (req: RatActionRequest, res, next) => {
 
     // Add the rat position to the request
     req.ratPosition = position;
+
+    // Add eaten cheese positions to the request
+    req.eatenCheesePositions = await getEatenCheesePositions(req.user.id, req.maze.id);
 
     // Move to the next middleware
     next();

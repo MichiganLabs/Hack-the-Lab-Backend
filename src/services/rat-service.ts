@@ -1,4 +1,4 @@
-import { saveRatPositionToCache } from "@data";
+import { saveEatenCheeseToCache, saveRatPositionToCache } from "@data";
 import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
 import { Coordinate, Maze } from "hackthelab";
@@ -64,6 +64,11 @@ export const eatCheese = async (userId: number, maze: Maze, position: Coordinate
 
   // Keep track of whether the rat moved, or not.
   const didEat = currentCell.type == CellType.Cheese;
+
+  if (didEat) {
+    // If the rat ate the cheese, update the cache.
+    await saveEatenCheeseToCache(userId, maze.id, position);
+  }
 
   // Insert an action denoting the rat attempted to eat.
   await insertAction(userId, maze.id, ActionType.Eat, position, didEat);
