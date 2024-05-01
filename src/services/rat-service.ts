@@ -1,16 +1,15 @@
 import { saveRatPositionToCache } from "@data";
 import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
-import { CellResponse, Coordinate, Maze } from "hackthelab";
+import { Coordinate, Maze } from "hackthelab";
 import { MazeService } from "services";
 
-export const moveRat = async (userId: number, maze: Maze, position: Coordinate, direction: Direction): Promise<CellResponse> => {
+export const moveRat = async (userId: number, maze: Maze, position: Coordinate, direction: Direction): Promise<boolean> => {
 
   // Keep track of whether the rat moved, or not.
   let didMove = false;
 
-  let currentCell = MazeService.getCellAtPosition(maze, position);
-
+  let currentCell = MazeService.getCellAtPosition(maze, position, userId);
   if (currentCell == undefined) {
     throw new Error("Cell does not exist in maze!");
   }
@@ -45,8 +44,6 @@ export const moveRat = async (userId: number, maze: Maze, position: Coordinate, 
       break;
   }
 
-  currentCell = MazeService.getCellAtPosition(maze, position);
-
   if (didMove) {
     // If the rat moved, update the position
     await saveRatPositionToCache(userId, maze.id, position);
@@ -58,22 +55,15 @@ export const moveRat = async (userId: number, maze: Maze, position: Coordinate, 
   return didMove;
 };
 
-/*
-  * This function is used to consume cheese if the rat is on a cell with cheese.
-  * @param userId The ID of the user that is controlling the rat.
-  * @param mazeId The ID of the maze the rat is in.
-  * @returns A CellResponse object representing the cell the rat is in after eating cheese.
-  */
-export const eatCheese = async (userId: number, maze: Maze, position: Coordinate,): Promise<CellResponse> => {
-  let currentCell = MazeService.getCellAtPosition(maze, position);
+
+export const eatCheese = async (userId: number, maze: Maze, position: Coordinate,): Promise<boolean> => {
+  let currentCell = MazeService.getCellAtPosition(maze, position, userId);
+  if (currentCell == undefined) {
+    throw new Error("Cell does not exist in maze!");
+  }
 
   // Keep track of whether the rat moved, or not.
   let didEat = currentCell.type == CellType.Cheese;
-
-  if (didEat) {
-    // If the rat moved, update the position
-    await saveRatPositionToCache(userId, maze.id, position);
-  }
 
   // Insert an action denoting the rat attempted to eat.
   await insertAction(userId, maze.id, ActionType.Eat, position, didEat);

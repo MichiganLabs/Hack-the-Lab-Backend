@@ -1,37 +1,54 @@
-import { CellType } from "@enums";
-import { RatActionRequest } from "hackthelab";
-import { RatService } from "services";
+import { ActionResponse, RatActionRequest } from "hackthelab";
+import { MazeService, RatService } from "services";
 
 /**
  * @swagger
  * /v1/rat/eat:
  *   post:
  *     tags: [Rat]
- *     summary: Rat eat
+ *     summary: Gives a rat the ability to eat a cheese (if already on a cheese cell).
+ *     requestBody:
+ *       description: Eat request.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/MazeRequestBodySchema'
  *     responses:
  *       200:
  *         description: Eat successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ActionResponse'
+ *       400:
+ *         description: Invalid request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BadRequestResponse'
+ *       401:
+ *         description: Unauthorized.
+ *       403:
+ *         description: Forbidden
+ *       500:
+ *         description: Internal server error.
  */
 const postEat = async (req: RatActionRequest, res, next) => {
 
   try {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
-    const eatResponse = await RatService.eatCheese(req.user.id, req.maze, req.ratPosition);
+    const eatResult = await RatService.eatCheese(req.user.id, req.maze, req.ratPosition);
 
-    // TODO: Get computed cell type and surroundings
+    // Get the rat's current position and surroundings after the rat has eaten (or not) the cheese.
+    const cell = MazeService.getCellAtPosition(req.maze, req.ratPosition, req.user.id);
 
-    res.status(200).json({
-      success: eatResponse,
-      cell: {
-        type: CellType.Open, // TODO: Get computed cell type
-        surroundings: {
-          north: CellType.Open, // TODO: Get computed cell type
-          east: CellType.Open, // TODO: Get computed cell type
-          south: CellType.Open, // TODO: Get computed cell type
-          west: CellType.Open, // TODO: Get computed cell type
-        },
-      }
-    });
+    const response: ActionResponse = {
+      success: eatResult,
+      cell,
+    }
+
+    res.status(200).json(response);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Internal server error" });

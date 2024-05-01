@@ -1,6 +1,6 @@
-import { CellType, Direction } from "@enums";
-import { RatActionRequest } from "hackthelab";
-import { RatService } from "services";
+import { Direction } from "@enums";
+import { ActionResponse, RatActionRequest } from "hackthelab";
+import { MazeService, RatService } from "services";
 import { body, matchedData } from "utils/custom-validator";
 
 /**
@@ -43,7 +43,7 @@ export const moveSchema = [
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/CellResponse'
+ *               $ref: '#/components/schemas/ActionResponse'
  *       400:
  *         description: Invalid request.
  *         content:
@@ -62,22 +62,17 @@ const postMove = async (req: RatActionRequest, res, next) => {
 
   try {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
-    const moveResponse = await RatService.moveRat(req.user.id, req.maze, req.ratPosition, data.direction);
+    const moveResult = await RatService.moveRat(req.user.id, req.maze, req.ratPosition, data.direction);
 
-    // TODO: Get computed cell type and surroundings
+    // Get the current cell after the rat has moved.
+    const cell = MazeService.getCellAtPosition(req.maze, req.ratPosition, req.user.id);
 
-    res.status(200).json({
-      success: moveResponse,
-      cell: {
-        type: CellType.Open, // TODO: Get computed cell type
-        surroundings: {
-          north: CellType.Open, // TODO: Get computed cell type
-          east: CellType.Open, // TODO: Get computed cell type
-          south: CellType.Open, // TODO: Get computed cell type
-          west: CellType.Open, // TODO: Get computed cell type
-        },
-      }
-    });
+    const response: ActionResponse = {
+      success: moveResult,
+      cell,
+    }
+
+    res.status(200).json(response);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Internal server error" });
