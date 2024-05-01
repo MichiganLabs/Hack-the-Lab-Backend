@@ -22,6 +22,10 @@ export const getMazeById = async (mazeId: string): Promise<Maze | null> => {
   return undefined;
 };
 
+export const resetMaze = async (userId: number, mazeId: string): Promise<void> => {
+  pgQuery("DELETE * FROM actions WHERE user_id = $1 AND maze_id = $2", [userId, mazeId]);
+};
+
 // If `userId` is provided, checks the cell type/surroundings for cheese and update the cell type/surrounds to Open if the user has eaten the cheese.
 // If `userId` is not provided, returns the original cell.
 export const getAdminCellAtPosition = (maze: Maze, position: Coordinate, userId: number | undefined): AdminCell => {
