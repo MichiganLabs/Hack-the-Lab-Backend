@@ -49,4 +49,6 @@ export enum Direction {
 export enum ActionType {
   Move = "MOVE",
   Start = "START",
+  Eat = "EAT",
+  Exit = "EXIT",
 }

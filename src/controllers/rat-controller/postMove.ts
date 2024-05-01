@@ -1,4 +1,4 @@
-import { Direction } from "@enums";
+import { CellType, Direction } from "@enums";
 import { RatActionRequest } from "hackthelab";
 import { RatService } from "services";
 import { body, matchedData } from "utils/custom-validator";
@@ -64,7 +64,20 @@ const postMove = async (req: RatActionRequest, res, next) => {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
     const moveResponse = await RatService.moveRat(req.user.id, req.maze, req.ratPosition, data.direction);
 
-    res.status(200).json(moveResponse);
+    // TODO: Get computed cell type and surroundings
+
+    res.status(200).json({
+      success: moveResponse,
+      cell: {
+        type: CellType.Open, // TODO: Get computed cell type
+        surroundings: {
+          north: CellType.Open, // TODO: Get computed cell type
+          east: CellType.Open, // TODO: Get computed cell type
+          south: CellType.Open, // TODO: Get computed cell type
+          west: CellType.Open, // TODO: Get computed cell type
+        },
+      }
+    });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Internal server error" });
