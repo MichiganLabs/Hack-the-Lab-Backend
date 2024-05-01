@@ -31,7 +31,7 @@ export const getAdminCellAtPosition = (maze: Maze, position: Coordinate, userId:
   const originalCell = maze.cells[index];
 
   // TODO: Compute the 
-  let editedCell = { ...originalCell };
+  const editedCell = { ...originalCell };
   if (userId != undefined) {
     // If cell type (or surroundings) contains cheese, check if the user has eaten it.
     // If the user has eaten the cheese, change the cell type (and surroundings) to Open.
@@ -43,7 +43,8 @@ export const getAdminCellAtPosition = (maze: Maze, position: Coordinate, userId:
 
 export const getCellAtPosition = (maze: Maze, position: Coordinate, userId: number | undefined): Cell => {
   // Intentionally remove the `coordinates` property from the AdminCell to return a Cell.
-  const {coordinates, ...cell} = getAdminCellAtPosition(maze, position, userId);
+  const cell = getAdminCellAtPosition(maze, position, userId);
+  delete cell.coordinates;
 
   return cell;
 }

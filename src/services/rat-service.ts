@@ -9,7 +9,7 @@ export const moveRat = async (userId: number, maze: Maze, position: Coordinate, 
   // Keep track of whether the rat moved, or not.
   let didMove = false;
 
-  let currentCell = MazeService.getCellAtPosition(maze, position, userId);
+  const currentCell = MazeService.getCellAtPosition(maze, position, userId);
   if (currentCell == undefined) {
     throw new Error("Cell does not exist in maze!");
   }
@@ -57,13 +57,13 @@ export const moveRat = async (userId: number, maze: Maze, position: Coordinate, 
 
 
 export const eatCheese = async (userId: number, maze: Maze, position: Coordinate,): Promise<boolean> => {
-  let currentCell = MazeService.getCellAtPosition(maze, position, userId);
+  const currentCell = MazeService.getCellAtPosition(maze, position, userId);
   if (currentCell == undefined) {
     throw new Error("Cell does not exist in maze!");
   }
 
   // Keep track of whether the rat moved, or not.
-  let didEat = currentCell.type == CellType.Cheese;
+  const didEat = currentCell.type == CellType.Cheese;
 
   // Insert an action denoting the rat attempted to eat.
   await insertAction(userId, maze.id, ActionType.Eat, position, didEat);
