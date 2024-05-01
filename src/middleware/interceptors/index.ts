@@ -1,5 +1,5 @@
-import { Interceptor } from "express";
 import bodyParser from "body-parser";
+import { Interceptor } from "express";
 import { authorize } from "./auth";
 
 export const interceptors: Array<Interceptor> = [
@@ -10,4 +10,10 @@ export const interceptors: Array<Interceptor> = [
   authorize,
 ];
 
+export { mazeBodySchema, mazePathSchema, resolveMaze } from "./maze-middleware";
+export { preActionMiddleware } from "./pre-action-middleware";
+export { ratControllerLocking } from "./rat-controller-locking";
+
 export { hasRole } from "./role-authorize";
+export { validate } from "./validate";
+

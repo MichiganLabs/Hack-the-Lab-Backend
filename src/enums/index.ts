@@ -10,15 +10,15 @@ export enum Role {
  *   schemas:
  *     CellType:
  *       type: string
- *       enum: [OPEN, WALL, CHEESE, ENTRANCE, EXIT]
- *       example: OPEN
+ *       enum: [Open, Wall, Cheese, Entrance, Exit]
+ *       example: Open
  */
 export enum CellType {
-  Open = "OPEN",
-  Wall = "WALL",
-  Cheese = "CHEESE",
-  Entrance = "ENTRANCE",
-  Exit = "EXIT",
+  Open = "Open",
+  Wall = "Wall",
+  Cheese = "Cheese",
+  Entrance = "Entrance",
+  Exit = "Exit",
 }
 
 /**

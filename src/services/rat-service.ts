@@ -1,79 +1,70 @@
-import { acquireLock, getRatPosition, releaseLock, saveRatPositionToCache } from "@data";
+import { saveRatPositionToCache } from "@data";
 import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
-import { CellResponse, Coordinate } from "hackthelab";
+import { CellResponse, Coordinate, Maze } from "hackthelab";
+import { MazeService } from "services";
 
-export const moveRat = async (userId: number, mazeId: string, direction: Direction): Promise<CellResponse> => {
-  // This lock is used to prevent the rat from moving, in the same maze, while processing this move.
-  const ratLock = `lock-rat-move-${userId}-${mazeId}`;
+export const moveRat = async (userId: number, maze: Maze, position: Coordinate, direction: Direction): Promise<CellResponse> => {
 
-  await acquireLock(ratLock);
+  // Keep track of whether the rat moved, or not.
+  let didMove = false;
 
-  try {
-    let position = await getRatPosition(userId, mazeId);
+  let currentCell = MazeService.getCellAtPosition(maze, position);
 
-    // Should be obsolete after initialize middleware is implemented (https://msljira.atlassian.net/browse/HTL-12).
-    if (!position) {
-      // TODO: This should be the start of the maze.
-      position = { x: 0, y: 0 };
+  if (currentCell == undefined) {
+    throw new Error("Cell does not exist in maze!");
+  }
 
-      // Insert an action denoting the rat has started the maze.
-      await insertAction(userId, mazeId, ActionType.Start, position);
-    }
+  // Do maze logic to check whether the rat can move in the maze.
+  const { north, east, south, west } = currentCell.surroundings;
 
-    // Keep track of whether the rat moved, or not.
-    let didMove = false;
-
-    // TODO: Do maze logic to check whether the rat can move in the maze.
-    switch (direction) {
-      case Direction.North:
+  switch (direction) {
+    case Direction.North:
+      if (north != CellType.Wall) {
         position.y -= 1;
         didMove = true;
-        break;
-      case Direction.East:
+      }
+      break;
+    case Direction.East:
+      if (east != CellType.Wall) {
         position.x += 1;
         didMove = true;
-        break;
-      case Direction.South:
+      }
+      break;
+    case Direction.South:
+      if (south != CellType.Wall) {
         position.y += 1;
         didMove = true;
-        break;
-      case Direction.West:
+      }
+      break;
+    case Direction.West:
+      if (west != CellType.Wall) {
         position.x -= 1;
         didMove = true;
-        break;
-    }
-
-    if (didMove) {
-      // If the rat moved, update the position
-      await saveRatPositionToCache(userId, mazeId, position);
-    }
-
-    // Insert an action denoting the rat has moved.
-    await insertAction(userId, mazeId, ActionType.Move, position, didMove);
-
-    // TODO: return surroundings based on where the rat is in the maze.
-
-    const returnedCell = {
-      success: didMove,
-      type: CellType.Cheese,
-      surroundings: {
-        north: CellType.Open,
-        east: CellType.Exit,
-        south: CellType.Open,
-        west: CellType.Wall,
-      },
-    };
-
-    return returnedCell;
-  } finally {
-    // Important: release lock to allow next move request to process.
-    releaseLock(ratLock);
+      }
+      break;
   }
+
+  currentCell = MazeService.getCellAtPosition(maze, position);
+
+  if (didMove) {
+    // If the rat moved, update the position
+    await saveRatPositionToCache(userId, maze.id, position);
+  }
+
+  // Insert an action denoting the rat has moved.
+  await insertAction(userId, maze.id, ActionType.Move, position, didMove);
+
+  // Return type and surroundings based on where the rat is in the maze.
+  return {
+    success: didMove,
+    type: currentCell.type,
+    surroundings: currentCell.surroundings,
+  };
 };
 
 // Helper method used to insert action record in the database.
-const insertAction = async (
+export const insertAction = async (
   userId: number,
   mazeId: string,
   actionType: ActionType,

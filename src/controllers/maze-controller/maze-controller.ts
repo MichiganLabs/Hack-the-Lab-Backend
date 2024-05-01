@@ -1,9 +1,9 @@
-import { Controller } from "../index";
-import { Router } from "express";
-import { hasRole } from "@middleware/interceptors";
 import { Role } from "@enums";
-import getMaze from "./getMaze";
+import { hasRole, mazePathSchema, resolveMaze, validate } from "@middleware/interceptors";
+import { Router } from "express";
+import { Controller } from "../index";
 import getActions, { actionsSchema } from "./getActions";
+import getMaze from "./getMaze";
 
 /**
  * @swagger
@@ -13,7 +13,14 @@ import getActions, { actionsSchema } from "./getActions";
  */
 export class MazeController implements Controller {
   initialize(router: Router): void {
-    router.get("/maze", hasRole(Role.Admin), getMaze);
-    router.get("/maze/actions", hasRole(Role.Admin), actionsSchema, getActions);
+    const mazeMiddleware = [];
+
+    mazeMiddleware.push(hasRole(Role.Admin));
+
+    // Validate the mazeId and inject the `maze` object into the request
+    mazeMiddleware.push(validate(mazePathSchema), resolveMaze);
+
+    router.get("/maze/:mazeId", ...mazeMiddleware, getMaze);
+    router.get("/maze/:mazeId/actions/:userId", ...mazeMiddleware, validate(actionsSchema), getActions);
   }
 }

@@ -1,46 +1,29 @@
-import { RequestHandler } from "express";
-import { matchedData, validationResult } from "express-validator";
+import { MazeRequest } from "hackthelab";
 import * as MazeService from "services/maze-service";
-import { body } from "utils/custom-validator";
+import { matchedData, param } from "utils/custom-validator";
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     ActionsRequestBody:
- *       type: object
- *       properties:
- *         userId:
- *           type: string
- *           example: 1234
- *         mazeId:
- *           type: string
- *           example: "prod-maze-2"
- */
 interface ActionsRequestBody {
   userId: number;
-  mazeId: string;
 }
 
 // prettier-ignore
 export const actionsSchema = [
-  body("userId").isNumeric().withMessage("'userId' must be included in the body of the request."),
-  body("mazeId").isString().withMessage("'mazeId' must be included in the body of the request."),
+  param("userId").isNumeric().withMessage("'userId' must be included in the body of the request."),
 ];
 
 /**
  * @swagger
- * /v1/maze/actions:
+ * /v1/maze/{mazeId}/actions/{userId}:
  *   get:
  *     tags: [Maze]
  *     summary: Returns recorded actions for a specific rat in a maze.
- *     requestBody:
- *       description: Actions request.
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/ActionsRequestBody'
+ *     parameters:
+ *       - $ref: '#/components/parameters/MazeRequestPathBase'
+ *       - in: path
+ *         name: userId
+ *         schemas:
+ *           type: string
+ *         required: true
  *     responses:
  *       200:
  *         description: Actions successful
@@ -61,17 +44,11 @@ export const actionsSchema = [
  *       403:
  *         description: Forbidden.
  */
-const getActions: RequestHandler = async (req, res, next) => {
-  const results = validationResult(req);
-
-  if (!results.isEmpty()) {
-    return res.status(400).json({ errors: results.array() });
-  }
-
+const getActions = async (req: MazeRequest, res, next) => {
   const data = matchedData(req) as ActionsRequestBody;
 
   try {
-    const actions = await MazeService.getActions(data.userId, data.mazeId);
+    const actions = await MazeService.getActions(data.userId, req.maze.id);
 
     res.status(200).json(actions);
   } catch (e) {

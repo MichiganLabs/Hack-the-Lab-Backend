@@ -1,7 +1,7 @@
 import { Direction } from "@enums";
-import { RequestHandler } from "express";
-import * as RatService from "services/rat-service";
-import { body, matchedData, validationResult } from "utils/custom-validator";
+import { RatActionRequest } from "hackthelab";
+import { RatService } from "services";
+import { body, matchedData } from "utils/custom-validator";
 
 /**
  * @swagger
@@ -9,21 +9,18 @@ import { body, matchedData, validationResult } from "utils/custom-validator";
  *   schemas:
  *     MoveRequestBody:
  *       type: object
+ *       allOf:
+ *         - $ref: '#/components/schemas/MazeRequestBodySchema'
  *       properties:
- *         mazeId:
- *           type: string
- *           example: 1234
  *         direction:
  *           $ref: '#/components/schemas/Direction'
  */
 interface MoveRequestBody {
-  mazeId: string;
   direction: Direction;
 }
 
 // prettier-ignore
 export const moveSchema = [
-  body("mazeId").isString(),
   body("direction").isDirection()
 ];
 
@@ -60,22 +57,12 @@ export const moveSchema = [
  *       500:
  *         description: Internal server error.
  */
-const postMove: RequestHandler = async (req, res, next) => {
-  // Validate the request body against `moveSchema`.
-  const results = validationResult(req);
-
-  // If there were request validation errors, return 400 with errors.
-  if (!results.isEmpty()) {
-    return res.status(400).json({ errors: results.array() });
-  }
-
+const postMove = async (req: RatActionRequest, res, next) => {
   const data = matchedData(req) as MoveRequestBody;
-
-  // TODO: Verify `data.mazeId` is a valid maze ID. If not, return with error.
 
   try {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
-    const moveResponse = await RatService.moveRat(req.user.id, data.mazeId, data.direction);
+    const moveResponse = await RatService.moveRat(req.user.id, req.maze, req.ratPosition, data.direction);
 
     res.status(200).json(moveResponse);
   } catch (e) {

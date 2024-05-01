@@ -1,4 +1,5 @@
 import { CellType, Role } from "@enums";
+import { Request } from "express";
 
 declare module "hackthelab" {
   interface AuthUser {
@@ -7,6 +8,55 @@ declare module "hackthelab" {
     role: Role;
     apiKey: string;
     disabled: boolean;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     Maze:
+   *       type: object
+   *       properties:
+   *         id:
+   *           type: string
+   *           example: "practice-maze-0"
+   *           description: The unique identifier for the maze.
+   *         cells:
+   *           type: array
+   *           items:
+   *             $ref: '#/components/schemas/AdminCell'
+   *         cheese:
+   *           type: array
+   *           items:
+   *             $ref: '#/components/schemas/Coordinate'
+   *         exit:
+   *           $ref: '#/components/schemas/Coordinate'
+   *         start:
+   *           $ref: '#/components/schemas/Coordinate'
+   *         dimensions:
+   *           type: object
+   *           properties:
+   *             horizontal:
+   *               type: integer
+   *               example: 7
+   *             vertical:
+   *               type: integer
+   *               example: 7
+   *         open_square_count:
+   *           type: integer
+   *           example: 7
+   */
+  interface Maze {
+    id: string;
+    cells: AdminCell[];
+    cheese: Coordinate[];
+    exit: Coordinate;
+    start: Coordinate;
+    dimensions: {
+      horizontal: number;
+      vertical: number;
+    };
+    open_square_count: number;
   }
 
   /**
@@ -74,10 +124,10 @@ declare module "hackthelab" {
    *         west:
    *           $ref: '#/components/schemas/CellType'
    *       example:
-   *         north: OPEN
-   *         east: WALL
-   *         south: START
-   *         west: WALL
+   *         north: Open
+   *         east: Wall
+   *         south: Start
+   *         west: Wall
    */
   interface Surroundings {
     north: CellType;
@@ -149,5 +199,22 @@ declare module "hackthelab" {
     actionType: ActionType;
     position: Coordinate;
     time: Date;
+  }
+
+  /**
+   *
+   *
+   *
+   */
+  interface MazeRequest extends Request {
+    maze: Maze;
+  }
+
+  /**
+   *
+   */
+  interface RatActionRequest extends MazeRequest {
+    /** If action endpoint: Contains rat position data. */
+    ratPosition: Coordinate;
   }
 }
