@@ -32,7 +32,6 @@ export const query = async (text: string, params: any) => {
 };
 
 const getRatPositionCacheKey = (user_id: number, mazeId: string) => `rat:pos-${user_id}-${mazeId}`;
-const getEatenCheeseCacheKey = (user_id: number, mazeId: string) => `cheese:eaten-${user_id}-${mazeId}`;
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
 export const getRatPosition = async (user_id: number, mazeId: string): Promise<any> => {
@@ -69,12 +68,19 @@ export const getRatPosition = async (user_id: number, mazeId: string): Promise<a
 };
 
 // Update the cached value for the rat position.
-export const saveRatPositionToCache = async (key: number, mazeId: string, data: any): Promise<void> => {
-  const cacheKey = getRatPositionCacheKey(key, mazeId);
+export const saveRatPositionToCache = async (userId: number, mazeId: string, data: any): Promise<void> => {
+  const cacheKey = getRatPositionCacheKey(userId, mazeId);
 
-  await cache.delCache(cacheKey);
+  await clearRatPositionCache(userId, mazeId);
   await cache.setCache(cacheKey, data);
 };
+
+export const clearRatPositionCache = async (userId: number, mazeId: string): Promise<void> => {
+  const cacheKey = getRatPositionCacheKey(userId, mazeId);
+  await cache.delCache(cacheKey);
+};
+
+const getEatenCheeseCacheKey = (user_id: number, mazeId: string) => `cheese:eaten-${user_id}-${mazeId}`;
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
 export const getEatenCheesePositions = async (user_id: number, mazeId: string): Promise<any[]> => {
@@ -110,12 +116,17 @@ export const getEatenCheesePositions = async (user_id: number, mazeId: string): 
 };
 
 // Update the cached value for the eaten cheese.
-export const saveEatenCheeseToCache = async (key: number, mazeId: string, data: any): Promise<void> => {
-  const cacheKey = getEatenCheeseCacheKey(key, mazeId);
+export const saveEatenCheeseToCache = async (userId: number, mazeId: string, data: any): Promise<void> => {
+  const cacheKey = getEatenCheeseCacheKey(userId, mazeId);
 
-  await cache.delCache(cacheKey);
+  await clearEatenCheeseCache(userId, mazeId);
   await cache.setCache(cacheKey, data);
 }
+
+export const clearEatenCheeseCache = async (userId: number, mazeId: string): Promise<void> => {
+  const cacheKey = getEatenCheeseCacheKey(userId, mazeId);
+  await cache.delCache(cacheKey);
+};
 
 const { acquireLock, releaseLock } = cache;
 export { acquireLock, releaseLock };

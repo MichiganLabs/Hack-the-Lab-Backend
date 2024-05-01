@@ -1,5 +1,5 @@
 import { MazeRequest } from "hackthelab";
-import { MazeService } from "services";
+import { RatService } from "services";
 
 /**
  * @swagger
@@ -32,7 +32,7 @@ import { MazeService } from "services";
  */
 const postReset = async (req: MazeRequest, res, next) => {
   try {
-    await MazeService.resetMaze(req.user.id, req.maze.id);
+    await RatService.resetMaze(req.user.id, req.maze.id);
 
     res.status(200);
   } catch (e) {
