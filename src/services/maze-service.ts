@@ -29,7 +29,7 @@ export const getAdminCellAtPosition = (maze: Maze, position: Coordinate): AdminC
   return maze.cells[index];
 };
 
-// If `userId` is provided, checks the cell type/surroundings for cheese and update the cell type/surrounds to Open if the user has eaten the cheese.
+// If `userId` is provided, checks the cell type/surroundings for cheese and updates the cell type/surrounds to Open if the user has eaten the cheese.
 // If `userId` is not provided, returns the original cell.
 export const getCellAtPosition = (maze: Maze, position: Coordinate, userId: number | undefined): Cell => {
   const originalCell = getAdminCellAtPosition(maze, position);
