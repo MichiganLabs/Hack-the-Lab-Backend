@@ -317,7 +317,7 @@
       "surroundings": {
         "north": "Wall",
         "east": "Open",
-        "south": "Open",
+        "south": "Cheese",
         "west": "Wall"
       },
       "coordinates": {
@@ -404,7 +404,7 @@
       }
     },
     {
-      "type": "Open",
+      "type": "Cheese",
       "surroundings": {
         "north": "Open",
         "east": "Wall",
@@ -497,7 +497,7 @@
     {
       "type": "Open",
       "surroundings": {
-        "north": "Open",
+        "north": "Cheese",
         "east": "Wall",
         "south": "Start",
         "west": "Wall"
@@ -638,7 +638,10 @@
       }
     }
   ],
-  "cheese": [],
+  "cheese": [{
+    "x": 3,
+    "y": 4
+  }],
   "exit": {
     "x": 6,
     "y": 3

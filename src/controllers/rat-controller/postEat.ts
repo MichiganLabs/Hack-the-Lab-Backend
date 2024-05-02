@@ -37,7 +37,7 @@ import { MazeService, RatService } from "services";
 const postEat = async (req: RatActionRequest, res, next) => {
 
   try {
-    // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
+    // Attempt to eat the cheese.
     const eatResult = await RatService.eatCheese(req.user.id, req.maze, req.ratPosition);
 
     // Get the rat's current position and surroundings after the rat has eaten (or not) the cheese.
