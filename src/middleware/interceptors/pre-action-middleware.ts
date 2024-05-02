@@ -1,4 +1,4 @@
-import { getRatPosition } from "@data";
+import { getRatExitedMaze, getRatPosition } from "@data";
 import { ActionType } from "@enums";
 import { RatActionRequest } from "hackthelab";
 import { insertAction } from "services/rat-service";
@@ -9,6 +9,12 @@ import { insertAction } from "services/rat-service";
  */
 export const preActionMiddleware = async (req: RatActionRequest, res, next) => {
   try {
+    // Verify that the rat hasn't exited the maze.
+    const ratExitedMaze = await getRatExitedMaze(req.user.id, req.maze.id);
+    if (ratExitedMaze) {
+      return res.status(403).json({ message: "Rat has exited the maze!" });
+    }
+
     // Get rat's current position
     let position = await getRatPosition(req.user.id, req.maze.id);
 
