@@ -101,7 +101,7 @@ export const eatCheese = async (userId: number, maze: Maze, position: Coordinate
 
   if (didEat) {
     // If the rat ate the cheese, update the cache.
-    await saveEatenCheeseToCache(userId, maze.id, position);
+    await saveEatenCheeseToCache(userId, maze.id, [position]);
   }
 
   // Insert an action denoting the rat attempted to eat.
