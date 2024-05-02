@@ -83,7 +83,11 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
     smellIntensity += Math.max(0, radius - distance) / radius;
   }
 
-  return smellIntensity;
+  // Insert an action denoting the rat has smelled.
+  await insertAction(userId, maze.id, ActionType.Smell, position, true);
+
+  // Return the smell intensity to the nearest 4 decimal places.
+  return parseFloat(smellIntensity.toFixed(4));
 }
 
 export const eatCheese = async (userId: number, maze: Maze, position: Coordinate,): Promise<boolean> => {
