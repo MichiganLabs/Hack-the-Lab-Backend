@@ -1,16 +1,15 @@
-import { saveRatPositionToCache } from "@data";
+import { saveEatenCheeseToCache, saveRatPositionToCache } from "@data";
 import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
-import { CellResponse, Coordinate, Maze } from "hackthelab";
+import { Coordinate, Maze } from "hackthelab";
 import { MazeService } from "services";
 
-export const moveRat = async (userId: number, maze: Maze, position: Coordinate, direction: Direction): Promise<CellResponse> => {
+export const moveRat = async (userId: number, maze: Maze, position: Coordinate, direction: Direction): Promise<boolean> => {
 
   // Keep track of whether the rat moved, or not.
   let didMove = false;
 
-  let currentCell = MazeService.getCellAtPosition(maze, position);
-
+  const currentCell = MazeService.getCellAtPosition(maze, position, userId);
   if (currentCell == undefined) {
     throw new Error("Cell does not exist in maze!");
   }
@@ -45,8 +44,6 @@ export const moveRat = async (userId: number, maze: Maze, position: Coordinate, 
       break;
   }
 
-  currentCell = MazeService.getCellAtPosition(maze, position);
-
   if (didMove) {
     // If the rat moved, update the position
     await saveRatPositionToCache(userId, maze.id, position);
@@ -55,13 +52,29 @@ export const moveRat = async (userId: number, maze: Maze, position: Coordinate, 
   // Insert an action denoting the rat has moved.
   await insertAction(userId, maze.id, ActionType.Move, position, didMove);
 
-  // Return type and surroundings based on where the rat is in the maze.
-  return {
-    success: didMove,
-    type: currentCell.type,
-    surroundings: currentCell.surroundings,
-  };
+  return didMove;
 };
+
+
+export const eatCheese = async (userId: number, maze: Maze, position: Coordinate,): Promise<boolean> => {
+  const currentCell = MazeService.getCellAtPosition(maze, position, userId);
+  if (currentCell == undefined) {
+    throw new Error("Cell does not exist in maze!");
+  }
+
+  // Keep track of whether the rat moved, or not.
+  const didEat = currentCell.type == CellType.Cheese;
+
+  if (didEat) {
+    // If the rat ate the cheese, update the cache.
+    await saveEatenCheeseToCache(userId, maze.id, position);
+  }
+
+  // Insert an action denoting the rat attempted to eat.
+  await insertAction(userId, maze.id, ActionType.Eat, position, didEat);
+
+  return didEat;
+}
 
 // Helper method used to insert action record in the database.
 export const insertAction = async (

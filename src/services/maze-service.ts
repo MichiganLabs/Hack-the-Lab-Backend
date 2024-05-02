@@ -1,6 +1,6 @@
 import { pgQuery } from "data/db";
 import * as fs from "fs/promises";
-import { Action, AdminCell, Coordinate, Maze } from "hackthelab";
+import { Action, AdminCell, Cell, Coordinate, Maze } from "hackthelab";
 import path from "path";
 
 const mazeDir = __dirname + "/../mazes";
@@ -22,12 +22,32 @@ export const getMazeById = async (mazeId: string): Promise<Maze | null> => {
   return undefined;
 };
 
-export const getCellAtPosition = (maze: Maze, position: Coordinate): AdminCell => {
+// If `userId` is provided, checks the cell type/surroundings for cheese and update the cell type/surrounds to Open if the user has eaten the cheese.
+// If `userId` is not provided, returns the original cell.
+export const getAdminCellAtPosition = (maze: Maze, position: Coordinate, userId: number | undefined): AdminCell => {
   const cols = maze.dimensions.horizontal;
   const index = position.y * cols + position.x;
 
-  return maze.cells[index];
+  const originalCell = maze.cells[index];
+
+  // TODO: Compute the 
+  const editedCell = { ...originalCell };
+  if (userId != undefined) {
+    // If cell type (or surroundings) contains cheese, check if the user has eaten it.
+    // If the user has eaten the cheese, change the cell type (and surroundings) to Open.
+    // TODO: logic here...
+  }
+  
+  return editedCell;
 };
+
+export const getCellAtPosition = (maze: Maze, position: Coordinate, userId: number | undefined): Cell => {
+  // Intentionally remove the `coordinates` property from the AdminCell to return a Cell.
+  const cell = getAdminCellAtPosition(maze, position, userId);
+  delete cell.coordinates;
+
+  return cell;
+}
 
 export const mazeExists = async (mazeId: string): Promise<boolean> => (await getMazeById(mazeId)) !== undefined;
 

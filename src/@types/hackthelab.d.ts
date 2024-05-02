@@ -81,18 +81,6 @@ declare module "hackthelab" {
    * @swagger
    * components:
    *   schemas:
-   *     CellResponse:
-   *       allOf:
-   *         - $ref: '#/components/schemas/ActionResponse'
-   *         - $ref: '#/components/schemas/Cell'
-   */
-
-  type CellResponse = ApiResponse<Cell>;
-
-  /**
-   * @swagger
-   * components:
-   *   schemas:
    *     Coordinate:
    *       type: object
    *       properties:
@@ -146,9 +134,12 @@ declare module "hackthelab" {
    *         success:
    *           type: boolean
    *           example: true
+   *         cell:
+   *           $ref: '#/components/schemas/Cell'
    */
-  interface ActionResponse<T> extends T {
+  interface ActionResponse {
     success: boolean;
+    cell: Cell;
   }
 
   /**
@@ -216,5 +207,7 @@ declare module "hackthelab" {
   interface RatActionRequest extends MazeRequest {
     /** If action endpoint: Contains rat position data. */
     ratPosition: Coordinate;
+
+    eatenCheesePositions: Coordinate[];
   }
 }
