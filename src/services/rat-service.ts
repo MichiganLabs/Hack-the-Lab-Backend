@@ -1,4 +1,4 @@
-import { saveEatenCheeseToCache, saveRatPositionToCache } from "@data";
+import { clearEatenCheeseCache, clearRatPositionCache, saveEatenCheeseToCache, saveRatPositionToCache } from "@data";
 import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
 import { Coordinate, Maze } from "hackthelab";
@@ -92,3 +92,13 @@ export const insertAction = async (
     success,
   ]);
 };
+
+export const resetMaze = async (userId: number, mazeId: string): Promise<void> => {
+  // Delete actions
+  pgQuery("DELETE FROM actions WHERE user_id = $1 AND maze_id = $2", [userId, mazeId]);
+
+  // Clear cache
+  await clearRatPositionCache(userId, mazeId);
+  await clearEatenCheeseCache(userId, mazeId);
+};
+

@@ -22,14 +22,18 @@ export const getMazeById = async (mazeId: string): Promise<Maze | null> => {
   return undefined;
 };
 
-// If `userId` is provided, checks the cell type/surroundings for cheese and update the cell type/surrounds to Open if the user has eaten the cheese.
-// If `userId` is not provided, returns the original cell.
-export const getAdminCellAtPosition = (maze: Maze, position: Coordinate, userId: number | undefined): AdminCell => {
+export const getAdminCellAtPosition = (maze: Maze, position: Coordinate): AdminCell => {
   const cols = maze.dimensions.horizontal;
   const index = position.y * cols + position.x;
 
-  const originalCell = maze.cells[index];
+  return maze.cells[index];
+};
 
+// If `userId` is provided, checks the cell type/surroundings for cheese and updates the cell type/surrounds to Open if the user has eaten the cheese.
+// If `userId` is not provided, returns the original cell.
+export const getCellAtPosition = (maze: Maze, position: Coordinate, userId: number | undefined): Cell => {
+  const originalCell = getAdminCellAtPosition(maze, position);
+  
   // TODO: Compute the 
   const editedCell = { ...originalCell };
   if (userId != undefined) {
@@ -37,16 +41,11 @@ export const getAdminCellAtPosition = (maze: Maze, position: Coordinate, userId:
     // If the user has eaten the cheese, change the cell type (and surroundings) to Open.
     // TODO: logic here...
   }
+
+  // Intentionally remove the `coordinates` property from the AdminCell to return a Cell.
+  delete editedCell.coordinates;
   
   return editedCell;
-};
-
-export const getCellAtPosition = (maze: Maze, position: Coordinate, userId: number | undefined): Cell => {
-  // Intentionally remove the `coordinates` property from the AdminCell to return a Cell.
-  const cell = getAdminCellAtPosition(maze, position, userId);
-  delete cell.coordinates;
-
-  return cell;
 }
 
 export const mazeExists = async (mazeId: string): Promise<boolean> => (await getMazeById(mazeId)) !== undefined;
