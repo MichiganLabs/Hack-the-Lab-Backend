@@ -35,15 +35,14 @@ export const query = async (text: string, params: any) => {
 const getRatPositionCacheKey = (userId: number, mazeId: string) => `rat:pos-${userId}-${mazeId}`;
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
-export const getRatPosition = async (userId: number, mazeId: string): Promise<any> => {
-  let cachePosition: any;
+export const getRatPosition = async (userId: number, mazeId: string): Promise<Coordinate> => {
   const cacheKey = getRatPositionCacheKey(userId, mazeId);
 
   try {
-    cachePosition = await cache.getCache(cacheKey);
+    const cachePosition = await cache.getCache(cacheKey);
 
     if (cachePosition) {
-      return cachePosition;
+      return cachePosition as Coordinate;
     }
   } catch {
     /* empty */
@@ -60,7 +59,7 @@ export const getRatPosition = async (userId: number, mazeId: string): Promise<an
     return undefined;
   }
 
-  const position = dbPositionRows[0].position;
+  const position = dbPositionRows[0].position as Coordinate;
 
   // Clear existing cache since we are starting from scratch
   clearRatPositionCache(userId, mazeId);
@@ -86,14 +85,13 @@ const getEatenCheeseCacheKey = (userId: number, mazeId: string) => `cheese:eaten
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
 export const getEatenCheesePositions = async (userId: number, mazeId: string): Promise<Coordinate[]> => {
-  let cachePositions: Coordinate[];
   const cacheKey = getEatenCheeseCacheKey(userId, mazeId);
 
   try {
-    cachePositions = await cache.getCache(cacheKey);
+    const cachePositions = await cache.getCache(cacheKey);
 
     if (cachePositions) {
-      return cachePositions;
+      return cachePositions as Coordinate[];
     }
   } catch {
     /* empty */
@@ -109,7 +107,7 @@ export const getEatenCheesePositions = async (userId: number, mazeId: string): P
     return [];
   }
 
-  const positions = dbPositionRows.map(row => row.position);
+  const positions = dbPositionRows.map(row => row.position) as Coordinate[];
 
   // Clear existing cache since we are starting from scratch
   clearEatenCheeseCache(userId, mazeId);
