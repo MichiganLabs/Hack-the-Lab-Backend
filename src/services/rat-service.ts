@@ -10,8 +10,12 @@ import { pgQuery } from "data/db";
 import { Coordinate, Maze } from "hackthelab";
 import { MazeService } from "services";
 
-export const moveRat = async (userId: number, maze: Maze, position: Coordinate, direction: Direction): Promise<boolean> => {
-
+export const moveRat = async (
+  userId: number,
+  maze: Maze,
+  position: Coordinate,
+  direction: Direction,
+): Promise<boolean> => {
   // Keep track of whether the rat moved, or not.
   let didMove = false;
 
@@ -90,7 +94,7 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
   return parseFloat(smellIntensity.toFixed(4));
 }
 
-export const eatCheese = async (userId: number, maze: Maze, position: Coordinate,): Promise<boolean> => {
+export const eatCheese = async (userId: number, maze: Maze, position: Coordinate): Promise<boolean> => {
   const currentCell = MazeService.getCellAtPosition(maze, position, userId);
   if (currentCell == undefined) {
     throw new Error("Cell does not exist in maze!");
@@ -108,7 +112,7 @@ export const eatCheese = async (userId: number, maze: Maze, position: Coordinate
   await insertAction(userId, maze.id, ActionType.Eat, position, didEat);
 
   return didEat;
-}
+};
 
 // Helper method used to insert action record in the database.
 export const insertAction = async (
@@ -135,4 +139,3 @@ export const resetMaze = async (userId: number, mazeId: string): Promise<void> =
   await clearRatPositionCache(userId, mazeId);
   await clearEatenCheeseCache(userId, mazeId);
 };
-
