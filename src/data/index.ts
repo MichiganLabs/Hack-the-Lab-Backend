@@ -119,23 +119,65 @@ export const getEatenCheesePositions = async (userId: number, mazeId: string): P
 };
 
 // Update the cached value for the eaten cheese.
-export const saveEatenCheeseToCache = async (userId: number, mazeId: string, newCoordinates: Coordinate[]): Promise<void> => {
+export const saveEatenCheeseToCache = async (
+  userId: number,
+  mazeId: string,
+  newCoordinates: Coordinate[],
+): Promise<void> => {
   const cacheKey = getEatenCheeseCacheKey(userId, mazeId);
-  const existingCoordinates = await cache.getCache(cacheKey) || [];
+  const existingCoordinates = (await cache.getCache(cacheKey)) || [];
 
   const combined = [...existingCoordinates, ...newCoordinates].filter(
-    (item, index, array) => 
-      index === array.findIndex(
-        (other) => other.x === item.x && other.y === item.y
-      )
+    (item, index, array) => index === array.findIndex(other => other.x === item.x && other.y === item.y),
   );
 
   await cache.setCache(cacheKey, combined);
-}
+};
 
 export const clearEatenCheeseCache = async (userId: number, mazeId: string): Promise<void> => {
   const cacheKey = getEatenCheeseCacheKey(userId, mazeId);
   await cache.delCache(cacheKey);
+};
+
+const getExitMazeCacheKey = (user_id: number, mazeId: string) => `exit:maze-${user_id}-${mazeId}`;
+
+export const getRatExitedMaze = async (user_id: number, mazeId: string): Promise<boolean> => {
+  const cacheKey = getExitMazeCacheKey(user_id, mazeId);
+
+  try {
+    const ratExitedMaze = await cache.getCache(cacheKey);
+
+    if (ratExitedMaze !== undefined) {
+      return ratExitedMaze as boolean;
+    }
+  } catch {
+    /* empty */
+  }
+
+  // Could not read from cache, or expired, query the database.
+  const dbExitMazeActionSuccess = await pgQuery(
+    "SELECT success FROM actions WHERE maze_id = $1 AND user_id = $2 AND action_type = $3 AND success = true",
+    [mazeId, user_id, ActionType.Exit],
+  );
+
+  // If we had any number of successful exits, then the rat has exited the maze.
+  const didRatExitMaze = dbExitMazeActionSuccess.length > 0;
+
+  // Save the result to cache so that we don't have to retrieve it again from the DB.
+  saveExitMazeToCache(user_id, mazeId, didRatExitMaze);
+
+  return didRatExitMaze;
+};
+
+export const clearExitMazeCache = async (userId: number, mazeId: string): Promise<void> => {
+  const cacheKey = getExitMazeCacheKey(userId, mazeId);
+  await cache.delCache(cacheKey);
+};
+
+// Update the cached value for a rat that has exited a maze.
+export const saveExitMazeToCache = async (userId: number, mazeId: string, data: boolean): Promise<void> => {
+  const cacheKey = getExitMazeCacheKey(userId, mazeId);
+  await cache.setCache(cacheKey, data);
 };
 
 const { acquireLock, releaseLock } = cache;

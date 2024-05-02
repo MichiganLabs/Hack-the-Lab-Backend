@@ -25,19 +25,22 @@ export class RatController implements Controller {
   initialize(router: Router): void {
     const ratMiddleware = [];
 
-    // Validate the mazeId and inject the `maze` object into the request
+    // Validate the mazeId and inject the `maze` object into the request.
     ratMiddleware.push(validate(mazeBodySchema), resolveMaze);
 
-    // // Prevent the same user (key) from performing an action while another action is being processed
+    // Prevent the same user (key) from performing an action while another action is being processed.
     ratMiddleware.push(ratControllerLocking);
 
-    // // Initialize the maze (if necessary) and inject the rat's current position into the request
-    ratMiddleware.push(preActionMiddleware);
+    // Initialize the maze (if necessary), inject the rat's current position into the request, and verify the rat hasn't exited the maze.
+    const ratActionMiddleware = [...ratMiddleware, preActionMiddleware];
 
-    router.post("/rat/move", hasRole(Role.Participant), ...ratMiddleware, validate(moveSchema), postMove);
-    router.post("/rat/smell", hasRole(Role.Participant), ...ratMiddleware, postSmell);
-    router.post("/rat/eat", hasRole(Role.Participant), ...ratMiddleware, postEat);
-    router.post("/rat/exit", hasRole(Role.Participant), ...ratMiddleware, postExit);
+    // Rat action endpoints, each of these endpoints has an action recorded for a rat.
+    router.post("/rat/move", hasRole(Role.Participant), ...ratActionMiddleware, validate(moveSchema), postMove);
+    router.post("/rat/smell", hasRole(Role.Participant), ...ratActionMiddleware, postSmell);
+    router.post("/rat/eat", hasRole(Role.Participant), ...ratActionMiddleware, postEat);
+    router.post("/rat/exit", hasRole(Role.Participant), ...ratActionMiddleware, postExit);
+
+    // Rat general endpoints.
     router.post("/rat/reset", hasRole(Role.Developer), ...ratMiddleware, postReset);
   }
 }

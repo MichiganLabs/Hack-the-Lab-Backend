@@ -1,8 +1,10 @@
 import {
   clearEatenCheeseCache,
+  clearExitMazeCache,
   clearRatPositionCache,
   getEatenCheesePositions,
   saveEatenCheeseToCache,
+  saveExitMazeToCache,
   saveRatPositionToCache,
 } from "@data";
 import { ActionType, CellType, Direction } from "@enums";
@@ -70,9 +72,7 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
 
   // Get a list of uneaten cheese that is still in the maze.
   const uneatenCheese = maze.cheese.filter(
-    (cheese) => !eatenCheese.some(
-      (eaten) => eaten.x === cheese.x && eaten.y === cheese.y
-    )
+    cheese => !eatenCheese.some(eaten => eaten.x === cheese.x && eaten.y === cheese.y),
   );
 
   // Calculate smell intensity based on distance to uneaten cheese.
@@ -82,7 +82,7 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
   for (const cheese of uneatenCheese) {
     // Euclidean distance (as the crow files) - pythagorean theorem
     const distance = Math.sqrt(Math.pow(cheese.x - position.x, 2) + Math.pow(cheese.y - position.y, 2));
-    
+
     // Divide by `radius` to normalize the smell intensity to a value between 0 and 1.
     smellIntensity += Math.max(0, radius - distance) / radius;
   }
@@ -92,7 +92,7 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
 
   // Return the smell intensity to the nearest 4 decimal places.
   return parseFloat(smellIntensity.toFixed(4));
-}
+};
 
 export const eatCheese = async (userId: number, maze: Maze, position: Coordinate): Promise<boolean> => {
   const currentCell = await getCellAtPosition(maze, position, userId);
@@ -131,7 +131,7 @@ export const getCellAtPosition = async (maze: Maze, ratPosition: Coordinate, use
     for (const coord of eatenCheesePositions) {
       const dx = coord.x - ratX;
       const dy = coord.y - ratY;
-    
+
       switch (true) {
         case dx === 0 && dy === 0:
           editedCell.type = CellType.Open;
@@ -158,6 +158,26 @@ export const getCellAtPosition = async (maze: Maze, ratPosition: Coordinate, use
   return editedCell;
 };
 
+export const exitMaze = async (userId: number, maze: Maze, position: Coordinate): Promise<boolean> => {
+  const currentCell = await getCellAtPosition(maze, position, userId);
+  if (currentCell == undefined) {
+    throw new Error("Cell does not exist in maze!");
+  }
+
+  // Keep track of whether the rat exited, or not.
+  const didExit = currentCell.type == CellType.Exit;
+
+  if (didExit) {
+    // If the rat exited the maze, update the cache.
+    await saveExitMazeToCache(userId, maze.id, didExit);
+  }
+
+  // Insert an action denoting the rat attempted to exit.
+  await insertAction(userId, maze.id, ActionType.Exit, position, didExit);
+
+  return didExit;
+};
+
 // Helper method used to insert action record in the database.
 export const insertAction = async (
   userId: number,
@@ -182,4 +202,5 @@ export const resetMaze = async (userId: number, mazeId: string): Promise<void> =
   // Clear cache
   await clearRatPositionCache(userId, mazeId);
   await clearEatenCheeseCache(userId, mazeId);
+  await clearExitMazeCache(userId, mazeId);
 };
