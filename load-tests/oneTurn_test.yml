@@ -1,0 +1,30 @@
+config:
+  target: "http://localhost:8080/v1"
+  phases:
+    - duration: 1
+      arrivalRate: 1
+  defaults:
+    headers:
+      Content-Type: "application/json"
+      X-API-KEY: "13f609fcfce847abb77195ebab07084e"
+
+scenarios:
+  - name: "Rat reset"
+    flow:
+      - post:
+          url: "/rat/reset"
+          json:
+            mazeId: "oneTurn"
+      - post:
+          url: "/rat/smell"
+          json:
+            mazeId: "oneTurn"
+      - post:
+          url: "/rat/move"
+          json:
+            mazeId: "oneTurn"
+            direction: "NORTH"
+      - post:
+          url: "/rat/eat"
+          json:
+            mazeId: "oneTurn"
