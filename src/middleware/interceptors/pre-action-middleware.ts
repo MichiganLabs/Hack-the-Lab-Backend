@@ -1,10 +1,10 @@
-import { getEatenCheesePositions, getRatPosition } from "@data";
+import { getRatPosition } from "@data";
 import { ActionType } from "@enums";
 import { RatActionRequest } from "hackthelab";
 import { insertAction } from "services/rat-service";
 
 /**
- * 
+ *
  * Initialize the maze (if necessary) and inject the rat's current position into the request.
  */
 export const preActionMiddleware = async (req: RatActionRequest, res, next) => {
@@ -17,15 +17,12 @@ export const preActionMiddleware = async (req: RatActionRequest, res, next) => {
     if (!position) {
       position = req.maze.start;
 
-      // Insert an action denoting the rat has started the maze. 
+      // Insert an action denoting the rat has started the maze.
       await insertAction(req.user.id, req.maze.id, ActionType.Start, position);
     }
 
     // Add the rat position to the request
     req.ratPosition = position;
-
-    // Add eaten cheese positions to the request
-    req.eatenCheesePositions = await getEatenCheesePositions(req.user.id, req.maze.id);
 
     // Move to the next middleware
     next();

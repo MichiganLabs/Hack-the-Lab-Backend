@@ -207,7 +207,5 @@ declare module "hackthelab" {
   interface RatActionRequest extends MazeRequest {
     /** If action endpoint: Contains rat position data. */
     ratPosition: Coordinate;
-
-    eatenCheesePositions: Coordinate[];
   }
 }
