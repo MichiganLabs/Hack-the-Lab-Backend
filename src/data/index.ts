@@ -32,12 +32,12 @@ export const query = async (text: string, params: any) => {
   return result;
 };
 
-const getRatPositionCacheKey = (user_id: number, mazeId: string) => `rat:pos-${user_id}-${mazeId}`;
+const getRatPositionCacheKey = (userId: number, mazeId: string) => `rat:pos-${userId}-${mazeId}`;
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
-export const getRatPosition = async (user_id: number, mazeId: string): Promise<any> => {
+export const getRatPosition = async (userId: number, mazeId: string): Promise<any> => {
   let cachePosition: any;
-  const cacheKey = getRatPositionCacheKey(user_id, mazeId);
+  const cacheKey = getRatPositionCacheKey(userId, mazeId);
 
   try {
     cachePosition = await cache.getCache(cacheKey);
@@ -52,7 +52,7 @@ export const getRatPosition = async (user_id: number, mazeId: string): Promise<a
   // Could not read from cache, or expired, query the database.
   const dbPositionRows = await pgQuery(
     "SELECT position FROM actions WHERE maze_id = $1 AND user_id = $2 ORDER BY time_ts DESC LIMIT 1",
-    [mazeId, user_id],
+    [mazeId, userId],
   );
 
   // TODO: After (https://msljira.atlassian.net/browse/HTL-12) is implemented, this should maybe throw an exception.
@@ -63,10 +63,10 @@ export const getRatPosition = async (user_id: number, mazeId: string): Promise<a
   const position = dbPositionRows[0].position;
 
   // Clear existing cache since we are starting from scratch
-  clearRatPositionCache(user_id, mazeId);
+  clearRatPositionCache(userId, mazeId);
 
   // Save the result to cache so that we don't have to retrieve it again from the DB.
-  saveRatPositionToCache(user_id, mazeId, position);
+  saveRatPositionToCache(userId, mazeId, position);
 
   return position;
 };
@@ -82,12 +82,12 @@ export const clearRatPositionCache = async (userId: number, mazeId: string): Pro
   await cache.delCache(cacheKey);
 };
 
-const getEatenCheeseCacheKey = (user_id: number, mazeId: string) => `cheese:eaten-${user_id}-${mazeId}`;
+const getEatenCheeseCacheKey = (userId: number, mazeId: string) => `cheese:eaten-${userId}-${mazeId}`;
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
-export const getEatenCheesePositions = async (user_id: number, mazeId: string): Promise<Coordinate[]> => {
+export const getEatenCheesePositions = async (userId: number, mazeId: string): Promise<Coordinate[]> => {
   let cachePositions: Coordinate[];
-  const cacheKey = getEatenCheeseCacheKey(user_id, mazeId);
+  const cacheKey = getEatenCheeseCacheKey(userId, mazeId);
 
   try {
     cachePositions = await cache.getCache(cacheKey);
@@ -102,20 +102,20 @@ export const getEatenCheesePositions = async (user_id: number, mazeId: string): 
   // Could not read from cache, or expired, query the database.
   const dbPositionRows = await pgQuery(
     "SELECT position FROM actions WHERE maze_id = $1 AND user_id = $2 AND action_type = $3 AND success = true",
-    [mazeId, user_id, ActionType.Eat],
+    [mazeId, userId, ActionType.Eat],
   );
 
   if (0 == dbPositionRows.length) {
     return [];
   }
 
-  const positions = dbPositionRows.map((row) => row.position);
+  const positions = dbPositionRows.map(row => row.position);
 
   // Clear existing cache since we are starting from scratch
-  clearEatenCheeseCache(user_id, mazeId);
+  clearEatenCheeseCache(userId, mazeId);
 
   // Save the result to cache so that we don't have to retrieve it again from the DB.
-  saveEatenCheeseToCache(user_id, mazeId, positions);
+  saveEatenCheeseToCache(userId, mazeId, positions);
 
   return positions;
 };
