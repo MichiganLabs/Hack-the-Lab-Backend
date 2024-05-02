@@ -1,5 +1,6 @@
 import { ActionType } from "@enums";
 import { createHash } from "crypto";
+import { Coordinate } from "hackthelab";
 import cache from "./cache";
 import { pgQuery } from "./db";
 
@@ -61,6 +62,9 @@ export const getRatPosition = async (user_id: number, mazeId: string): Promise<a
 
   const position = dbPositionRows[0].position;
 
+  // Clear existing cache since we are starting from scratch
+  clearRatPositionCache(user_id, mazeId);
+
   // Save the result to cache so that we don't have to retrieve it again from the DB.
   saveRatPositionToCache(user_id, mazeId, position);
 
@@ -68,10 +72,8 @@ export const getRatPosition = async (user_id: number, mazeId: string): Promise<a
 };
 
 // Update the cached value for the rat position.
-export const saveRatPositionToCache = async (userId: number, mazeId: string, data: any): Promise<void> => {
+export const saveRatPositionToCache = async (userId: number, mazeId: string, data: Coordinate): Promise<void> => {
   const cacheKey = getRatPositionCacheKey(userId, mazeId);
-
-  await clearRatPositionCache(userId, mazeId);
   await cache.setCache(cacheKey, data);
 };
 
@@ -83,8 +85,8 @@ export const clearRatPositionCache = async (userId: number, mazeId: string): Pro
 const getEatenCheeseCacheKey = (user_id: number, mazeId: string) => `cheese:eaten-${user_id}-${mazeId}`;
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
-export const getEatenCheesePositions = async (user_id: number, mazeId: string): Promise<any[]> => {
-  let cachePositions: any[];
+export const getEatenCheesePositions = async (user_id: number, mazeId: string): Promise<Coordinate[]> => {
+  let cachePositions: Coordinate[];
   const cacheKey = getEatenCheeseCacheKey(user_id, mazeId);
 
   try {
@@ -109,6 +111,9 @@ export const getEatenCheesePositions = async (user_id: number, mazeId: string): 
 
   const positions = dbPositionRows.map((row) => row.position);
 
+  // Clear existing cache since we are starting from scratch
+  clearEatenCheeseCache(user_id, mazeId);
+
   // Save the result to cache so that we don't have to retrieve it again from the DB.
   saveEatenCheeseToCache(user_id, mazeId, positions);
 
@@ -116,11 +121,18 @@ export const getEatenCheesePositions = async (user_id: number, mazeId: string): 
 };
 
 // Update the cached value for the eaten cheese.
-export const saveEatenCheeseToCache = async (userId: number, mazeId: string, data: any): Promise<void> => {
+export const saveEatenCheeseToCache = async (userId: number, mazeId: string, newCoordinates: Coordinate[]): Promise<void> => {
   const cacheKey = getEatenCheeseCacheKey(userId, mazeId);
+  const existingCoordinates = await cache.getCache(cacheKey) || [];
 
-  await clearEatenCheeseCache(userId, mazeId);
-  await cache.setCache(cacheKey, data);
+  const combined = [...existingCoordinates, ...newCoordinates].filter(
+    (item, index, array) => 
+      index === array.findIndex(
+        (other) => other.x === item.x && other.y === item.y
+      )
+  );
+
+  await cache.setCache(cacheKey, combined);
 }
 
 export const clearEatenCheeseCache = async (userId: number, mazeId: string): Promise<void> => {

@@ -1,4 +1,10 @@
-import { clearEatenCheeseCache, clearRatPositionCache, saveEatenCheeseToCache, saveRatPositionToCache } from "@data";
+import {
+  clearEatenCheeseCache,
+  clearRatPositionCache,
+  getEatenCheesePositions,
+  saveEatenCheeseToCache,
+  saveRatPositionToCache
+} from "@data";
 import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
 import { Coordinate, Maze } from "hackthelab";
@@ -55,6 +61,34 @@ export const moveRat = async (userId: number, maze: Maze, position: Coordinate, 
   return didMove;
 };
 
+export const smell = async (userId: number, maze: Maze, position: Coordinate): Promise<number> => {
+  const eatenCheese = await getEatenCheesePositions(userId, maze.id);
+
+  // Get a list of uneaten cheese that is still in the maze.
+  const uneatenCheese = maze.cheese.filter(
+    (cheese) => !eatenCheese.some(
+      (eaten) => eaten.x === cheese.x && eaten.y === cheese.y
+    )
+  );
+
+  // Calculate smell intensity based on distance to uneaten cheese.
+  // A cheese has a smell radius of 10 cells. The smell intensity is inversely proportional to the distance.
+  const radius = 10;
+  let smellIntensity = 0;
+  for (const cheese of uneatenCheese) {
+    // Euclidean distance (as the crow files) - pythagorean theorem
+    const distance = Math.sqrt(Math.pow(cheese.x - position.x, 2) + Math.pow(cheese.y - position.y, 2));
+    
+    // Divide by `radius` to normalize the smell intensity to a value between 0 and 1.
+    smellIntensity += Math.max(0, radius - distance) / radius;
+  }
+
+  // Insert an action denoting the rat has smelled.
+  await insertAction(userId, maze.id, ActionType.Smell, position, true);
+
+  // Return the smell intensity to the nearest 4 decimal places.
+  return parseFloat(smellIntensity.toFixed(4));
+}
 
 export const eatCheese = async (userId: number, maze: Maze, position: Coordinate,): Promise<boolean> => {
   const currentCell = MazeService.getCellAtPosition(maze, position, userId);
@@ -67,7 +101,7 @@ export const eatCheese = async (userId: number, maze: Maze, position: Coordinate
 
   if (didEat) {
     // If the rat ate the cheese, update the cache.
-    await saveEatenCheeseToCache(userId, maze.id, position);
+    await saveEatenCheeseToCache(userId, maze.id, [position]);
   }
 
   // Insert an action denoting the rat attempted to eat.

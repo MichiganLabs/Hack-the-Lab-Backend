@@ -51,4 +51,5 @@ export enum ActionType {
   Start = "START",
   Eat = "EAT",
   Exit = "EXIT",
+  Smell = "SMELL",
 }
