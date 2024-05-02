@@ -120,11 +120,12 @@ export const getCellAtPosition = async (maze: Maze, ratPosition: Coordinate, use
   const { ...editedCell } = MazeService.getAdminCellAtPosition(maze, ratPosition);
   const { x: ratX, y: ratY } = ratPosition;
 
-  if (userId !== undefined) {
-    const eatenCheesePositions = await getEatenCheesePositions(userId, maze.id);
+  const { north, east, south, west } = editedCell.surroundings;
+  const cellTypes = [editedCell.type, north, east, south, west];
 
-    console.log(eatenCheesePositions);
-    console.log(editedCell);
+  // Only fetch the rat's eaten cheese if the current cell, or one of it's surroundings is cheese.
+  if (cellTypes.includes(CellType.Cheese)) {
+    const eatenCheesePositions = await getEatenCheesePositions(userId, maze.id);
 
     for (const coord of eatenCheesePositions) {
       if (ratX == coord.x && ratY == coord.y) {
