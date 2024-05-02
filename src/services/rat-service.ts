@@ -3,11 +3,11 @@ import {
   clearRatPositionCache,
   getEatenCheesePositions,
   saveEatenCheeseToCache,
-  saveRatPositionToCache
+  saveRatPositionToCache,
 } from "@data";
 import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
-import { Coordinate, Maze } from "hackthelab";
+import { Cell, Coordinate, Maze } from "hackthelab";
 import { MazeService } from "services";
 
 export const moveRat = async (
@@ -19,7 +19,7 @@ export const moveRat = async (
   // Keep track of whether the rat moved, or not.
   let didMove = false;
 
-  const currentCell = MazeService.getCellAtPosition(maze, position, userId);
+  const currentCell = await getCellAtPosition(maze, position, userId);
   if (currentCell == undefined) {
     throw new Error("Cell does not exist in maze!");
   }
@@ -95,7 +95,7 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
 }
 
 export const eatCheese = async (userId: number, maze: Maze, position: Coordinate): Promise<boolean> => {
-  const currentCell = MazeService.getCellAtPosition(maze, position, userId);
+  const currentCell = await getCellAtPosition(maze, position, userId);
   if (currentCell == undefined) {
     throw new Error("Cell does not exist in maze!");
   }
@@ -112,6 +112,43 @@ export const eatCheese = async (userId: number, maze: Maze, position: Coordinate
   await insertAction(userId, maze.id, ActionType.Eat, position, didEat);
 
   return didEat;
+};
+
+// If `userId` is provided, checks the cell type/surroundings for cheese and updates the cell type/surrounds to Open if the user has eaten the cheese.
+// If `userId` is not provided, returns the original cell.
+export const getCellAtPosition = async (maze: Maze, ratPosition: Coordinate, userId: number): Promise<Cell> => {
+  const { ...editedCell } = MazeService.getAdminCellAtPosition(maze, ratPosition);
+  const { x: ratX, y: ratY } = ratPosition;
+
+  if (userId !== undefined) {
+    const eatenCheesePositions = await getEatenCheesePositions(userId, maze.id);
+
+    console.log(eatenCheesePositions);
+    console.log(editedCell);
+
+    for (const coord of eatenCheesePositions) {
+      if (ratX == coord.x && ratY == coord.y) {
+        editedCell.type = CellType.Open;
+      }
+      if (ratX == coord.x && ratY - 1 == coord.y) {
+        editedCell.surroundings.north = CellType.Open;
+      }
+      if (ratX + 1 == coord.x && ratY == coord.y) {
+        editedCell.surroundings.east = CellType.Open;
+      }
+      if (ratX == coord.x && ratY + 1 == coord.y) {
+        editedCell.surroundings.south = CellType.Open;
+      }
+      if (ratX - 1 == coord.x && ratY == coord.y) {
+        editedCell.surroundings.west = CellType.Open;
+      }
+    }
+  }
+
+  // Intentionally remove the `coordinates` property from the AdminCell to return a Cell.
+  delete editedCell.coordinates;
+
+  return editedCell;
 };
 
 // Helper method used to insert action record in the database.

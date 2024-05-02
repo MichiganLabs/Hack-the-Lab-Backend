@@ -1,6 +1,6 @@
 import { Direction } from "@enums";
 import { ActionResponse, RatActionRequest } from "hackthelab";
-import { MazeService, RatService } from "services";
+import { RatService } from "services";
 import { body, matchedData } from "utils/custom-validator";
 
 /**
@@ -65,12 +65,12 @@ const postMove = async (req: RatActionRequest, res, next) => {
     const moveResult = await RatService.moveRat(req.user.id, req.maze, req.ratPosition, data.direction);
 
     // Get the current cell after the rat has moved.
-    const cell = MazeService.getCellAtPosition(req.maze, req.ratPosition, req.user.id);
+    const cell = await RatService.getCellAtPosition(req.maze, req.ratPosition, req.user.id);
 
     const response: ActionResponse = {
       success: moveResult,
       cell,
-    }
+    };
 
     res.status(200).json(response);
   } catch (e) {
