@@ -34,7 +34,7 @@ const postReset = async (req: MazeRequest, res, next) => {
   try {
     await RatService.resetMaze(req.user.id, req.maze.id);
 
-    res.status(200);
+    res.status(200).json({ message: "Maze was successfully reset" });
   } catch (e) {
     console.error(e);
     res.sendStatus(500).json({ error: "Internal server error" });

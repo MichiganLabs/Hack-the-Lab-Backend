@@ -95,7 +95,7 @@ export const insertAction = async (
 
 export const resetMaze = async (userId: number, mazeId: string): Promise<void> => {
   // Delete actions
-  pgQuery("DELETE * FROM actions WHERE user_id = $1 AND maze_id = $2", [userId, mazeId]);
+  pgQuery("DELETE FROM actions WHERE user_id = $1 AND maze_id = $2", [userId, mazeId]);
 
   // Clear cache
   await clearRatPositionCache(userId, mazeId);
