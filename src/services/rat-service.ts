@@ -117,31 +117,37 @@ export const eatCheese = async (userId: number, maze: Maze, position: Coordinate
 // If `userId` is provided, checks the cell type/surroundings for cheese and updates the cell type/surrounds to Open if the user has eaten the cheese.
 // If `userId` is not provided, returns the original cell.
 export const getCellAtPosition = async (maze: Maze, ratPosition: Coordinate, userId: number): Promise<Cell> => {
-  const { ...editedCell } = MazeService.getAdminCellAtPosition(maze, ratPosition);
+  const editedCell = MazeService.getAdminCellAtPosition(maze, ratPosition);
   const { x: ratX, y: ratY } = ratPosition;
 
   const { north, east, south, west } = editedCell.surroundings;
   const cellTypes = [editedCell.type, north, east, south, west];
 
-  // Only fetch the rat's eaten cheese if the current cell, or one of it's surroundings is cheese.
+  // Only fetch the rat's eaten cheese if the current cell, or one of it's surroundings, is cheese.
   if (cellTypes.includes(CellType.Cheese)) {
     const eatenCheesePositions = await getEatenCheesePositions(userId, maze.id);
 
+    // Update the cell type/surroundings to Open if the rat has eaten the cheese.
     for (const coord of eatenCheesePositions) {
-      if (ratX == coord.x && ratY == coord.y) {
-        editedCell.type = CellType.Open;
-      }
-      if (ratX == coord.x && ratY - 1 == coord.y) {
-        editedCell.surroundings.north = CellType.Open;
-      }
-      if (ratX + 1 == coord.x && ratY == coord.y) {
-        editedCell.surroundings.east = CellType.Open;
-      }
-      if (ratX == coord.x && ratY + 1 == coord.y) {
-        editedCell.surroundings.south = CellType.Open;
-      }
-      if (ratX - 1 == coord.x && ratY == coord.y) {
-        editedCell.surroundings.west = CellType.Open;
+      const dx = coord.x - ratX;
+      const dy = coord.y - ratY;
+    
+      switch (true) {
+        case dx === 0 && dy === 0:
+          editedCell.type = CellType.Open;
+          break;
+        case dx === 0 && dy === -1:
+          editedCell.surroundings.north = CellType.Open;
+          break;
+        case dx === 1 && dy === 0:
+          editedCell.surroundings.east = CellType.Open;
+          break;
+        case dx === 0 && dy === 1:
+          editedCell.surroundings.south = CellType.Open;
+          break;
+        case dx === -1 && dy === 0:
+          editedCell.surroundings.west = CellType.Open;
+          break;
       }
     }
   }
