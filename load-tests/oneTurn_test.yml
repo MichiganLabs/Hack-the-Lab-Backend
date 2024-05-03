@@ -6,7 +6,7 @@ config:
   defaults:
     headers:
       Content-Type: "application/json"
-      X-API-KEY: "13f609fcfce847abb77195ebab07084e"
+      X-API-KEY: "<API-KEY>"
 
 scenarios:
   - name: "Rat reset"
@@ -19,6 +19,11 @@ scenarios:
           url: "/rat/smell"
           json:
             mazeId: "oneTurn"
+      - post:
+          url: "/rat/move"
+          json:
+            mazeId: "oneTurn"
+            direction: "NORTH"
       - post:
           url: "/rat/move"
           json:
