@@ -3,19 +3,23 @@ import {
   clearRatPositionCache,
   getEatenCheesePositions,
   saveEatenCheeseToCache,
-  saveRatPositionToCache
+  saveRatPositionToCache,
 } from "@data";
 import { ActionType, CellType, Direction } from "@enums";
 import { pgQuery } from "data/db";
-import { Coordinate, Maze } from "hackthelab";
+import { Cell, Coordinate, Maze } from "hackthelab";
 import { MazeService } from "services";
 
-export const moveRat = async (userId: number, maze: Maze, position: Coordinate, direction: Direction): Promise<boolean> => {
-
+export const moveRat = async (
+  userId: number,
+  maze: Maze,
+  position: Coordinate,
+  direction: Direction,
+): Promise<boolean> => {
   // Keep track of whether the rat moved, or not.
   let didMove = false;
 
-  const currentCell = MazeService.getCellAtPosition(maze, position, userId);
+  const currentCell = await getCellAtPosition(maze, position, userId);
   if (currentCell == undefined) {
     throw new Error("Cell does not exist in maze!");
   }
@@ -90,8 +94,8 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
   return parseFloat(smellIntensity.toFixed(4));
 }
 
-export const eatCheese = async (userId: number, maze: Maze, position: Coordinate,): Promise<boolean> => {
-  const currentCell = MazeService.getCellAtPosition(maze, position, userId);
+export const eatCheese = async (userId: number, maze: Maze, position: Coordinate): Promise<boolean> => {
+  const currentCell = await getCellAtPosition(maze, position, userId);
   if (currentCell == undefined) {
     throw new Error("Cell does not exist in maze!");
   }
@@ -108,7 +112,51 @@ export const eatCheese = async (userId: number, maze: Maze, position: Coordinate
   await insertAction(userId, maze.id, ActionType.Eat, position, didEat);
 
   return didEat;
-}
+};
+
+// If `userId` is provided, checks the cell type/surroundings for cheese and updates the cell type/surrounds to Open if the user has eaten the cheese.
+// If `userId` is not provided, returns the original cell.
+export const getCellAtPosition = async (maze: Maze, ratPosition: Coordinate, userId: number): Promise<Cell> => {
+  const editedCell = MazeService.getAdminCellAtPosition(maze, ratPosition);
+  const { x: ratX, y: ratY } = ratPosition;
+
+  const { north, east, south, west } = editedCell.surroundings;
+  const cellTypes = [editedCell.type, north, east, south, west];
+
+  // Only fetch the rat's eaten cheese if the current cell, or one of it's surroundings, is cheese.
+  if (cellTypes.includes(CellType.Cheese)) {
+    const eatenCheesePositions = await getEatenCheesePositions(userId, maze.id);
+
+    // Update the cell type/surroundings to Open if the rat has eaten the cheese.
+    for (const coord of eatenCheesePositions) {
+      const dx = coord.x - ratX;
+      const dy = coord.y - ratY;
+    
+      switch (true) {
+        case dx === 0 && dy === 0:
+          editedCell.type = CellType.Open;
+          break;
+        case dx === 0 && dy === -1:
+          editedCell.surroundings.north = CellType.Open;
+          break;
+        case dx === 1 && dy === 0:
+          editedCell.surroundings.east = CellType.Open;
+          break;
+        case dx === 0 && dy === 1:
+          editedCell.surroundings.south = CellType.Open;
+          break;
+        case dx === -1 && dy === 0:
+          editedCell.surroundings.west = CellType.Open;
+          break;
+      }
+    }
+  }
+
+  // Intentionally remove the `coordinates` property from the AdminCell to return a Cell.
+  delete editedCell.coordinates;
+
+  return editedCell;
+};
 
 // Helper method used to insert action record in the database.
 export const insertAction = async (
@@ -135,4 +183,3 @@ export const resetMaze = async (userId: number, mazeId: string): Promise<void> =
   await clearRatPositionCache(userId, mazeId);
   await clearEatenCheeseCache(userId, mazeId);
 };
-

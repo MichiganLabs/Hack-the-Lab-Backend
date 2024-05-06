@@ -1,5 +1,5 @@
 import { ActionResponse, RatActionRequest } from "hackthelab";
-import { MazeService, RatService } from "services";
+import { RatService } from "services";
 
 /**
  * @swagger
@@ -35,18 +35,17 @@ import { MazeService, RatService } from "services";
  *         description: Internal server error.
  */
 const postEat = async (req: RatActionRequest, res, next) => {
-
   try {
     // Attempt to eat the cheese.
     const eatResult = await RatService.eatCheese(req.user.id, req.maze, req.ratPosition);
 
     // Get the rat's current position and surroundings after the rat has eaten (or not) the cheese.
-    const cell = MazeService.getCellAtPosition(req.maze, req.ratPosition, req.user.id);
+    const cell = await RatService.getCellAtPosition(req.maze, req.ratPosition, req.user.id);
 
     const response: ActionResponse = {
       success: eatResult,
       cell,
-    }
+    };
 
     res.status(200).json(response);
   } catch (e) {
