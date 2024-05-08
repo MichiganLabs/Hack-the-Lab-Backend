@@ -27,11 +27,11 @@ import { MazeService } from "services";
  *       403:
  *         description: Forbidden.
  */
-export const getActions = async (req: MazeRequest, res, next) => {
+const getActions = async (req: MazeRequest, res, next) => {
 
   try {
     const actions = await MazeService.getActions(req.user.id, req.maze.id);
-    const score = await MazeService.getScore(req.user.id, req.maze, actions);
+    const score = MazeService.getScore(req.user.id, req.maze, actions);
 
     const response: ActionsResponse = {
       actions,

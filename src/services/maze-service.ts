@@ -57,7 +57,7 @@ const loadMazes = async () => {
   }
 };
 
-export const getScore = async (userId: number, maze: Maze, actions: Action[]): Promise<number> => {
+export const getScore = (userId: number, maze: Maze, actions: Action[]): number => {
   const MOVE_EFFICIENCY_BONUS = 2500;
   const EXIT_BONUS = 5000;
   const CHEESE_BONUS = 1000;

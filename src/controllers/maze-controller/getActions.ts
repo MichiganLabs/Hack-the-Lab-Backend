@@ -42,12 +42,12 @@ export const actionsSchema = [
  *       403:
  *         description: Forbidden.
  */
-export const getActions = async (req: MazeRequest, res, next) => {
+const getActions = async (req: MazeRequest, res, next) => {
   const data = matchedData(req) as ActionsRequestBody;
 
   try {
     const actions = await MazeService.getActions(data.userId, req.maze.id);
-    const score = await MazeService.getScore(data.userId, req.maze, actions);
+    const score = MazeService.getScore(data.userId, req.maze, actions);
 
     const response: ActionsResponse = {
       actions,
