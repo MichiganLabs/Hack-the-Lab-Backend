@@ -142,6 +142,26 @@ declare module "hackthelab" {
     cell: Cell;
   }
 
+   /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     ActionsResponse:
+   *       type: object
+   *       properties:
+   *         actions:
+   *           type: array
+   *           items:
+   *             $ref: '#/components/schemas/Action'
+   *         score:
+   *           type: number
+   *           example: 1234
+   */
+  interface ActionsResponse {
+    actions: Action[];
+    score: number;
+  }
+
   /**
    * @swagger
    * components:
@@ -179,9 +199,6 @@ declare module "hackthelab" {
    *           $ref: '#/components/schemas/ActionType'
    *         position:
    *           $ref: '#/components/schemas/Coordinate'
-   *         timeTs:
-   *           type: string
-   *           example: "2024-01-01T12:00:00.001Z"
    */
   interface Action {
     actionId: string;
@@ -189,7 +206,7 @@ declare module "hackthelab" {
     mazeId: string;
     actionType: ActionType;
     position: Coordinate;
-    time: Date;
+    success: boolean;
   }
 
   /**

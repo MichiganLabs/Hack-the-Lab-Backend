@@ -1,29 +1,14 @@
 import { ActionsResponse, MazeRequest } from "hackthelab";
 import { MazeService } from "services";
-import { matchedData, param } from "utils/custom-validator";
-
-interface ActionsRequestBody {
-  userId: number;
-}
-
-// prettier-ignore
-export const actionsSchema = [
-  param("userId").isNumeric().withMessage("'userId' must be included in the body of the request."),
-];
 
 /**
  * @swagger
- * /v1/maze/{mazeId}/actions/{userId}:
+ * /v1/rat/{mazeId}/actions:
  *   get:
- *     tags: [Maze (ADMIN)]
- *     summary: Returns recorded actions and score for a specific rat in a maze.
+ *     tags: [Rat (SANDBOX)]
+ *     summary: Returns recorded actions and score for the rat in a maze.
  *     parameters:
  *       - $ref: '#/components/parameters/MazeRequestPathBase'
- *       - in: path
- *         name: userId
- *         schemas:
- *           type: string
- *         required: true
  *     responses:
  *       200:
  *         description: Actions successful
@@ -43,11 +28,10 @@ export const actionsSchema = [
  *         description: Forbidden.
  */
 const getActions = async (req: MazeRequest, res, next) => {
-  const data = matchedData(req) as ActionsRequestBody;
 
   try {
-    const actions = await MazeService.getActions(data.userId, req.maze.id);
-    const score = MazeService.getScore(data.userId, req.maze, actions);
+    const actions = await MazeService.getActions(req.user.id, req.maze.id);
+    const score = MazeService.getScore(req.user.id, req.maze, actions);
 
     const response: ActionsResponse = {
       actions,

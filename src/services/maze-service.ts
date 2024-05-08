@@ -1,3 +1,4 @@
+import { ActionType, CellType } from "@enums";
 import { pgQuery } from "data/db";
 import * as fs from "fs/promises";
 import { Action, AdminCell, Coordinate, Maze } from "hackthelab";
@@ -54,4 +55,46 @@ const loadMazes = async () => {
   } catch (e) {
     console.error(e);
   }
+};
+
+export const getScore = (userId: number, maze: Maze, actions: Action[]): number => {
+  const MOVE_EFFICIENCY_BONUS = 2500;
+  const EXIT_BONUS = 5000;
+  const CHEESE_BONUS = 1000;
+  const ACTION_PENALTY = 1;
+
+  // Get the maze open spaces
+  const wallCount =  maze.cells.filter((cell) => cell.type === CellType.Wall);
+  const openSpaceCount = maze.cells.length - wallCount.length;
+
+  // Get stats based on the rat's actions
+  const numOfActions = actions.length;
+
+  let numOfMoves = 0;
+  let numOfCheeseEaten = 0;
+  let didExit = false;
+
+  actions.forEach((action) => {
+    if (action.success) {
+      switch (action.actionType) {
+        case ActionType.Move:
+          numOfMoves++;
+          break;
+        case ActionType.Eat:
+          numOfCheeseEaten++;
+          break;
+        case ActionType.Exit:
+          didExit = true;
+          break;
+      }
+    }
+  });
+
+  // Calculate the score
+  const exitBonus = didExit ? EXIT_BONUS : 0;
+  const moveEfficiencyBonus = didExit ? Math.max(0, ((openSpaceCount - numOfMoves) / openSpaceCount) * MOVE_EFFICIENCY_BONUS) : 0;
+  const cheeseBonus = numOfCheeseEaten * CHEESE_BONUS;
+  const actionPenalty = numOfActions * ACTION_PENALTY;
+
+  return exitBonus + moveEfficiencyBonus + cheeseBonus - actionPenalty;
 };
