@@ -19,7 +19,6 @@ export const preActionMiddleware = async (req: RatActionRequest, res, next) => {
     let position = await getRatPosition(req.user.id, req.maze.id);
 
     // If we don't have a position, we need to initialize the maze.
-    // TODO: Beef up initialize logic in this story (https://msljira.atlassian.net/browse/HTL-12).
     if (!position) {
       position = req.maze.start;
 

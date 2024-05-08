@@ -5,7 +5,7 @@ import { RatService } from "services";
  * @swagger
  * /v1/rat/reset:
  *   post:
- *     tags: [Rat]
+ *     tags: [Rat (SANDBOX)]
  *     summary: Reset a maze so that it can be solved again
  *     requestBody:
  *       description: Reset request.

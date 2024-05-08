@@ -10,7 +10,7 @@ import { body, matchedData, param } from "utils/custom-validator";
  *       properties:
  *         mazeId:
  *           type: string
- *           example: prod-maze-2
+ *           example: oneTurn
  *       required:
  *         - mazeId
  *

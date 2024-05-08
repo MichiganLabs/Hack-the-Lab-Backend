@@ -4,7 +4,7 @@ import { MazeRequest } from "hackthelab";
  * @swagger
  * /v1/maze/{mazeId}:
  *   get:
- *     tags: [Maze]
+ *     tags: [Maze (ADMIN)]
  *     summary: Returns a maze
  *     parameters:
  *       - $ref: '#/components/parameters/MazeRequestPathBase'

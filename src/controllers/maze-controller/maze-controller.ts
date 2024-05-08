@@ -8,8 +8,8 @@ import getMaze from "./getMaze";
 /**
  * @swagger
  * tags:
- *   name: Maze
- *   description: Maze management
+ *   name: Maze (ADMIN)
+ *   description: Maze management for administrators
  */
 export class MazeController implements Controller {
   initialize(router: Router): void {
