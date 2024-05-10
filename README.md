@@ -24,6 +24,12 @@ This is the API for Hack the Lab 2024. It's written with Typescript for Node.js 
 - If you have docker installed, start the containers: `docker compose up --detach` (or `-d`) (You do not need to do this between server restarts.)
 - Run the server locally: `npm run dev`
 
+## Running Load Tests
+
+1. Install Artillery globally: `npm install -g artillery`
+2. cd into the `load-tests` directory: `cd load-tests`
+3. Make sure the server is running, and then run the load test: `artillery run oneTurn_test.yml` or whichever load tests you choose
+
 ## How things are organized
 
 `package.json`: This contains all of the dependencies and helpful scripts for the project. You can run any of these scripts with `npm run <script-name>`, or create your own. They will always run as though you're running them from the root of the project, via terminal. We can use these commands to help speed up tasks, and automate deployments.
