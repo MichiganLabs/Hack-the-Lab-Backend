@@ -195,6 +195,29 @@ export const insertAction = async (
   ]);
 };
 
+// Retrieve the number of moves for a rat in a maze whether they are successful moves or not.
+export const getNumOfMoves = async (userId: number, mazeId: string): Promise<number> => {
+  const numOfMoves = await pgQuery(
+    `
+      SELECT COUNT(*)
+      FROM actions
+      WHERE user_id = $1
+      AND maze_id = $2
+      AND action_type = 'MOVE'
+      GROUP BY action_type
+    `,
+    [userId, mazeId],
+  );
+
+  // Verify that we return some rows from the database query.
+  if (numOfMoves.length === 0) {
+    return 0;
+  }
+
+  // Return the count property from the database row that was queried.
+  return numOfMoves[0].count;
+};
+
 export const resetMaze = async (userId: number, mazeId: string): Promise<void> => {
   // Delete actions
   pgQuery("DELETE FROM actions WHERE user_id = $1 AND maze_id = $2", [userId, mazeId]);

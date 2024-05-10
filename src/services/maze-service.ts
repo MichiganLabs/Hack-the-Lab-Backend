@@ -64,7 +64,7 @@ export const getScore = (userId: number, maze: Maze, actions: Action[]): number 
   const ACTION_PENALTY = 1;
 
   // Get the maze open spaces
-  const wallCount =  maze.cells.filter((cell) => cell.type === CellType.Wall);
+  const wallCount = maze.cells.filter(cell => cell.type === CellType.Wall);
   const openSpaceCount = maze.cells.length - wallCount.length;
 
   // Get stats based on the rat's actions
@@ -74,7 +74,7 @@ export const getScore = (userId: number, maze: Maze, actions: Action[]): number 
   let numOfCheeseEaten = 0;
   let didExit = false;
 
-  actions.forEach((action) => {
+  actions.forEach(action => {
     if (action.success) {
       switch (action.actionType) {
         case ActionType.Move:
@@ -92,7 +92,9 @@ export const getScore = (userId: number, maze: Maze, actions: Action[]): number 
 
   // Calculate the score
   const exitBonus = didExit ? EXIT_BONUS : 0;
-  const moveEfficiencyBonus = didExit ? Math.max(0, ((openSpaceCount - numOfMoves) / openSpaceCount) * MOVE_EFFICIENCY_BONUS) : 0;
+  const moveEfficiencyBonus = didExit
+    ? Math.max(0, ((openSpaceCount - numOfMoves) / openSpaceCount) * MOVE_EFFICIENCY_BONUS)
+    : 0;
   const cheeseBonus = numOfCheeseEaten * CHEESE_BONUS;
   const actionPenalty = numOfActions * ACTION_PENALTY;
 
