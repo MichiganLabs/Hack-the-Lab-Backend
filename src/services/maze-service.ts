@@ -98,5 +98,6 @@ export const getScore = (userId: number, maze: Maze, actions: Action[]): number 
   const cheeseBonus = numOfCheeseEaten * CHEESE_BONUS;
   const actionPenalty = numOfActions * ACTION_PENALTY;
 
-  return exitBonus + moveEfficiencyBonus + cheeseBonus - actionPenalty;
+  // Add up everything, but don't let the score go below 0.
+  return Math.max(0, exitBonus + moveEfficiencyBonus + cheeseBonus - actionPenalty);
 };

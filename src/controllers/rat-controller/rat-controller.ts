@@ -38,7 +38,7 @@ export class RatController implements Controller {
     router.get("/rat/:mazeId/actions", hasRole(Role.Developer), this.buildMiddlewareWithSchema(mazePathSchema, false), getActions);
   }
 
-  buildMiddlewareWithSchema(schema: ContextRunner[], includePreActionMiddleware = true) {
+  buildMiddlewareWithSchema(schema: ContextRunner[], isAction = true) {
     const ratMiddleware = [];
 
     // Validate the mazeId and inject the `maze` object into the request.
@@ -47,7 +47,7 @@ export class RatController implements Controller {
     // Prevent the same user (key) from performing an action while another action is being processed.
     ratMiddleware.push(ratControllerLocking);
 
-    if (includePreActionMiddleware) {
+    if (isAction) {
       // Initialize the maze (if necessary), inject the rat's current position into the request, and verify the rat hasn't exited the maze.
       ratMiddleware.push(preActionMiddleware);
     }
