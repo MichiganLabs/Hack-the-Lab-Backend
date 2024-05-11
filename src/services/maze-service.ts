@@ -1,20 +1,36 @@
-import { ActionType, CellType } from "@enums";
+import { ActionType, CellType, Role } from "@enums";
 import { pgQuery } from "data/db";
 import * as fs from "fs/promises";
 import { Action, AdminCell, Coordinate, Maze } from "hackthelab";
 import path from "path";
 
 const mazeDir = __dirname + "/../mazes";
-const mazes: { [key: string]: Maze } = {};
+
+const mazeStore: { [key in Role]: { [key: string]: Maze } } = {
+  ADMIN: {},
+  PARTICIPANT: {},
+  DEVELOPER: {},
+};
 
 export const getActions = (userId: number, mazeId: string): Promise<Action[]> => {
   return pgQuery("SELECT * FROM actions WHERE user_id = $1 AND maze_id = $2 ORDER BY time_ts DESC", [userId, mazeId]);
 };
 
-export const getMazeById = async (mazeId: string): Promise<Maze | null> => {
-  if (Object.keys(mazes).length == 0) {
-    await loadMazes();
+export const getMazes = async (role: Role): Promise<{ [key: string]: Maze }> => {
+  await loadMazes();
+
+  if (role == Role.Admin) {
+    return {
+      ...mazeStore[Role.Participant],
+      ...mazeStore[Role.Developer],
+    };
   }
+
+  return mazeStore[role];
+};
+
+export const getMazeById = async (role: Role, mazeId: string): Promise<Maze | null> => {
+  const mazes = await getMazes(role);
 
   if (Object.hasOwnProperty.call(mazes, mazeId)) {
     return mazes[mazeId];
@@ -30,11 +46,17 @@ export const getAdminCellAtPosition = (maze: Maze, position: Coordinate): AdminC
   return maze.cells[index];
 };
 
-export const mazeExists = async (mazeId: string): Promise<boolean> => (await getMazeById(mazeId)) !== undefined;
+export const loadMazesForRole = async (role: Role): Promise<void> => {
+  const roleDir = path.join(mazeDir, role.toLowerCase());
 
-const loadMazes = async () => {
   try {
-    const fileNames = await fs.readdir(mazeDir);
+    await fs.access(roleDir);
+  } catch {
+    return;
+  }
+
+  try {
+    const fileNames = await fs.readdir(roleDir);
     for (const fileName of fileNames) {
       if (!fileName.endsWith(".json")) {
         continue;
@@ -43,17 +65,22 @@ const loadMazes = async () => {
       const mazeId = fileName.replace(".json", "");
 
       // Only load mazes that have not already been loaded.
-      if (!Object.hasOwnProperty.call(mazes, mazeId)) {
-        const mazeData = await fs.readFile(path.join(mazeDir, fileName), "utf8");
-
+      if (!Object.hasOwnProperty.call(mazeStore[role], mazeId)) {
+        const mazeData = await fs.readFile(path.join(roleDir, fileName), "utf8");
         const maze: Maze = JSON.parse(mazeData);
         maze.id = mazeId;
 
-        mazes[mazeId] = maze;
+        mazeStore[role][mazeId] = maze;
       }
     }
   } catch (e) {
     console.error(e);
+  }
+};
+
+export const loadMazes = async (): Promise<void> => {
+  for (const role of Object.values(Role)) {
+    await loadMazesForRole(role);
   }
 };
 
