@@ -63,6 +63,35 @@ declare module "hackthelab" {
    * @swagger
    * components:
    *   schemas:
+   *     MazeListItem:
+   *       type: object
+   *       properties:
+   *         id:
+   *           type: string
+   *           example: "oneTurn"
+   *           description: The unique identifier for the maze.
+   *         dimensions:
+   *           type: object
+   *           properties:
+   *             horizontal:
+   *               type: integer
+   *               example: 7
+   *             vertical:
+   *               type: integer
+   *               example: 7
+   */
+  interface MazeListItem {
+    id: string;
+    dimensions: {
+      horizontal: number;
+      vertical: number;
+    };
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
    *     Cell:
    *       type: object
    *       properties:
@@ -142,7 +171,7 @@ declare module "hackthelab" {
     cell: Cell;
   }
 
-   /**
+  /**
    * @swagger
    * components:
    *   schemas:
