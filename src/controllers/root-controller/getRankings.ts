@@ -21,11 +21,15 @@ import { ScoreService } from "services";
  *         description: Forbidden.
  */
 const getRankings = async (req, res, next) => {
+    try {
+        // TODO: Pass in mazes (sandbox / competition)
+        const result = await ScoreService.getRankings(["oneTurn", "straightMaze"]);
 
-    // TODO: Pass in mazes (sandbox / competition)
-    const result = await ScoreService.getRankings(["oneTurn", "straightMaze"]);
-
-    res.status(200).json(result);
+        res.status(200).json(result);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Internal server error" });
+    }
     
     return next();
 };

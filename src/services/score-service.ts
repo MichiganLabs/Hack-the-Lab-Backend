@@ -1,6 +1,6 @@
 import { ActionType, CellType } from "@enums";
 import { pgQuery } from "data/db";
-import { Action, Maze } from "hackthelab";
+import { Action, Award, Maze, RankingResult, Score } from "hackthelab";
 import { MazeService, ScoreService } from "services";
 
 export const getScore = (userId: number, maze: Maze, actions: Action[]): number => {
@@ -48,23 +48,6 @@ export const getScore = (userId: number, maze: Maze, actions: Action[]): number 
     return Math.floor(Math.max(0, exitBonus + moveEfficiencyBonus + cheeseBonus - actionPenalty));
 };
 
-interface Award {
-    name: string;
-    description: string;
-    userId: string;
-    value: string;    
-}
-
-interface Score {
-    userId: string;
-    score: number;
-}
-
-interface RankingResult {
-    scores: Score[];
-    awards: Award[];
-}
-
 // Returns the rankings for all participants for the given maze ids
 export const getRankings = async (mazeIds: string[]): Promise<RankingResult> => {
 
@@ -83,9 +66,11 @@ export const getRankings = async (mazeIds: string[]): Promise<RankingResult> => 
         WHERE maze_id = ANY($1)
     `, [mazeIds]);
 
+    const participantIds = participants.map(participant => participant.userId);
+
     // For each participant, calculate their score
     // Loop through all of the participants of the provided mazes
-    for (const participant of participants) {
+    for (const userId of participantIds) {
         let totalScore: number = 0;
 
         // Loop through each maze to determine the participant's score for each maze
@@ -95,14 +80,14 @@ export const getRankings = async (mazeIds: string[]): Promise<RankingResult> => 
                 continue;
             }
 
-            const actions = await MazeService.getActions(participant.userId, mazeId)
-            const score = ScoreService.getScore(participant.userId, mazes[mazeId], actions);
+            const actions = await MazeService.getActions(userId, mazeId)
+            const score = ScoreService.getScore(userId, mazes[mazeId], actions);
 
             totalScore += score;
         }
 
         scores.push({ 
-            userId: participant.userId, 
+            userId: userId, 
             score: totalScore }
         );
     }
@@ -117,27 +102,12 @@ export const getRankings = async (mazeIds: string[]): Promise<RankingResult> => 
 
     Fastest action calls
 
-    Revisited the same cell the most
-
-    The most cells revisited (more than once)
-
-    Last rat to make the first move
-
-    First rat to make the first move
-
-    Most Actions calls
-
-    Most actions called on the same cell
-
     Rats who ran out of moves
-
-    Rats who only took right turns
 
     Rat who went North the most
 
     Sent the same request the most
     */
-
 
     // Most moves (successful only)
     // -------------------------
@@ -322,7 +292,7 @@ export const getRankings = async (mazeIds: string[]): Promise<RankingResult> => 
     // *AWARD* Most Failed Actions
     if (mostFailedActions.length != 0) {
         const mostFailedActionsAward: Award = {
-            name: "Clumsy",
+            name: "Clumsiest",
             description: "The rat who attempted actions that failed the most",
             userId: mostFailedActions[0].userId,
             value: mostFailedActions[0].failCount
@@ -348,6 +318,72 @@ export const getRankings = async (mazeIds: string[]): Promise<RankingResult> => 
             value: noFailedActions[0].failCount
         };
         awards.push(leastFailedActionsAward);
+    }
+
+    // Last to hit the API
+    // -------------------------
+    const lastToHitAPI = await pgQuery(`
+        SELECT user_id, MAX(time_ts) as last_hit
+        FROM analytics
+        WHERE user_id = ANY($1)
+        GROUP BY user_id
+        ORDER BY last_hit DESC
+        LIMIT 1
+    `, [participantIds]);
+
+    // *AWARD* Last to hit the API
+    if (lastToHitAPI.length != 0) {
+        const lastToHitAPIAward: Award = {
+            name: "Procrastinator",
+            description: "The last rat to hit the API",
+            userId: lastToHitAPI[0].userId,
+            value: lastToHitAPI[0].lastHit
+        };
+        awards.push(lastToHitAPIAward);
+    }
+
+    // Hit the API first
+    // -------------------------
+    const firstToHitAPI = await pgQuery(`
+        SELECT user_id, MIN(time_ts) as first_hit
+        FROM analytics
+        WHERE user_id = ANY($1)
+        GROUP BY user_id
+        ORDER BY first_hit ASC
+        LIMIT 1
+    `, [participantIds]);
+
+    // *AWARD* First to hit the API
+    if (firstToHitAPI.length != 0) {
+        const firstToHitAPIAward: Award = {
+            name: "Is This Thing On?",
+            description: "The first rat to hit the API",
+            userId: firstToHitAPI[0].userId,
+            value: firstToHitAPI[0].firstHit
+        };
+        awards.push(firstToHitAPIAward);
+    }
+
+    // First to make a move in one of the competition mazes
+    // -------------------------
+    const firstToMove = await pgQuery(`
+        SELECT user_id, MIN(time_ts) as first_move
+        FROM actions
+        WHERE maze_id = ANY($1) AND action_type = $2 AND success = true
+        GROUP BY user_id
+        ORDER BY first_move ASC
+        LIMIT 1
+    `, [mazeIds, ActionType.Move]);
+
+    // *AWARD* First to make a move
+    if (firstToMove.length != 0) {
+        const firstToMoveAward: Award = {
+            name: "Trail Blazer",
+            description: "The first rat to make a move in one of the competition mazes",
+            userId: firstToMove[0].userId,
+            value: firstToMove[0].firstMove
+        };
+        awards.push(firstToMoveAward);
     }
 
     return {
