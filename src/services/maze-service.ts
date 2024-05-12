@@ -100,6 +100,18 @@ export const loadMazes = async (): Promise<void> => {
   for (const env of Object.values(Environment)) {
     await loadMazesForEnvironment(env);
   }
+}
+
+export const lockMaze = async (_mazeId: string): Promise<void> => {
+  return;
+};
+
+export const unlockMaze = async (_mazeId: string): Promise<void> => {
+  return;
+};
+
+export const isLocked = async (_mazeId: string): Promise<boolean> => {
+  return false;
 };
 
 export const getScore = (userId: number, maze: Maze, actions: Action[]): number => {

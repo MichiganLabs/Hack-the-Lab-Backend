@@ -5,6 +5,8 @@ import { Controller } from "../index";
 import getActions, { actionsSchema } from "./getActions";
 import getMaze from "./getMaze";
 import getMazes, { mazesSchema } from "./getMazes";
+import lockMaze from "./lockMaze";
+import unlockMaze from "./unlockMaze";
 
 /**
  * @swagger
@@ -24,5 +26,7 @@ export class MazeController implements Controller {
     router.get("/maze/:mazeId", ...mazeMiddleware, getMaze);
     router.get("/maze/:mazeId/actions/:userId", ...mazeMiddleware, validate(actionsSchema), getActions);
     router.get("/mazes", validate(mazesSchema), getMazes);
+    router.post("/maze/:mazeId/lock", ...mazeMiddleware, lockMaze);
+    router.post("/maze/:mazeId/unlock", ...mazeMiddleware, unlockMaze);
   }
 }
