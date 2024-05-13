@@ -1,21 +1,9 @@
 import { Role } from "@enums";
 import { NextFunction, Request, Response } from "express";
-import { MazeListItem } from "hackthelab";
 import { MazeService } from "services";
 import { query } from "utils/custom-validator";
 
-export const mazesSchema = [
-  query("role")
-    .optional()
-    .isString()
-    .withMessage("'role' must be a string")
-    .custom(value => {
-      if (!Object.values(Role).includes(value)) {
-        throw new Error("'role' must be a valid Role");
-      }
-      return true;
-    }),
-];
+export const mazesSchema = [query("role").optional().isRole()];
 
 /**
  * @swagger
@@ -31,7 +19,8 @@ export const mazesSchema = [
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/MazeListItem'
+ *                 type: string
+ *                 example: "oneTurn"
  */
 const getMazes = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -44,10 +33,7 @@ const getMazes = async (req: Request, res: Response, next: NextFunction) => {
 
     const mazes = await MazeService.getMazes(role);
 
-    const mazeList: MazeListItem[] = Object.values(mazes).map(maze => ({
-      id: maze.id,
-      dimensions: maze.dimensions,
-    }));
+    const mazeList: string[] = Object.values(mazes).map(maze => maze.id);
 
     res.status(200).json(mazeList);
   } catch (e) {
