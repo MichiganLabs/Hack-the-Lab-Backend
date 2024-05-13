@@ -101,8 +101,8 @@ CREATE TABLE
     maze_id     VARCHAR,
     method      VARCHAR,
     path        VARCHAR,
-    params      json,
-    body        json,
+    params      jsonb,
+    body        jsonb,
     status_code INTEGER,
     time_ts     timestamptz DEFAULT CURRENT_TIMESTAMP
 );
