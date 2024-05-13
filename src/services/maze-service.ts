@@ -1,4 +1,4 @@
-import { ActionType, CellType, Role } from "@enums";
+import { ActionType, CellType, Environment, Role } from "@enums";
 import { pgQuery } from "data/db";
 import * as fs from "fs/promises";
 import { Action, AdminCell, Coordinate, Maze } from "hackthelab";
@@ -6,37 +6,70 @@ import path from "path";
 
 const mazeDir = __dirname + "/../mazes";
 
-const mazeStore: { [key in Role]: { [key: string]: Maze } } = {
-  ADMIN: {},
-  PARTICIPANT: {},
-  DEVELOPER: {},
+type MazeDictionary = { [key: string]: Maze };
+
+const mazeStore: { [key in Environment]: MazeDictionary } = {
+  COMPETITION: {},
+  SANDBOX: {},
 };
 
 export const getActions = (userId: number, mazeId: string): Promise<Action[]> => {
   return pgQuery("SELECT * FROM actions WHERE user_id = $1 AND maze_id = $2 ORDER BY time_ts DESC", [userId, mazeId]);
 };
 
-export const getMazes = async (role: Role): Promise<{ [key: string]: Maze }> => {
+export const getMazes = async (environment: Environment[] | Environment): Promise<MazeDictionary> => {
   await loadMazes();
 
-  if (role == Role.Admin) {
-    return {
-      ...mazeStore[Role.Participant],
-      ...mazeStore[Role.Developer],
-    };
-  }
+  if (Array.isArray(environment)) {
+    const combinedMazes: MazeDictionary = {};
 
-  return mazeStore[role];
+    for (const env of environment) {
+      Object.assign(combinedMazes, mazeStore[env]);
+    }
+
+    return combinedMazes;
+  } else {
+    return mazeStore[environment];
+  }
 };
 
-export const getMazeById = async (role: Role, mazeId: string): Promise<Maze | null> => {
-  const mazes = await getMazes(role);
+export const getMazesForRole = async (role: Role): Promise<MazeDictionary> => {
+  const environments = getEnvironmentsForRole(role);
+
+  return await getMazes(environments);
+};
+
+export const getEnvironmentsForRole = (role: Role): Environment[] => {
+  switch (role) {
+    case Role.Admin:
+      return Object.values(Environment);
+    case Role.Developer:
+      return [Environment.Sandbox];
+    case Role.Participant:
+      return [Environment.Competition];
+    default:
+      return [];
+  }
+};
+
+export const getMazeByIdRole = async (role: Role, mazeId: string): Promise<Maze | null> => {
+  const mazes = await getMazesForRole(role);
 
   if (Object.hasOwnProperty.call(mazes, mazeId)) {
     return mazes[mazeId];
   }
 
-  return undefined;
+  return null;
+};
+
+export const getMazeById = async (env: Environment, mazeId: string): Promise<Maze | null> => {
+  const mazes = await getMazes(env);
+
+  if (Object.hasOwnProperty.call(mazes, mazeId)) {
+    return mazes[mazeId];
+  }
+
+  return null;
 };
 
 export const getAdminCellAtPosition = (maze: Maze, position: Coordinate): AdminCell => {
@@ -46,17 +79,17 @@ export const getAdminCellAtPosition = (maze: Maze, position: Coordinate): AdminC
   return maze.cells[index];
 };
 
-export const loadMazesForRole = async (role: Role): Promise<void> => {
-  const roleDir = path.join(mazeDir, role.toLowerCase());
+export const loadMazesForEnvironment = async (environment: Environment): Promise<void> => {
+  const envDir = path.join(mazeDir, environment.toLowerCase());
 
   try {
-    await fs.access(roleDir);
+    await fs.access(envDir);
   } catch {
     return;
   }
 
   try {
-    const fileNames = await fs.readdir(roleDir);
+    const fileNames = await fs.readdir(envDir);
     for (const fileName of fileNames) {
       if (!fileName.endsWith(".json")) {
         continue;
@@ -65,12 +98,12 @@ export const loadMazesForRole = async (role: Role): Promise<void> => {
       const mazeId = fileName.replace(".json", "");
 
       // Only load mazes that have not already been loaded.
-      if (!Object.hasOwnProperty.call(mazeStore[role], mazeId)) {
-        const mazeData = await fs.readFile(path.join(roleDir, fileName), "utf8");
+      if (!Object.hasOwnProperty.call(mazeStore[environment], mazeId)) {
+        const mazeData = await fs.readFile(path.join(envDir, fileName), "utf8");
         const maze: Maze = JSON.parse(mazeData);
         maze.id = mazeId;
 
-        mazeStore[role][mazeId] = maze;
+        mazeStore[environment][mazeId] = maze;
       }
     }
   } catch (e) {
@@ -79,8 +112,8 @@ export const loadMazesForRole = async (role: Role): Promise<void> => {
 };
 
 export const loadMazes = async (): Promise<void> => {
-  for (const role of Object.values(Role)) {
-    await loadMazesForRole(role);
+  for (const env of Object.values(Environment)) {
+    await loadMazesForEnvironment(env);
   }
 };
 

@@ -40,7 +40,7 @@ export const resolveMaze = async (req: MazeRequest, res, next) => {
   const { mazeId } = matchedData(req);
 
   try {
-    const maze = await MazeService.getMazeById(req.user.role, mazeId);
+    const maze = await MazeService.getMazeByIdRole(req.user.role, mazeId);
 
     if (!maze) {
       return res.status(404).json({ message: "Maze not found!" });

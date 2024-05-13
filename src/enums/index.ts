@@ -1,3 +1,8 @@
+export enum Environment {
+  Sandbox = "SANDBOX",
+  Competition = "COMPETITION",
+}
+
 export enum Role {
   Participant = "PARTICIPANT",
   Developer = "DEVELOPER",

@@ -1,4 +1,4 @@
-import { Direction, Role } from "@enums";
+import { Direction, Environment } from "@enums";
 import { ExpressValidator } from "express-validator";
 
 export const { matchedData, body, param, query, validationResult } = new ExpressValidator({
@@ -9,11 +9,11 @@ export const { matchedData, body, param, query, validationResult } = new Express
 
     throw new Error("Invalid direction");
   },
-  isRole: async (value: any) => {
-    if (Object.values(Role).includes(value as Role)) {
-      return value as Role;
+  isEnvironment: async (value: any) => {
+    if (Object.values(Environment).includes(value as Environment)) {
+      return value as Environment;
     }
 
-    throw new Error("Invalid role");
+    throw new Error("Invalid environment");
   },
 });

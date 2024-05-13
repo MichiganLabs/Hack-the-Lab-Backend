@@ -1,9 +1,9 @@
-import { Role } from "@enums";
+import { Environment, Role } from "@enums";
 import { NextFunction, Request, Response } from "express";
 import { MazeService } from "services";
 import { query } from "utils/custom-validator";
 
-export const mazesSchema = [query("role").optional().isRole()];
+export const mazesSchema = [query("env").optional().isEnvironment()];
 
 /**
  * @swagger
@@ -25,13 +25,13 @@ export const mazesSchema = [query("role").optional().isRole()];
 const getMazes = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Get the mazes
-    let role = req.user.role;
+    let envs = MazeService.getEnvironmentsForRole(req.user.role);
 
-    if (req.user.role == Role.Admin) {
-      role = (req.query.role as Role) ?? Role.Admin;
+    if (req.user.role == Role.Admin && req.query.env !== undefined) {
+      envs = [req.query.env as Environment] ?? Object.values(Environment);
     }
 
-    const mazes = await MazeService.getMazes(role);
+    const mazes = await MazeService.getMazes(envs);
 
     const mazeList: string[] = Object.values(mazes).map(maze => maze.id);
 
