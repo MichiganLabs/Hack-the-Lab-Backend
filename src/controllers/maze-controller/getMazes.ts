@@ -24,9 +24,10 @@ export const mazesSchema = [query("env").optional().isEnvironment()];
  */
 const getMazes = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Get the mazes
+    // By default, users will have their environment determined by their role.
     let envs = MazeService.getEnvironmentsForRole(req.user.role);
 
+    // Admin users are allowed to select a specific environment when requesting the list of mazes.
     if (req.user.role == Role.Admin && req.query.env !== undefined) {
       envs = [req.query.env as Environment] ?? Object.values(Environment);
     }

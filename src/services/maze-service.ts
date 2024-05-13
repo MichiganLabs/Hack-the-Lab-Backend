@@ -9,8 +9,8 @@ const mazeDir = __dirname + "/../mazes";
 type MazeDictionary = { [key: string]: Maze };
 
 const mazeStore: { [key in Environment]: MazeDictionary } = {
-  COMPETITION: {},
-  SANDBOX: {},
+  [Environment.Competition]: {},
+  [Environment.Sandbox]: {},
 };
 
 export const getActions = (userId: number, mazeId: string): Promise<Action[]> => {
@@ -33,12 +33,6 @@ export const getMazes = async (environment: Environment[] | Environment): Promis
   }
 };
 
-export const getMazesForRole = async (role: Role): Promise<MazeDictionary> => {
-  const environments = getEnvironmentsForRole(role);
-
-  return await getMazes(environments);
-};
-
 export const getEnvironmentsForRole = (role: Role): Environment[] => {
   switch (role) {
     case Role.Admin:
@@ -52,17 +46,7 @@ export const getEnvironmentsForRole = (role: Role): Environment[] => {
   }
 };
 
-export const getMazeByIdRole = async (role: Role, mazeId: string): Promise<Maze | null> => {
-  const mazes = await getMazesForRole(role);
-
-  if (Object.hasOwnProperty.call(mazes, mazeId)) {
-    return mazes[mazeId];
-  }
-
-  return null;
-};
-
-export const getMazeById = async (env: Environment, mazeId: string): Promise<Maze | null> => {
+export const getMazeById = async (env: Environment[] | Environment, mazeId: string): Promise<Maze | null> => {
   const mazes = await getMazes(env);
 
   if (Object.hasOwnProperty.call(mazes, mazeId)) {
