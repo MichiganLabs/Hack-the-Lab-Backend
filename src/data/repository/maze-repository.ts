@@ -1,4 +1,4 @@
-import cache from "@data/cache";
+import cache from "data/cache";
 
 const mazeLockKey = (mazeId: string) => `maze-lock:${mazeId}`;
 

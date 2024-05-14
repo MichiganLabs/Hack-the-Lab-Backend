@@ -1,5 +1,5 @@
-import { RatRepository } from "@data/repository";
 import { ActionType } from "@enums";
+import { RatRepository } from "data/repository";
 import { MazeRequest, RatActionRequest } from "hackthelab";
 import { RatService } from "services";
 import { asyncHandler, createError, rethrowOrCreateError } from "utils";

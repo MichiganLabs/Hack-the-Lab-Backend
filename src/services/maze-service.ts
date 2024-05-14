@@ -1,5 +1,5 @@
-import { ActionRepository, MazeRepository } from "@data/repository";
 import { ActionType, CellType, Environment, Role } from "@enums";
+import { ActionRepository, MazeRepository } from "data/repository";
 import * as fs from "fs/promises";
 import { Action, AdminCell, Coordinate, Maze } from "hackthelab";
 import path from "path";

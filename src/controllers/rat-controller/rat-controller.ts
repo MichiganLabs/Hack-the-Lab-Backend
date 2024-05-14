@@ -35,8 +35,18 @@ export class RatController implements Controller {
     router.get("/rat/:mazeId/surroundings", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazePathSchema), getSurroundings);
 
     // Additional endpoints for rat control while in the SANDBOX environment.
-    router.post("/rat/reset", hasRole(Role.Developer), this.buildMiddlewareWithSchema(mazeBodySchema, false), postReset);
-    router.get("/rat/:mazeId/actions", hasRole(Role.Developer), this.buildMiddlewareWithSchema(mazePathSchema, false), getActions);
+    router.post(
+      "/rat/reset",
+      hasRole(Role.Developer),
+      this.buildMiddlewareWithSchema(mazeBodySchema, false),
+      postReset,
+    );
+    router.get(
+      "/rat/:mazeId/actions",
+      hasRole(Role.Developer),
+      this.buildMiddlewareWithSchema(mazePathSchema, false),
+      getActions,
+    );
   }
 
   buildMiddlewareWithSchema(schema: ContextRunner[], isAction = true) {

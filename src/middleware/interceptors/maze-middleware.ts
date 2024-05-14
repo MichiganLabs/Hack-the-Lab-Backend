@@ -1,5 +1,5 @@
-import { MazeRepository } from "@data/repository";
 import { Role } from "@enums";
+import { MazeRepository } from "data/repository";
 import { MazeRequest } from "hackthelab";
 import { MazeService } from "services";
 import { asyncHandler, createError, rethrowOrCreateError } from "utils";
