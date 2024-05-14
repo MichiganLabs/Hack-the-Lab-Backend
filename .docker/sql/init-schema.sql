@@ -86,7 +86,7 @@ CREATE TABLE
     user_id     SERIAL REFERENCES users (id) ON DELETE CASCADE,
     maze_id     VARCHAR,
     action_type VARCHAR,
-    position    json,
+    position    jsonb,
     time_ts     timestamptz DEFAULT CURRENT_TIMESTAMP,
     success     BOOLEAN     DEFAULT TRUE
 );
@@ -108,3 +108,17 @@ CREATE TABLE
 );
 
 CREATE INDEX idx_analytics_user_maze ON analytics (user_id, maze_id, time_ts DESC);
+
+CREATE TABLE
+    mazes
+(
+    id              VARCHAR PRIMARY KEY,
+    environment     VARCHAR CHECK (environment IN ('SANDBOX', 'COMPETITION')),
+    locked          BOOLEAN,
+    cells           jsonb,
+    cheese          jsonb,
+    exit            jsonb,
+    start           jsonb,
+    dimensions      jsonb,
+    openSquareCount NUMERIC
+);

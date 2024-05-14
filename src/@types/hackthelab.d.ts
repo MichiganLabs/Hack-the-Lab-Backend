@@ -1,4 +1,4 @@
-import { CellType, Role } from "@enums";
+import { CellType, Environment, Role } from "@enums";
 import { Request } from "express";
 
 declare module "hackthelab" {
@@ -57,6 +57,11 @@ declare module "hackthelab" {
       vertical: number;
     };
     open_square_count: number;
+  }
+
+  interface AdminMaze extends Maze {
+    environment: Environment;
+    locked: boolean;
   }
 
   /**

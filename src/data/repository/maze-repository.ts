@@ -1,18 +1,10 @@
-import cache from "data/cache";
+import { AdminMaze } from "hackthelab";
+import { pgQuery } from "../db";
 
-const mazeLockKey = (mazeId: string) => `maze-lock:${mazeId}`;
-
-export const isLocked = async (mazeId: string): Promise<boolean> => {
-  const lockedValue = await cache.getValue(mazeLockKey(mazeId));
-  return lockedValue !== null;
+export const getAll = async () => {
+  return (await pgQuery("SELECT * FROM mazes", [])) as AdminMaze[];
 };
 
-export const setLocked = async (mazeId: string, locked: boolean): Promise<void> => {
-  const cacheKey = mazeLockKey(mazeId);
-
-  if (locked) {
-    await cache.setValue(cacheKey, true);
-  } else {
-    await cache.delValue(cacheKey);
-  }
+export const updateLocked = async (mazeId: string, locked: boolean): Promise<void> => {
+  await pgQuery("UPDATE mazes SET locked = $2 WHERE id = $1", [mazeId, locked]);
 };

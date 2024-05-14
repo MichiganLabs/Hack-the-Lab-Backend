@@ -9,7 +9,7 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./.docker/init.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./.docker/sql/:/docker-entrypoint-initdb.d/
     ports:
       - "5432:5432"
   redis:

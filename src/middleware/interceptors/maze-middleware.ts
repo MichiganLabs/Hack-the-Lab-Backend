@@ -1,5 +1,4 @@
 import { Role } from "@enums";
-import { MazeRepository } from "data/repository";
 import { MazeRequest } from "hackthelab";
 import { MazeService } from "services";
 import { asyncHandler, createError, rethrowOrCreateError } from "utils";
@@ -46,11 +45,13 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
   try {
     const environments = MazeService.getEnvironmentsForRole(req.user.role);
 
-    const maze = await MazeService.getMazeById(environments, mazeId);
+    const maze = await MazeService.getMazeById(mazeId);
 
-    const isLocked = (await MazeRepository.isLocked(mazeId)) && req.user.role !== Role.Admin;
+    const hasAccess = environments.includes(maze.environment);
+    const isLocked = maze.locked && req.user.role !== Role.Admin;
 
-    if (!maze || isLocked) {
+    // If the maze is undefined, or defined but locked (and the user is not an Admin)
+    if (!maze || !hasAccess || isLocked) {
       throw createError(404, "Maze Not Found", `Maze '${mazeId}' not found!`);
     }
 
