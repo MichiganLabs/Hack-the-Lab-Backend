@@ -17,13 +17,19 @@ const unlockMaze = async (req: MazeRequest, res, next) => {
   const isMazeLocked = await MazeService.isLocked(req.maze.id);
 
   if (!isMazeLocked) {
-    res.sendStatus(403);
+    res.status(403).json({
+      success: false,
+      error: `Maze '${req.maze.id}' is already unlocked.`,
+    });
     return next();
   }
 
   await MazeService.unlockMaze(req.maze.id);
 
-  res.status(200);
+  res.status(200).json({
+    success: true,
+    message: `Maze '${req.maze.id}' has been unlocked.`,
+  });
 
   return next();
 };
