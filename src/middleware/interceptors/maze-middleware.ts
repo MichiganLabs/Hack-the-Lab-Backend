@@ -50,7 +50,7 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
     const hasAccess = environments.includes(maze.environment);
     const isLocked = maze.locked && req.user.role !== Role.Admin;
 
-    // If the maze is undefined, or defined but locked (and the user is not an Admin)
+    // If the maze is undefined, or defined but not the right environment, or locked (and the user is not an Admin)
     if (!maze || !hasAccess || isLocked) {
       throw createError(404, "Maze Not Found", `Maze '${mazeId}' not found!`);
     }

@@ -64,12 +64,8 @@ export const loadMazes = async (): Promise<void> => {
   }
 };
 
-export const lockMaze = async (mazeId: string): Promise<void> => {
-  await MazeRepository.updateLocked(mazeId, true);
-};
-
-export const unlockMaze = async (mazeId: string): Promise<void> => {
-  await MazeRepository.updateLocked(mazeId, false);
+export const setLocked = async (mazeId: string, locked: boolean): Promise<void> => {
+  await MazeRepository.updateLocked(mazeId, locked);
 };
 
 export const isLocked = async (mazeId: string): Promise<boolean> => {
