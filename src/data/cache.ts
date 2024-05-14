@@ -42,4 +42,17 @@ const delCache = async (key: string) => {
   await client.del(key);
 };
 
-export default { acquireLock, releaseLock, getCache, setCache, delCache };
+const setValue = async (key: string, data: any) => {
+  await client.set(key, JSON.stringify(data));
+};
+
+const getValue = async (key: string): Promise<any> => {
+  const result = await client.get(key);
+  return JSON.parse(result);
+};
+
+const delValue = async (key: string): Promise<void> => {
+  await client.del(key);
+};
+
+export default { acquireLock, releaseLock, getCache, setCache, delCache, getValue, setValue, delValue };

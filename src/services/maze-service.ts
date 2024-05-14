@@ -1,5 +1,5 @@
+import { ActionRepository, MazeRepository } from "@data/repository";
 import { ActionType, CellType, Environment, Role } from "@enums";
-import { ActionRepository } from "data/repository";
 import * as fs from "fs/promises";
 import { Action, AdminCell, Coordinate, Maze } from "hackthelab";
 import path from "path";
@@ -100,18 +100,18 @@ export const loadMazes = async (): Promise<void> => {
   for (const env of Object.values(Environment)) {
     await loadMazesForEnvironment(env);
   }
-}
-
-export const lockMaze = async (_mazeId: string): Promise<void> => {
-  return;
 };
 
-export const unlockMaze = async (_mazeId: string): Promise<void> => {
-  return;
+export const lockMaze = async (mazeId: string): Promise<void> => {
+  await MazeRepository.setLocked(mazeId, true);
 };
 
-export const isLocked = async (_mazeId: string): Promise<boolean> => {
-  return false;
+export const unlockMaze = async (mazeId: string): Promise<void> => {
+  await MazeRepository.setLocked(mazeId, false);
+};
+
+export const isLocked = async (mazeId: string): Promise<boolean> => {
+  return await MazeRepository.isLocked(mazeId);
 };
 
 export const getScore = (userId: number, maze: Maze, actions: Action[]): number => {
