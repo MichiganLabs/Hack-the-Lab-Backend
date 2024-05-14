@@ -28,6 +28,7 @@ export const mazeBodySchema = [
  *       name: mazeId
  *       schema:
  *         type: string
+ *         example: oneTurn
  *       required: true
  *
  */
