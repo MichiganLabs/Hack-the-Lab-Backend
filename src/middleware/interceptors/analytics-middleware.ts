@@ -1,11 +1,14 @@
-import { Interceptor } from "express";
+import onFinished from "on-finished";
 import { AnalyticsService } from "services";
+import { asyncHandler } from "utils";
 
-export const analyticsMiddleware: Interceptor = async (req, res, next) => {
+export const analyticsMiddleware = asyncHandler(async (req, res, next) => {
   try {
     next();
   } finally {
-    // Insert the invocation into the database
-    await AnalyticsService.insertInvocation(req, res);
+    onFinished(res, async () => {
+      // Insert the invocation into the database
+      await AnalyticsService.insertInvocation(req, res);
+    });
   }
-};
+});
