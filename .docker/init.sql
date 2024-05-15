@@ -91,4 +91,20 @@ CREATE TABLE
     success     BOOLEAN     DEFAULT TRUE
 );
 
-CREATE INDEX idx_user_maze ON actions (user_id, maze_id, time_ts DESC);
+CREATE INDEX idx_actions_user_maze ON actions (user_id, maze_id, time_ts DESC);
+
+CREATE TABLE
+    analytics
+(
+    id          SERIAL PRIMARY KEY,
+    user_id     SERIAL REFERENCES users (id) ON DELETE CASCADE,
+    maze_id     VARCHAR,
+    method      VARCHAR,
+    path        VARCHAR,
+    params      jsonb,
+    body        jsonb,
+    status_code INTEGER,
+    time_ts     timestamptz DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_analytics_user_maze ON analytics (user_id, maze_id, time_ts DESC);

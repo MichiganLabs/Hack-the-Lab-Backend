@@ -1,5 +1,6 @@
 import bodyParser from "body-parser";
 import { Interceptor } from "express";
+import { analyticsMiddleware } from "./analytics-middleware";
 import { authorize } from "./auth";
 
 export const interceptors: Array<Interceptor> = [
@@ -8,6 +9,9 @@ export const interceptors: Array<Interceptor> = [
 
   // We can insert additional interceptor functions here
   authorize,
+
+  // Record all invocations to the API
+  analyticsMiddleware,
 ];
 
 export { mazeBodySchema, mazePathSchema, resolveMaze } from "./maze-middleware";
