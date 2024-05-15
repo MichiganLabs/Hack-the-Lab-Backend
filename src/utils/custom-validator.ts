@@ -1,8 +1,7 @@
-import { Direction } from "@enums";
+import { Direction, Environment } from "@enums";
 import { ExpressValidator } from "express-validator";
-import { MazeService } from "services";
 
-export const { matchedData, body, param, validationResult } = new ExpressValidator({
+export const { matchedData, body, param, query, validationResult } = new ExpressValidator({
   isDirection: async (value: any) => {
     if (Object.values(Direction).includes(value as Direction)) {
       return value as Direction;
@@ -10,11 +9,11 @@ export const { matchedData, body, param, validationResult } = new ExpressValidat
 
     throw new Error("Invalid direction");
   },
-  isMaze: async (value: any) => {
-    if (await MazeService.mazeExists(value)) {
-      return true;
+  isEnvironment: async (value: any) => {
+    if (Object.values(Environment).includes(value as Environment)) {
+      return value as Environment;
     }
 
-    throw new Error(`Maze '${value}' does not exist.`);
+    throw new Error("Invalid environment");
   },
 });

@@ -142,7 +142,7 @@ declare module "hackthelab" {
     cell: Cell;
   }
 
-   /**
+  /**
    * @swagger
    * components:
    *   schemas:

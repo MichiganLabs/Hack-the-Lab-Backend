@@ -1,26 +1,59 @@
-import { ActionType, CellType } from "@enums";
+import { ActionType, CellType, Environment, Role } from "@enums";
 import { pgQuery } from "data/db";
 import * as fs from "fs/promises";
 import { Action, AdminCell, Coordinate, Maze } from "hackthelab";
 import path from "path";
 
 const mazeDir = __dirname + "/../mazes";
-const mazes: { [key: string]: Maze } = {};
+
+type MazeDictionary = { [key: string]: Maze };
+
+const mazeStore: { [key in Environment]: MazeDictionary } = {
+  [Environment.Competition]: {},
+  [Environment.Sandbox]: {},
+};
 
 export const getActions = (userId: number, mazeId: string): Promise<Action[]> => {
   return pgQuery("SELECT * FROM actions WHERE user_id = $1 AND maze_id = $2 ORDER BY time_ts DESC", [userId, mazeId]);
 };
 
-export const getMazeById = async (mazeId: string): Promise<Maze | null> => {
-  if (Object.keys(mazes).length == 0) {
-    await loadMazes();
+export const getMazes = async (environment: Environment[] | Environment): Promise<MazeDictionary> => {
+  await loadMazes();
+
+  if (Array.isArray(environment)) {
+    const combinedMazes: MazeDictionary = {};
+
+    for (const env of environment) {
+      Object.assign(combinedMazes, mazeStore[env]);
+    }
+
+    return combinedMazes;
+  } else {
+    return mazeStore[environment];
   }
+};
+
+export const getEnvironmentsForRole = (role: Role): Environment[] => {
+  switch (role) {
+    case Role.Admin:
+      return Object.values(Environment);
+    case Role.Developer:
+      return [Environment.Sandbox];
+    case Role.Participant:
+      return [Environment.Competition];
+    default:
+      return [];
+  }
+};
+
+export const getMazeById = async (env: Environment[] | Environment, mazeId: string): Promise<Maze | null> => {
+  const mazes = await getMazes(env);
 
   if (Object.hasOwnProperty.call(mazes, mazeId)) {
     return mazes[mazeId];
   }
 
-  return undefined;
+  return null;
 };
 
 export const getAdminCellAtPosition = (maze: Maze, position: Coordinate): AdminCell => {
@@ -30,11 +63,17 @@ export const getAdminCellAtPosition = (maze: Maze, position: Coordinate): AdminC
   return maze.cells[index];
 };
 
-export const mazeExists = async (mazeId: string): Promise<boolean> => (await getMazeById(mazeId)) !== undefined;
+export const loadMazesForEnvironment = async (environment: Environment): Promise<void> => {
+  const envDir = path.join(mazeDir, environment.toLowerCase());
 
-const loadMazes = async () => {
   try {
-    const fileNames = await fs.readdir(mazeDir);
+    await fs.access(envDir);
+  } catch {
+    return;
+  }
+
+  try {
+    const fileNames = await fs.readdir(envDir);
     for (const fileName of fileNames) {
       if (!fileName.endsWith(".json")) {
         continue;
@@ -43,17 +82,22 @@ const loadMazes = async () => {
       const mazeId = fileName.replace(".json", "");
 
       // Only load mazes that have not already been loaded.
-      if (!Object.hasOwnProperty.call(mazes, mazeId)) {
-        const mazeData = await fs.readFile(path.join(mazeDir, fileName), "utf8");
-
+      if (!Object.hasOwnProperty.call(mazeStore[environment], mazeId)) {
+        const mazeData = await fs.readFile(path.join(envDir, fileName), "utf8");
         const maze: Maze = JSON.parse(mazeData);
         maze.id = mazeId;
 
-        mazes[mazeId] = maze;
+        mazeStore[environment][mazeId] = maze;
       }
     }
   } catch (e) {
     console.error(e);
+  }
+};
+
+export const loadMazes = async (): Promise<void> => {
+  for (const env of Object.values(Environment)) {
+    await loadMazesForEnvironment(env);
   }
 };
 
