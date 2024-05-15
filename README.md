@@ -22,7 +22,7 @@ This is the API for Hack the Lab 2024. It's written with Typescript for Node.js 
 - Edit your environment file (`.env`) in the root directory of the project directory. (Reference below, you can also copy the `.env.example`)
 - Install the dependencies: `npm i`
 - If you have docker installed, start the containers: `docker compose up --detach` (or `-d`) (You do not need to do this between server restarts.)
-- To load the mazes in the `mazes` directory into the database, run the `syncDb.py` script (`.env` most be accurate).
+- To insert the example mazes from the `/mazes` directory into the database, run the `syncDb.py` script (`.env` must be accurate).
 - Run the server locally: `npm run dev`
 
 ## Running Load Tests
