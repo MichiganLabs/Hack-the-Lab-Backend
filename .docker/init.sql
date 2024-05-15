@@ -114,7 +114,7 @@ CREATE TABLE
 (
     id              VARCHAR PRIMARY KEY,
     environment     VARCHAR CHECK (environment IN ('SANDBOX', 'COMPETITION')),
-    locked          BOOLEAN,
+    locked          BOOLEAN DEFAULT FALSE,
     cells           jsonb,
     cheese          jsonb,
     exit            jsonb,
