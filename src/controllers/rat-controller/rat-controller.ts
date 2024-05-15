@@ -12,6 +12,7 @@ import { Router } from "express";
 import { ContextRunner } from "express-validator";
 import { Controller } from "../index";
 import getActions from "./getActions";
+import getSurroundings from "./getSurroundings";
 import postEat from "./postEat";
 import postExit from "./postExit";
 import postMove, { moveSchema } from "./postMove";
@@ -32,6 +33,7 @@ export class RatController implements Controller {
     router.post("/rat/smell", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postSmell);
     router.post("/rat/eat", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postEat);
     router.post("/rat/exit", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postExit);
+    router.get("/rat/:mazeId/surroundings", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazePathSchema), getSurroundings);
 
     // Additional endpoints for rat control while in the SANDBOX environment.
     router.post("/rat/reset", hasRole(Role.Developer), this.buildMiddlewareWithSchema(mazeBodySchema, false), postReset);
