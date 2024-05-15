@@ -47,11 +47,11 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
 
     const maze = await MazeService.getMazeById(mazeId);
 
-    const hasAccess = environments.includes(maze.environment);
-    const isLocked = maze.locked && req.user.role !== Role.Admin;
+    const hasAccess = environments.includes(maze?.environment);
+    const isLocked = maze?.locked && req.user.role !== Role.Admin;
 
     // If the maze is undefined, or defined but not the right environment, or locked (and the user is not an Admin)
-    if (!maze || !hasAccess || isLocked) {
+    if (maze == null || !hasAccess || isLocked) {
       throw createError(404, "Maze Not Found", `Maze '${mazeId}' not found!`);
     }
 
@@ -61,7 +61,6 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
     // Move to the next middleware
     next();
   } catch (e) {
-    console.error(e);
     throw rethrowOrCreateError(e, 500, "Server Error", `Error occurred while resolving maze.`);
   }
 });
