@@ -1,4 +1,5 @@
 import { MazeRequest } from "hackthelab";
+import { asyncHandler } from "utils";
 
 /**
  * @swagger
@@ -16,10 +17,10 @@ import { MazeRequest } from "hackthelab";
  *             schema:
  *               $ref: '#/components/schemas/Maze'
  */
-const getMaze = async (req: MazeRequest, res, next) => {
-  res.status(200).json(req.maze);
+const getMaze = asyncHandler(async (req, res) => {
+  const { maze } = req as MazeRequest;
 
-  return next();
-};
+  res.status(200).json(maze);
+});
 
 export default getMaze;

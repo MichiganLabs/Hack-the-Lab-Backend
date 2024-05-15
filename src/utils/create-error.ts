@@ -1,4 +1,4 @@
-class ProblemDetailsError extends Error {
+export class ProblemDetailsError extends Error {
   statusCode: number;
   detail: string;
 

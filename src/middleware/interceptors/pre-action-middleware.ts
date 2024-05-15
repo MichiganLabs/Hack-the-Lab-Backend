@@ -1,47 +1,52 @@
 import { getRatExitedMaze, getRatPosition } from "@data";
 import { ActionType } from "@enums";
-import { RatActionRequest } from "hackthelab";
+import { MazeRequest, RatActionRequest } from "hackthelab";
 import { RatService } from "services";
-import { insertAction } from "services/rat-service";
+import { ProblemDetailsError, asyncHandler, createError } from "utils";
 
 /**
  *
  * Initialize the maze (if necessary) and inject the rat's current position into the request.
  */
-export const preActionMiddleware = async (req: RatActionRequest, res, next) => {
+export const preActionMiddleware = asyncHandler(async (req, _res, next) => {
+  const { maze } = req as MazeRequest;
+  const ratActionRequest = req as RatActionRequest;
+
   try {
     // Verify that the rat hasn't exited the maze.
-    const ratExitedMaze = await getRatExitedMaze(req.user.id, req.maze.id);
+    const ratExitedMaze = await getRatExitedMaze(req.user.id, maze.id);
     if (ratExitedMaze) {
-      return res.status(403).json({ message: "Rat has exited the maze!" });
+      throw createError(403, "Rat has already exited the maze.");
     }
 
     // Verify that the rat hasn't exceeded the number of moves limit.
     const MOVE_LIMIT_MULTIPLIER = 10;
-    const ratNumOfMoves = await RatService.getNumOfMoves(req.user.id, req.maze.id);
-    const ratMoveLimit = req.maze.open_square_count * MOVE_LIMIT_MULTIPLIER;
+    const ratNumOfMoves = await RatService.getNumOfMoves(req.user.id, maze.id);
+    const ratMoveLimit = maze.open_square_count * MOVE_LIMIT_MULTIPLIER;
     // If the rat's move count exceeds the move limit, we return a 403 forbidden response.
     if (ratNumOfMoves >= ratMoveLimit) {
-      return res.status(403).json({ message: "Rat has exceeded the number of moves limit!" });
+      throw createError(403, "Rat has exceeded the move limit!");
     }
 
     // Get rat's current position
-    let position = await getRatPosition(req.user.id, req.maze.id);
+    let position = await getRatPosition(req.user.id, maze.id);
 
     // If we don't have a position, we need to initialize the maze.
     if (!position) {
-      position = req.maze.start;
+      position = maze.start;
 
       // Insert an action denoting the rat has started the maze.
-      await insertAction(req.user.id, req.maze.id, ActionType.Start, position);
+      await RatService.insertAction(req.user.id, maze.id, ActionType.Start, position);
     }
 
     // Add the rat position to the request
-    req.ratPosition = position;
+    ratActionRequest.ratPosition = position;
 
     // Move to the next middleware
     next();
-  } catch (err) {
-    return res.status(500).json({ message: "Internal server error" });
+  } catch (e) {
+    if (e instanceof ProblemDetailsError) throw e;
+    console.error(e);
+    throw createError(500, "Internal server error has occurred");
   }
-};
+});

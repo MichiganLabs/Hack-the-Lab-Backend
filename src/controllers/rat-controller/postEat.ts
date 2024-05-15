@@ -1,5 +1,6 @@
 import { ActionResponse, RatActionRequest } from "hackthelab";
 import { RatService } from "services";
+import { ProblemDetailsError, asyncHandler, createError } from "utils";
 
 /**
  * @swagger
@@ -34,13 +35,15 @@ import { RatService } from "services";
  *       500:
  *         description: Internal server error.
  */
-const postEat = async (req: RatActionRequest, res, next) => {
+const postEat = asyncHandler(async (req, res) => {
+  const { user, maze, ratPosition } = req as RatActionRequest;
+
   try {
     // Attempt to eat the cheese.
-    const eatResult = await RatService.eatCheese(req.user.id, req.maze, req.ratPosition);
+    const eatResult = await RatService.eatCheese(user.id, maze, ratPosition);
 
     // Get the rat's current position and surroundings after the rat has eaten (or not) the cheese.
-    const cell = await RatService.getCellAtPosition(req.maze, req.ratPosition, req.user.id);
+    const cell = await RatService.getCellAtPosition(maze, ratPosition, user.id);
 
     const response: ActionResponse = {
       success: eatResult,
@@ -49,12 +52,10 @@ const postEat = async (req: RatActionRequest, res, next) => {
 
     res.status(200).json(response);
   } catch (e) {
+    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    res.status(500).json({ error: "Internal server error" });
+    throw createError(500, "An error occurred while trying to eat.");
   }
-
-  next();
-  return;
-};
+});
 
 export default postEat;

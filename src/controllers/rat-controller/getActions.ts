@@ -1,5 +1,6 @@
 import { ActionsResponse, MazeRequest } from "hackthelab";
 import { MazeService } from "services";
+import { ProblemDetailsError, asyncHandler, createError } from "utils";
 
 /**
  * @swagger
@@ -27,11 +28,12 @@ import { MazeService } from "services";
  *       403:
  *         description: Forbidden.
  */
-const getActions = async (req: MazeRequest, res, next) => {
+const getActions = asyncHandler(async (req, res) => {
+  const { user, maze } = req as MazeRequest;
 
   try {
-    const actions = await MazeService.getActions(req.user.id, req.maze.id);
-    const score = MazeService.getScore(req.user.id, req.maze, actions);
+    const actions = await MazeService.getActions(user.id, maze.id);
+    const score = MazeService.getScore(user.id, maze, actions);
 
     const response: ActionsResponse = {
       actions,
@@ -40,12 +42,10 @@ const getActions = async (req: MazeRequest, res, next) => {
 
     res.status(200).json(response);
   } catch (e) {
+    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    res.sendStatus(500).json({ error: "Internal server error" });
+    throw createError(500, "An error occurred while trying to get actions.");
   }
-
-  next();
-  return;
-};
+});
 
 export default getActions;

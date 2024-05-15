@@ -1,5 +1,6 @@
 import { MazeRequest } from "hackthelab";
 import { MazeService } from "services";
+import { ProblemDetailsError, asyncHandler, createError } from "utils";
 import { body, matchedData, param } from "utils/custom-validator";
 
 /**
@@ -36,7 +37,9 @@ export const mazePathSchema = [
   param("mazeId").isString().withMessage("mazeId must be included in the path of the url request.")
 ]
 
-export const resolveMaze = async (req: MazeRequest, res, next) => {
+export const resolveMaze = asyncHandler(async (req, _res, next) => {
+  const mazeRequest = req as MazeRequest;
+
   const { mazeId } = matchedData(req);
 
   try {
@@ -45,15 +48,17 @@ export const resolveMaze = async (req: MazeRequest, res, next) => {
     const maze = await MazeService.getMazeById(environments, mazeId);
 
     if (!maze) {
-      return res.status(404).json({ message: "Maze not found!" });
+      throw createError(404, `Maze '${mazeId}' not found!`);
     }
 
     // Add the maze object to the request
-    req.maze = maze;
+    mazeRequest.maze = maze;
 
     // Move to the next middleware
     next();
-  } catch (err) {
-    return res.status(500).json({ message: "Internal server error" });
+  } catch (e) {
+    if (e instanceof ProblemDetailsError) throw e;
+    console.error(e);
+    throw createError(500, `Error occurred while resolving maze.`);
   }
-};
+});

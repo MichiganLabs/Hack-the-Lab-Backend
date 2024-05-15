@@ -1,5 +1,6 @@
 import { RatActionRequest } from "hackthelab";
 import { RatService } from "services";
+import { ProblemDetailsError, asyncHandler, createError } from "utils";
 
 /**
  * @swagger
@@ -38,19 +39,18 @@ import { RatService } from "services";
  *       500:
  *         description: Internal server error.
  */
-const postSmell = async (req: RatActionRequest, res, next) => {
+const postSmell = asyncHandler(async (req, res) => {
+  const { user, maze, ratPosition } = req as RatActionRequest;
 
   try {
-    const smellResult = await RatService.smell(req.user.id, req.maze, req.ratPosition);
+    const smellResult = await RatService.smell(user.id, maze, ratPosition);
 
-    res.status(200).json({intensity: smellResult});
+    res.status(200).json({ intensity: smellResult });
   } catch (e) {
+    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    res.status(500).json({ error: "Internal server error" });
+    throw createError(500, "An error occurred while trying to smell.");
   }
-
-  next();
-  return;
-};
+});
 
 export default postSmell;

@@ -1,5 +1,6 @@
 import { ActionsResponse, MazeRequest } from "hackthelab";
 import { MazeService } from "services";
+import { ProblemDetailsError, asyncHandler, createError } from "utils";
 import { matchedData, param } from "utils/custom-validator";
 
 interface ActionsRequestBody {
@@ -42,12 +43,13 @@ export const actionsSchema = [
  *       403:
  *         description: Forbidden.
  */
-const getActions = async (req: MazeRequest, res, next) => {
+const getActions = asyncHandler(async (req, res) => {
+  const { maze } = req as MazeRequest;
   const data = matchedData(req) as ActionsRequestBody;
 
   try {
-    const actions = await MazeService.getActions(data.userId, req.maze.id);
-    const score = MazeService.getScore(data.userId, req.maze, actions);
+    const actions = await MazeService.getActions(data.userId, maze.id);
+    const score = MazeService.getScore(data.userId, maze, actions);
 
     const response: ActionsResponse = {
       actions,
@@ -56,12 +58,10 @@ const getActions = async (req: MazeRequest, res, next) => {
 
     res.status(200).json(response);
   } catch (e) {
+    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    res.sendStatus(500).json({ error: "Internal server error" });
+    throw createError(500, "An error occurred while trying to fetch actions.");
   }
-
-  next();
-  return;
-};
+});
 
 export default getActions;

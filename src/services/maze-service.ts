@@ -68,7 +68,8 @@ export const loadMazesForEnvironment = async (environment: Environment): Promise
 
   try {
     await fs.access(envDir);
-  } catch {
+  } catch (e) {
+    console.error(e);
     return;
   }
 

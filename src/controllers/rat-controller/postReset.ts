@@ -1,5 +1,6 @@
 import { MazeRequest } from "hackthelab";
 import { RatService } from "services";
+import { ProblemDetailsError, asyncHandler, createError } from "utils";
 
 /**
  * @swagger
@@ -30,18 +31,18 @@ import { RatService } from "services";
  *       500:
  *         description: Internal server error.
  */
-const postReset = async (req: MazeRequest, res, next) => {
+const postReset = asyncHandler(async (req, res) => {
+  const { user, maze } = req as MazeRequest;
+
   try {
-    await RatService.resetMaze(req.user.id, req.maze.id);
+    await RatService.resetMaze(user.id, maze.id);
 
     res.status(200).json({ message: "Maze was successfully reset" });
   } catch (e) {
+    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    res.sendStatus(500).json({ error: "Internal server error" });
+    throw createError(500, "An error occurred while trying to reset.");
   }
-
-  next();
-  return;
-};
+});
 
 export default postReset;
