@@ -21,10 +21,10 @@ export const getRatPosition = async (userId: number, mazeId: string): Promise<Co
   }
 
   // Could not read from cache, or expired, query the database.
-  const dbPositionRows = await pgQuery(
-    "SELECT position FROM actions WHERE maze_id = $1 AND user_id = $2 ORDER BY time_ts DESC LIMIT 1",
-    [mazeId, userId],
-  );
+  const dbPositionRows = await pgQuery("SELECT position FROM actions WHERE maze_id = $1 AND user_id = $2 ORDER BY time_ts DESC LIMIT 1", [
+    mazeId,
+    userId,
+  ]);
 
   // TODO: After (https://msljira.atlassian.net/browse/HTL-12) is implemented, this should maybe throw an exception.
   if (0 == dbPositionRows.length) {

@@ -10,8 +10,8 @@ const mazeStore: { [key in Environment]: MazeDictionary } = {
   [Environment.Sandbox]: {},
 };
 
-export const getActions = async (userId: number, mazeId: string): Promise<Action[]> => {
-  return await ActionRepository.getAll(userId, mazeId);
+export const getActions = (userId: number, mazeId: string): Promise<Action[]> => {
+  return ActionRepository.getAll(userId, mazeId);
 };
 
 export const getMazes = async (): Promise<MazeDictionary> => {

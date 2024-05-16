@@ -1,4 +1,5 @@
 import { Role } from "@enums";
+import console from "console";
 import { MazeRequest } from "hackthelab";
 import { MazeService } from "services";
 import { asyncHandler, createError, rethrowOrCreateError } from "utils";
@@ -61,6 +62,7 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
     // Move to the next middleware
     next();
   } catch (e) {
+    console.error(e);
     throw rethrowOrCreateError(e, 500, "Server Error", `Error occurred while resolving maze.`);
   }
 });
