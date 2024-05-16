@@ -1,16 +1,17 @@
 import { Direction } from "@enums";
 import { ActionResponse, RatActionRequest } from "hackthelab";
 import { RatService } from "services";
+import { asyncHandler, rethrowOrCreateError } from "utils";
 import { body, matchedData } from "utils/custom-validator";
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     MoveRequestBody:
+ *     MoveRequest:
  *       type: object
  *       allOf:
- *         - $ref: '#/components/schemas/MazeRequestBodySchema'
+ *         - $ref: '#/components/schemas/MazeRequest'
  *       properties:
  *         direction:
  *           $ref: '#/components/schemas/Direction'
@@ -36,7 +37,7 @@ export const moveSchema = [
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/MoveRequestBody'
+ *             $ref: '#/components/schemas/MoveRequest'
  *     responses:
  *       200:
  *         description: Move successful
@@ -45,27 +46,25 @@ export const moveSchema = [
  *             schema:
  *               $ref: '#/components/schemas/ActionResponse'
  *       400:
- *         description: Invalid request.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden
+ *         $ref: '#/components/responses/Forbidden'
  *       500:
- *         description: Internal server error.
+ *         $ref: '#/components/responses/ServerError'
  */
-const postMove = async (req: RatActionRequest, res, next) => {
+const postMove = asyncHandler(async (req, res) => {
+  const { user, maze, ratPosition } = req as RatActionRequest;
+
   const data = matchedData(req) as MoveRequestBody;
 
   try {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
-    const moveResult = await RatService.moveRat(req.user.id, req.maze, req.ratPosition, data.direction);
+    const moveResult = await RatService.moveRat(user.id, maze, ratPosition, data.direction);
 
     // Get the current cell after the rat has moved.
-    const cell = await RatService.getCellAtPosition(req.maze, req.ratPosition, req.user.id);
+    const cell = await RatService.getCellAtPosition(maze, ratPosition, user.id);
 
     const response: ActionResponse = {
       success: moveResult,
@@ -75,11 +74,8 @@ const postMove = async (req: RatActionRequest, res, next) => {
     res.status(200).json(response);
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: "Internal server error" });
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to move.");
   }
-
-  next();
-  return;
-};
+});
 
 export default postMove;

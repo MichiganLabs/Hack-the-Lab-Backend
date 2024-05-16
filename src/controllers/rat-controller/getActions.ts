@@ -1,5 +1,6 @@
 import { ActionsResponse, MazeRequest } from "hackthelab";
 import { MazeService } from "services";
+import { asyncHandler, rethrowOrCreateError } from "utils";
 
 /**
  * @swagger
@@ -17,21 +18,20 @@ import { MazeService } from "services";
  *             schema:
  *               $ref: '#/components/schemas/ActionsResponse'
  *       400:
- *         description: Invalid request body.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden.
+ *         $ref: '#/components/responses/Forbidden'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
-const getActions = async (req: MazeRequest, res, next) => {
+const getActions = asyncHandler(async (req, res) => {
+  const { user, maze } = req as MazeRequest;
 
   try {
-    const actions = await MazeService.getActions(req.user.id, req.maze.id);
-    const score = MazeService.getScore(req.user.id, req.maze, actions);
+    const actions = await MazeService.getActions(user.id, maze.id);
+    const score = MazeService.getScore(user.id, maze, actions);
 
     const response: ActionsResponse = {
       actions,
@@ -41,11 +41,8 @@ const getActions = async (req: MazeRequest, res, next) => {
     res.status(200).json(response);
   } catch (e) {
     console.error(e);
-    res.sendStatus(500).json({ error: "Internal server error" });
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to get actions.");
   }
-
-  next();
-  return;
-};
+});
 
 export default getActions;

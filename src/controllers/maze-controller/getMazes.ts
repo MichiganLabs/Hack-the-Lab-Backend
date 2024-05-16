@@ -1,6 +1,6 @@
 import { Environment, Role } from "@enums";
-import { NextFunction, Request, Response } from "express";
 import { MazeService } from "services";
+import { asyncHandler, rethrowOrCreateError } from "utils";
 import { query } from "utils/custom-validator";
 
 export const mazesSchema = [query("env").optional().isEnvironment()];
@@ -21,8 +21,16 @@ export const mazesSchema = [query("env").optional().isEnvironment()];
  *               items:
  *                 type: string
  *                 example: "oneTurn"
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
-const getMazes = async (req: Request, res: Response, next: NextFunction) => {
+const getMazes = asyncHandler(async (req, res) => {
   try {
     // By default, users will have their environment determined by their role.
     let envs = MazeService.getEnvironmentsForRole(req.user.role);
@@ -39,11 +47,8 @@ const getMazes = async (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json(mazeList);
   } catch (e) {
     console.error(e);
-    res.sendStatus(500).json({ error: "Internal server error" });
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to get mazes.");
   }
-
-  next();
-  return;
-};
+});
 
 export default getMazes;

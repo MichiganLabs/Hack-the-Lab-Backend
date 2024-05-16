@@ -1,6 +1,6 @@
 import { Role } from "@enums";
-import { hasRole, mazePathSchema, resolveMaze, validate } from "@middleware/interceptors";
 import { Router } from "express";
+import { hasRole, mazePathSchema, resolveMaze, validate } from "middleware/interceptors";
 import { Controller } from "../index";
 import getActions, { actionsSchema } from "./getActions";
 import getMaze from "./getMaze";

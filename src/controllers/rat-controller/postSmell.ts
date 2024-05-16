@@ -1,5 +1,6 @@
 import { RatActionRequest } from "hackthelab";
 import { RatService } from "services";
+import { asyncHandler, rethrowOrCreateError } from "utils";
 
 /**
  * @swagger
@@ -13,7 +14,7 @@ import { RatService } from "services";
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/MazeRequestBodySchema'
+ *             $ref: '#/components/schemas/MazeRequest'
  *     responses:
  *       200:
  *         description: Smell successful
@@ -26,31 +27,25 @@ import { RatService } from "services";
  *                  type: number
  *                  example: 0.6
  *       400:
- *         description: Invalid request.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden
+ *         $ref: '#/components/responses/Forbidden'
  *       500:
- *         description: Internal server error.
+ *         $ref: '#/components/responses/ServerError'
  */
-const postSmell = async (req: RatActionRequest, res, next) => {
+const postSmell = asyncHandler(async (req, res) => {
+  const { user, maze, ratPosition } = req as RatActionRequest;
 
   try {
-    const smellResult = await RatService.smell(req.user.id, req.maze, req.ratPosition);
+    const smellResult = await RatService.smell(user.id, maze, ratPosition);
 
-    res.status(200).json({intensity: smellResult});
+    res.status(200).json({ intensity: smellResult });
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: "Internal server error" });
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to smell.");
   }
-
-  next();
-  return;
-};
+});
 
 export default postSmell;

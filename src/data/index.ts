@@ -20,7 +20,8 @@ export const query = async (text: string, params: any) => {
     if (result) {
       return result;
     }
-  } catch {
+  } catch (e) {
+    console.error(e);
     // Could not read from cache, or expired, query the database.
   }
 
@@ -44,7 +45,8 @@ export const getRatPosition = async (userId: number, mazeId: string): Promise<Co
     if (cachePosition) {
       return cachePosition as Coordinate;
     }
-  } catch {
+  } catch (e) {
+    console.error(e);
     /* empty */
   }
 
@@ -93,7 +95,8 @@ export const getEatenCheesePositions = async (userId: number, mazeId: string): P
     if (cachePositions) {
       return cachePositions as Coordinate[];
     }
-  } catch {
+  } catch (e) {
+    console.error(e);
     /* empty */
   }
 
@@ -150,7 +153,8 @@ export const getRatExitedMaze = async (user_id: number, mazeId: string): Promise
     if (ratExitedMaze !== undefined) {
       return ratExitedMaze as boolean;
     }
-  } catch {
+  } catch (e) {
+    console.error(e);
     /* empty */
   }
 

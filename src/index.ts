@@ -1,6 +1,7 @@
 import bodyParser from "body-parser";
 import express, { Express } from "express";
 import http from "http";
+import { exceptionMiddleware } from "middleware/interceptors";
 import morgan from "morgan";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
@@ -15,6 +16,10 @@ const port = process.env.PORT || 8080;
 const v1Router = express.Router();
 v1Router.use(bodyParser.json());
 
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
 for (let i = 0; i < interceptors.length; i++) {
   v1Router.use(interceptors[i]);
 }
@@ -25,9 +30,7 @@ getControllers().forEach(controller => {
 
 app.use("/v1", v1Router);
 
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
+app.use(exceptionMiddleware);
 
 app.use(
   "/api-docs",

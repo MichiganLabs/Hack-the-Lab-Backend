@@ -1,5 +1,6 @@
 import { MazeRequest } from "hackthelab";
 import { RatService } from "services";
+import { asyncHandler, rethrowOrCreateError } from "utils";
 
 /**
  * @swagger
@@ -13,35 +14,30 @@ import { RatService } from "services";
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/MazeRequestBodySchema'
+ *             $ref: '#/components/schemas/MazeRequest'
  *     responses:
  *       200:
  *         description: Reset successful.
  *       400:
- *         description: Invalid request.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden
+ *         $ref: '#/components/responses/Forbidden'
  *       500:
- *         description: Internal server error.
+ *         $ref: '#/components/responses/ServerError'
  */
-const postReset = async (req: MazeRequest, res, next) => {
+const postReset = asyncHandler(async (req, res) => {
+  const { user, maze } = req as MazeRequest;
+
   try {
-    await RatService.resetMaze(req.user.id, req.maze.id);
+    await RatService.resetMaze(user.id, maze.id);
 
     res.status(200).json({ message: "Maze was successfully reset" });
   } catch (e) {
     console.error(e);
-    res.sendStatus(500).json({ error: "Internal server error" });
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to reset.");
   }
-
-  next();
-  return;
-};
+});
 
 export default postReset;

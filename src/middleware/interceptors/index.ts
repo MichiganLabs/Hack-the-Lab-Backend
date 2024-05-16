@@ -14,10 +14,10 @@ export const interceptors: Array<Interceptor> = [
   analyticsMiddleware,
 ];
 
+export { exceptionMiddleware } from "./exception-middleware";
 export { mazeBodySchema, mazePathSchema, resolveMaze } from "./maze-middleware";
 export { preActionMiddleware } from "./pre-action-middleware";
 export { ratControllerLocking } from "./rat-controller-locking";
 
 export { hasRole } from "./role-authorize";
 export { validate } from "./validate";
-

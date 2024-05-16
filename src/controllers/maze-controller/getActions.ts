@@ -1,5 +1,7 @@
 import { ActionsResponse, MazeRequest } from "hackthelab";
 import { MazeService } from "services";
+import { asyncHandler } from "utils";
+import { rethrowOrCreateError } from "utils/create-error";
 import { matchedData, param } from "utils/custom-validator";
 
 interface ActionsRequestBody {
@@ -32,22 +34,21 @@ export const actionsSchema = [
  *             schema:
  *               $ref: '#/components/schemas/ActionsResponse'
  *       400:
- *         description: Invalid request body.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden.
+ *         $ref: '#/components/responses/Forbidden'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
-const getActions = async (req: MazeRequest, res, next) => {
+const getActions = asyncHandler(async (req, res) => {
+  const { maze } = req as MazeRequest;
   const data = matchedData(req) as ActionsRequestBody;
 
   try {
-    const actions = await MazeService.getActions(data.userId, req.maze.id);
-    const score = MazeService.getScore(data.userId, req.maze, actions);
+    const actions = await MazeService.getActions(data.userId, maze.id);
+    const score = MazeService.getScore(data.userId, maze, actions);
 
     const response: ActionsResponse = {
       actions,
@@ -57,11 +58,8 @@ const getActions = async (req: MazeRequest, res, next) => {
     res.status(200).json(response);
   } catch (e) {
     console.error(e);
-    res.sendStatus(500).json({ error: "Internal server error" });
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to fetch actions.");
   }
-
-  next();
-  return;
-};
+});
 
 export default getActions;

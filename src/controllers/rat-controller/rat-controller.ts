@@ -1,4 +1,6 @@
 import { Role } from "@enums";
+import { Router } from "express";
+import { ContextRunner } from "express-validator";
 import {
   hasRole,
   mazeBodySchema,
@@ -6,10 +8,8 @@ import {
   preActionMiddleware,
   ratControllerLocking,
   resolveMaze,
-  validate
-} from "@middleware/interceptors";
-import { Router } from "express";
-import { ContextRunner } from "express-validator";
+  validate,
+} from "middleware/interceptors";
 import { Controller } from "../index";
 import getActions from "./getActions";
 import getSurroundings from "./getSurroundings";
@@ -27,9 +27,8 @@ import postSmell from "./postSmell";
  */
 export class RatController implements Controller {
   initialize(router: Router): void {
-    
     // Rat action endpoints, each of these endpoints has an action recorded for a rat.
-    router.post("/rat/move", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), validate(moveSchema), postMove);
+    router.post("/rat/move", hasRole(Role.Participant), this.buildMiddlewareWithSchema([...mazeBodySchema, ...moveSchema]), postMove);
     router.post("/rat/smell", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postSmell);
     router.post("/rat/eat", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postEat);
     router.post("/rat/exit", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postExit);

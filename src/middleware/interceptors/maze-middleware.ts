@@ -1,12 +1,14 @@
+import console from "console";
 import { MazeRequest } from "hackthelab";
 import { MazeService } from "services";
+import { asyncHandler, createError, rethrowOrCreateError } from "utils";
 import { body, matchedData, param } from "utils/custom-validator";
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     MazeRequestBodySchema:
+ *     MazeRequest:
  *       properties:
  *         mazeId:
  *           type: string
@@ -15,9 +17,7 @@ import { body, matchedData, param } from "utils/custom-validator";
  *         - mazeId
  *
  */
-export const mazeBodySchema = [
-  body("mazeId").isString().withMessage("'mazeId' must be included in the body of the request."),
-];
+export const mazeBodySchema = [body("mazeId").isString().withMessage("'mazeId' must be included in the body of the request.")];
 
 /**
  * @swagger
@@ -37,7 +37,9 @@ export const mazePathSchema = [
   param("mazeId").isString().withMessage("mazeId must be included in the path of the url request.")
 ]
 
-export const resolveMaze = async (req: MazeRequest, res, next) => {
+export const resolveMaze = asyncHandler(async (req, _res, next) => {
+  const mazeRequest = req as MazeRequest;
+
   const { mazeId } = matchedData(req);
 
   try {
@@ -46,15 +48,16 @@ export const resolveMaze = async (req: MazeRequest, res, next) => {
     const maze = await MazeService.getMazeById(environments, mazeId);
 
     if (!maze) {
-      return res.status(404).json({ message: "Maze not found!" });
+      throw createError(404, "Maze Not Found", `Maze '${mazeId}' not found!`);
     }
 
     // Add the maze object to the request
-    req.maze = maze;
+    mazeRequest.maze = maze;
 
     // Move to the next middleware
     next();
-  } catch (err) {
-    return res.status(500).json({ message: "Internal server error" });
+  } catch (e) {
+    console.error(e);
+    throw rethrowOrCreateError(e, 500, "Server Error", `Error occurred while resolving maze.`);
   }
-};
+});
