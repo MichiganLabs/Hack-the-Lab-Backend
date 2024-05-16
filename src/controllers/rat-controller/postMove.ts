@@ -79,7 +79,7 @@ const postMove = asyncHandler(async (req, res) => {
   } catch (e) {
     if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, "An error occurred while trying to move.");
+    throw createError(500, "Server Error", "An error occurred while trying to move.");
   }
 });
 

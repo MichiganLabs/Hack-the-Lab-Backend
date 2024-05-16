@@ -11,7 +11,7 @@ export const validate = (validations: ContextRunner[]): RequestHandler => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw createError(400, "errors");
+      throw createError(400, "Bad Request", "One or more validation errors have occurred", { errors: errors.array() });
     }
 
     next();

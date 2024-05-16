@@ -16,7 +16,7 @@ export const preActionMiddleware = asyncHandler(async (req, _res, next) => {
     // Verify that the rat hasn't exited the maze.
     const ratExitedMaze = await getRatExitedMaze(req.user.id, maze.id);
     if (ratExitedMaze) {
-      throw createError(403, "Rat has already exited the maze.");
+      throw createError(403, "Already exited", "Rat has already exited the maze.");
     }
 
     // Verify that the rat hasn't exceeded the number of moves limit.
@@ -25,7 +25,7 @@ export const preActionMiddleware = asyncHandler(async (req, _res, next) => {
     const ratMoveLimit = maze.open_square_count * MOVE_LIMIT_MULTIPLIER;
     // If the rat's move count exceeds the move limit, we return a 403 forbidden response.
     if (ratNumOfMoves >= ratMoveLimit) {
-      throw createError(403, "Rat has exceeded the move limit!");
+      throw createError(403, "Move Limit Exceeded", "Rat has exceeded the move limit!");
     }
 
     // Get rat's current position
@@ -47,6 +47,6 @@ export const preActionMiddleware = asyncHandler(async (req, _res, next) => {
   } catch (e) {
     if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, "Internal server error has occurred");
+    throw createError(500, "Server Error", "Internal server error has occurred");
   }
 });

@@ -48,7 +48,7 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
     const maze = await MazeService.getMazeById(environments, mazeId);
 
     if (!maze) {
-      throw createError(404, `Maze '${mazeId}' not found!`);
+      throw createError(404, "Maze Not Found", `Maze '${mazeId}' not found!`);
     }
 
     // Add the maze object to the request
@@ -59,6 +59,6 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
   } catch (e) {
     if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, `Error occurred while resolving maze.`);
+    throw createError(500, "Server Error", `Error occurred while resolving maze.`);
   }
 });
