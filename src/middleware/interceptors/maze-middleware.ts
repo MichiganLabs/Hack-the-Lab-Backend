@@ -7,7 +7,7 @@ import { body, matchedData, param } from "utils/custom-validator";
  * @swagger
  * components:
  *   schemas:
- *     MazeRequestBodySchema:
+ *     MazeRequest:
  *       properties:
  *         mazeId:
  *           type: string

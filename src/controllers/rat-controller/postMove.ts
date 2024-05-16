@@ -8,10 +8,10 @@ import { body, matchedData } from "utils/custom-validator";
  * @swagger
  * components:
  *   schemas:
- *     MoveRequestBody:
+ *     MoveRequest:
  *       type: object
  *       allOf:
- *         - $ref: '#/components/schemas/MazeRequestBodySchema'
+ *         - $ref: '#/components/schemas/MazeRequest'
  *       properties:
  *         direction:
  *           $ref: '#/components/schemas/Direction'
@@ -37,7 +37,7 @@ export const moveSchema = [
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/MoveRequestBody'
+ *             $ref: '#/components/schemas/MoveRequest'
  *     responses:
  *       200:
  *         description: Move successful
@@ -46,17 +46,13 @@ export const moveSchema = [
  *             schema:
  *               $ref: '#/components/schemas/ActionResponse'
  *       400:
- *         description: Invalid request.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden
+ *         $ref: '#/components/responses/Forbidden'
  *       500:
- *         description: Internal server error.
+ *         $ref: '#/components/responses/ServerError'
  */
 const postMove = asyncHandler(async (req, res) => {
   const { user, maze, ratPosition } = req as RatActionRequest;

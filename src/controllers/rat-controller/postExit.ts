@@ -14,7 +14,7 @@ import { ProblemDetailsError, asyncHandler, createError } from "utils";
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/MazeRequestBodySchema'
+ *             $ref: '#/components/schemas/MazeRequest'
  *     responses:
  *       200:
  *         description: Exit successful.
@@ -23,17 +23,13 @@ import { ProblemDetailsError, asyncHandler, createError } from "utils";
  *             schema:
  *               $ref: '#/components/schemas/ActionResponse'
  *       400:
- *         description: Invalid request.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden.
+ *         $ref: '#/components/responses/Forbidden'
  *       500:
- *         description: Internal server error.
+ *         $ref: '#/components/responses/ServerError'
  */
 const postExit = asyncHandler(async (req, res) => {
   const { user, maze, ratPosition } = req as RatActionRequest;

@@ -21,6 +21,14 @@ export const mazesSchema = [query("env").optional().isEnvironment()];
  *               items:
  *                 type: string
  *                 example: "oneTurn"
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 const getMazes = asyncHandler(async (req, res) => {
   try {

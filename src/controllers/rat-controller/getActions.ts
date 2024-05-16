@@ -18,15 +18,13 @@ import { ProblemDetailsError, asyncHandler, createError } from "utils";
  *             schema:
  *               $ref: '#/components/schemas/ActionsResponse'
  *       400:
- *         description: Invalid request body.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden.
+ *         $ref: '#/components/responses/Forbidden'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 const getActions = asyncHandler(async (req, res) => {
   const { user, maze } = req as MazeRequest;

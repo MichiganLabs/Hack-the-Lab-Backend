@@ -2,6 +2,49 @@
 
 import { ProblemDetailsError } from "utils";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ProblemDetailError:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: integer
+ *           example: 400
+ *         title:
+ *           type: string
+ *         detail:
+ *           type: string
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     BadRequestError:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ProblemDetailError'
+ *         - type: object
+ *           properties:
+ *             errors:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   type:
+ *                     type: string
+ *                     example: field
+ *                   msg:
+ *                     type: string
+ *                     example: Maze Id is missing.
+ *                   path:
+ *                     type: string
+ *                     example: mazeId
+ *                   location:
+ *                     type: string
+ *                     example: body
+ */
 export const exceptionMiddleware = (error: ProblemDetailsError, _req, res, _next) => {
   res
     .setHeader("Content-Type", "application/problem+json")
