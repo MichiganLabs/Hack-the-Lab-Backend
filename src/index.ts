@@ -1,4 +1,5 @@
 import bodyParser from "body-parser";
+import cors from "cors";
 import express, { Express } from "express";
 import http from "http";
 import { exceptionMiddleware } from "middleware/interceptors";
@@ -27,6 +28,8 @@ for (let i = 0; i < interceptors.length; i++) {
 getControllers().forEach(controller => {
   controller.initialize(v1Router);
 });
+
+app.use(cors());
 
 app.use("/v1", v1Router);
 
