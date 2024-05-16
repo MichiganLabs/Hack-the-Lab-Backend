@@ -22,7 +22,7 @@ export class MazeController implements Controller {
     // Validate the mazeId and inject the `maze` object into the request
     mazeMiddleware.push(validate(mazePathSchema), resolveMaze);
 
-    router.put("/maze/:mazeId", ...mazeMiddleware, validate(mazeUpdateSchema), putMaze);
+    router.put("/maze/:mazeId", hasRole(Role.Developer), validate([...mazePathSchema, ...mazeUpdateSchema]), resolveMaze, putMaze);
     router.get("/maze/:mazeId/actions/:userId", ...mazeMiddleware, validate(actionsSchema), getActions);
     router.get("/maze/:mazeId", ...mazeMiddleware, getMaze);
     router.get("/mazes", validate(mazesSchema), getMazes);
