@@ -1,5 +1,5 @@
-import { getRatExitedMaze, getRatPosition } from "@data";
 import { ActionType } from "@enums";
+import { RatRepository } from "data/repository";
 import { MazeRequest, RatActionRequest } from "hackthelab";
 import { RatService } from "services";
 import { asyncHandler, createError, rethrowOrCreateError } from "utils";
@@ -14,7 +14,7 @@ export const preActionMiddleware = asyncHandler(async (req, _res, next) => {
 
   try {
     // Verify that the rat hasn't exited the maze.
-    const ratExitedMaze = await getRatExitedMaze(req.user.id, maze.id);
+    const ratExitedMaze = await RatRepository.getRatExitedMaze(req.user.id, maze.id);
     if (ratExitedMaze) {
       throw createError(403, "Already exited", "Rat has already exited the maze.");
     }
@@ -29,7 +29,7 @@ export const preActionMiddleware = asyncHandler(async (req, _res, next) => {
     }
 
     // Get rat's current position
-    let position = await getRatPosition(req.user.id, maze.id);
+    let position = await RatRepository.getRatPosition(req.user.id, maze.id);
 
     // If we don't have a position, we need to initialize the maze.
     if (!position) {

@@ -1,23 +1,9 @@
-import {
-  clearEatenCheeseCache,
-  clearExitMazeCache,
-  clearRatPositionCache,
-  getEatenCheesePositions,
-  saveEatenCheeseToCache,
-  saveExitMazeToCache,
-  saveRatPositionToCache,
-} from "@data";
 import { ActionType, CellType, Direction } from "@enums";
-import { pgQuery } from "data/db";
+import { ActionRepository, RatRepository } from "data/repository";
 import { Cell, Coordinate, Maze } from "hackthelab";
 import { MazeService } from "services";
 
-export const moveRat = async (
-  userId: number,
-  maze: Maze,
-  position: Coordinate,
-  direction: Direction,
-): Promise<boolean> => {
+export const moveRat = async (userId: number, maze: Maze, position: Coordinate, direction: Direction): Promise<boolean> => {
   // Keep track of whether the rat moved, or not.
   let didMove = false;
 
@@ -58,7 +44,7 @@ export const moveRat = async (
 
   if (didMove) {
     // If the rat moved, update the position
-    await saveRatPositionToCache(userId, maze.id, position);
+    await RatRepository.saveRatPositionToCache(userId, maze.id, position);
   }
 
   // Insert an action denoting the rat has moved.
@@ -68,12 +54,10 @@ export const moveRat = async (
 };
 
 export const smell = async (userId: number, maze: Maze, position: Coordinate): Promise<number> => {
-  const eatenCheese = await getEatenCheesePositions(userId, maze.id);
+  const eatenCheese = await RatRepository.getEatenCheesePositions(userId, maze.id);
 
   // Get a list of uneaten cheese that is still in the maze.
-  const uneatenCheese = maze.cheese.filter(
-    cheese => !eatenCheese.some(eaten => eaten.x === cheese.x && eaten.y === cheese.y),
-  );
+  const uneatenCheese = maze.cheese.filter(cheese => !eatenCheese.some(eaten => eaten.x === cheese.x && eaten.y === cheese.y));
 
   // Calculate smell intensity based on distance to uneaten cheese.
   // A cheese has a smell radius of 10 cells. The smell intensity is inversely proportional to the distance.
@@ -105,7 +89,7 @@ export const eatCheese = async (userId: number, maze: Maze, position: Coordinate
 
   if (didEat) {
     // If the rat ate the cheese, update the cache.
-    await saveEatenCheeseToCache(userId, maze.id, [position]);
+    await RatRepository.saveEatenCheeseToCache(userId, maze.id, [position]);
   }
 
   // Insert an action denoting the rat attempted to eat.
@@ -125,7 +109,7 @@ export const getCellAtPosition = async (maze: Maze, ratPosition: Coordinate, use
 
   // Only fetch the rat's eaten cheese if the current cell, or one of it's surroundings, is cheese.
   if (cellTypes.includes(CellType.Cheese)) {
-    const eatenCheesePositions = await getEatenCheesePositions(userId, maze.id);
+    const eatenCheesePositions = await RatRepository.getEatenCheesePositions(userId, maze.id);
 
     // Update the cell type/surroundings to Open if the rat has eaten the cheese.
     for (const coord of eatenCheesePositions) {
@@ -169,7 +153,7 @@ export const exitMaze = async (userId: number, maze: Maze, position: Coordinate)
 
   if (didExit) {
     // If the rat exited the maze, update the cache.
-    await saveExitMazeToCache(userId, maze.id, didExit);
+    await RatRepository.saveExitMazeToCache(userId, maze.id, didExit);
   }
 
   // Insert an action denoting the rat attempted to exit.
@@ -186,44 +170,20 @@ export const insertAction = async (
   position: Coordinate,
   success: boolean = true,
 ): Promise<any> => {
-  await pgQuery("INSERT INTO actions (user_id, maze_id, action_type, position, success) VALUES ($1, $2, $3, $4, $5)", [
-    userId,
-    mazeId,
-    actionType,
-    position,
-    success,
-  ]);
+  await ActionRepository.create(userId, mazeId, actionType, position, success);
 };
 
 // Retrieve the number of moves for a rat in a maze whether they are successful moves or not.
-export const getNumOfMoves = async (userId: number, mazeId: string): Promise<number> => {
-  const numOfMoves = await pgQuery(
-    `
-      SELECT COUNT(*)
-      FROM actions
-      WHERE user_id = $1
-      AND maze_id = $2
-      AND action_type = 'MOVE'
-      GROUP BY action_type
-    `,
-    [userId, mazeId],
-  );
-
-  // Verify that we return some rows from the database query.
-  if (numOfMoves.length === 0) {
-    return 0;
-  }
-
-  // Return the count property from the database row that was queried.
-  return numOfMoves[0].count;
+export const getNumOfMoves = (userId: number, mazeId: string): Promise<number> => {
+  return ActionRepository.getMoveCount(userId, mazeId);
 };
 
 export const resetMaze = async (userId: number, mazeId: string): Promise<void> => {
   // Delete actions
-  pgQuery("DELETE FROM actions WHERE user_id = $1 AND maze_id = $2", [userId, mazeId]);
+  await ActionRepository.deleteForUserMaze(userId, mazeId);
 
   // Clear cache
-  await clearRatPositionCache(userId, mazeId);
-  await clearEatenCheeseCache(userId, mazeId);
-  await clearExitMazeCache(userId, mazeId);
+  await RatRepository.clearRatPositionCache(userId, mazeId);
+  await RatRepository.clearEatenCheeseCache(userId, mazeId);
+  await RatRepository.clearExitMazeCache(userId, mazeId);
 };
