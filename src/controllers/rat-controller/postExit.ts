@@ -1,6 +1,6 @@
 import { ActionResponse, RatActionRequest } from "hackthelab";
 import { RatService } from "services";
-import { ProblemDetailsError, asyncHandler, createError } from "utils";
+import { asyncHandler, rethrowOrCreateError } from "utils";
 
 /**
  * @swagger
@@ -48,9 +48,8 @@ const postExit = asyncHandler(async (req, res) => {
 
     res.status(200).json(response);
   } catch (e) {
-    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, "Server Error", "An error occurred while trying to exit.");
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to exit.");
   }
 });
 

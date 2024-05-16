@@ -1,6 +1,6 @@
 import { ActionsResponse, MazeRequest } from "hackthelab";
 import { MazeService } from "services";
-import { ProblemDetailsError, asyncHandler, createError } from "utils";
+import { asyncHandler, rethrowOrCreateError } from "utils";
 
 /**
  * @swagger
@@ -40,9 +40,8 @@ const getActions = asyncHandler(async (req, res) => {
 
     res.status(200).json(response);
   } catch (e) {
-    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, "Server Error", "An error occurred while trying to get actions.");
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to get actions.");
   }
 });
 

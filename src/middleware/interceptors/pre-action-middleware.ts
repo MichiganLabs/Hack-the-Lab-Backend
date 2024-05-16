@@ -2,7 +2,7 @@ import { getRatExitedMaze, getRatPosition } from "@data";
 import { ActionType } from "@enums";
 import { MazeRequest, RatActionRequest } from "hackthelab";
 import { RatService } from "services";
-import { ProblemDetailsError, asyncHandler, createError } from "utils";
+import { asyncHandler, createError, rethrowOrCreateError } from "utils";
 
 /**
  *
@@ -45,8 +45,7 @@ export const preActionMiddleware = asyncHandler(async (req, _res, next) => {
     // Move to the next middleware
     next();
   } catch (e) {
-    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, "Server Error", "Internal server error has occurred");
+    throw rethrowOrCreateError(e, 500, "Server Error", "Internal server error has occurred");
   }
 });

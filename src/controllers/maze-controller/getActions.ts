@@ -1,6 +1,7 @@
 import { ActionsResponse, MazeRequest } from "hackthelab";
 import { MazeService } from "services";
-import { ProblemDetailsError, asyncHandler, createError } from "utils";
+import { asyncHandler } from "utils";
+import { rethrowOrCreateError } from "utils/create-error";
 import { matchedData, param } from "utils/custom-validator";
 
 interface ActionsRequestBody {
@@ -56,9 +57,8 @@ const getActions = asyncHandler(async (req, res) => {
 
     res.status(200).json(response);
   } catch (e) {
-    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, "Server Error", "An error occurred while trying to fetch actions.");
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to fetch actions.");
   }
 });
 

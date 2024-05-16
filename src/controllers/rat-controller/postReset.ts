@@ -1,6 +1,6 @@
 import { MazeRequest } from "hackthelab";
 import { RatService } from "services";
-import { ProblemDetailsError, asyncHandler, createError } from "utils";
+import { asyncHandler, rethrowOrCreateError } from "utils";
 
 /**
  * @swagger
@@ -35,9 +35,8 @@ const postReset = asyncHandler(async (req, res) => {
 
     res.status(200).json({ message: "Maze was successfully reset" });
   } catch (e) {
-    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, "Server Error", "An error occurred while trying to reset.");
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to reset.");
   }
 });
 

@@ -1,6 +1,6 @@
 import { Environment, Role } from "@enums";
 import { MazeService } from "services";
-import { ProblemDetailsError, asyncHandler, createError } from "utils";
+import { asyncHandler, rethrowOrCreateError } from "utils";
 import { query } from "utils/custom-validator";
 
 export const mazesSchema = [query("env").optional().isEnvironment()];
@@ -46,9 +46,8 @@ const getMazes = asyncHandler(async (req, res) => {
 
     res.status(200).json(mazeList);
   } catch (e) {
-    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, "Server Error", "An error occurred while trying to get mazes.");
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to get mazes.");
   }
 });
 

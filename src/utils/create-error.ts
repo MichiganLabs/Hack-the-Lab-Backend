@@ -21,3 +21,16 @@ export const createError = (
 ): ProblemDetailsError => {
   return new ProblemDetailsError(statusCode, title, detail, additionalProperties);
 };
+
+export const rethrowOrCreateError = (
+  e: Error,
+  statusCode: number,
+  title: string,
+  detail: string,
+  additionalProperties: Record<string, any> = {},
+): ProblemDetailsError => {
+  if (e instanceof ProblemDetailsError) {
+    return e;
+  }
+  return new ProblemDetailsError(statusCode, title, detail, additionalProperties);
+};

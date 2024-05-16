@@ -1,6 +1,7 @@
+import console from "console";
 import { MazeRequest } from "hackthelab";
 import { MazeService } from "services";
-import { ProblemDetailsError, asyncHandler, createError } from "utils";
+import { asyncHandler, createError, rethrowOrCreateError } from "utils";
 import { body, matchedData, param } from "utils/custom-validator";
 
 /**
@@ -16,9 +17,7 @@ import { body, matchedData, param } from "utils/custom-validator";
  *         - mazeId
  *
  */
-export const mazeBodySchema = [
-  body("mazeId").isString().withMessage("'mazeId' must be included in the body of the request."),
-];
+export const mazeBodySchema = [body("mazeId").isString().withMessage("'mazeId' must be included in the body of the request.")];
 
 /**
  * @swagger
@@ -57,8 +56,7 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
     // Move to the next middleware
     next();
   } catch (e) {
-    if (e instanceof ProblemDetailsError) throw e;
     console.error(e);
-    throw createError(500, "Server Error", `Error occurred while resolving maze.`);
+    throw rethrowOrCreateError(e, 500, "Server Error", `Error occurred while resolving maze.`);
   }
 });

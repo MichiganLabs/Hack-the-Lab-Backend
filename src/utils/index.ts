@@ -1,3 +1,3 @@
 export { asyncHandler } from "./async-handler";
 export { camelizeKeys } from "./camelizeKeys";
-export { ProblemDetailsError, createError } from "./create-error";
+export { ProblemDetailsError, createError, rethrowOrCreateError } from "./create-error";
