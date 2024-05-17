@@ -1,5 +1,6 @@
 import { RequestHandler, Router } from "express";
 import { Controller } from "../index";
+import getMe from "./getMe";
 
 let counter: number = 1;
 
@@ -58,6 +59,8 @@ let counter: number = 1;
 export class RootController implements Controller {
   initialize(router: Router): void {
     router.get("/", this.root.bind(this));
+
+    router.get("/me", getMe);
   }
 
   private readonly root: RequestHandler = async (req, res, next) => {
