@@ -1,5 +1,6 @@
 import { RatActionRequest } from "hackthelab";
 import { RatService } from "services";
+import { asyncHandler } from "utils";
 
 /**
  * @swagger
@@ -27,10 +28,11 @@ import { RatService } from "services";
  *       403:
  *         description: Forbidden.
  */
-const getSurroundings = async (req: RatActionRequest, res, next) => {
+const getSurroundings = asyncHandler(async (req, res, next) => {
+  const { maze, ratPosition } = req as RatActionRequest;
 
   try {
-    const cell = await RatService.getCellAtPosition(req.maze, req.ratPosition, req.user.id);
+    const cell = await RatService.getCellAtPosition(maze, ratPosition, req.user.id);
 
     res.status(200).json(cell);
   } catch (e) {
@@ -40,6 +42,6 @@ const getSurroundings = async (req: RatActionRequest, res, next) => {
 
   next();
   return;
-};
+});
 
 export default getSurroundings;

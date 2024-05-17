@@ -1,5 +1,5 @@
 import { ActionType, CellType, Environment, Role } from "@enums";
-import { pgQuery } from "data/db";
+import { ActionRepository } from "data/repository";
 import * as fs from "fs/promises";
 import { Action, AdminCell, Coordinate, Maze } from "hackthelab";
 import path from "path";
@@ -14,7 +14,7 @@ const mazeStore: { [key in Environment]: MazeDictionary } = {
 };
 
 export const getActions = (userId: number, mazeId: string): Promise<Action[]> => {
-  return pgQuery("SELECT * FROM actions WHERE user_id = $1 AND maze_id = $2 ORDER BY time_ts DESC", [userId, mazeId]);
+  return ActionRepository.getAll(userId, mazeId);
 };
 
 export const getMazes = async (environment: Environment[] | Environment): Promise<MazeDictionary> => {
@@ -137,9 +137,7 @@ export const getScore = (userId: number, maze: Maze, actions: Action[]): number 
 
   // Calculate the score
   const exitBonus = didExit ? EXIT_BONUS : 0;
-  const moveEfficiencyBonus = didExit
-    ? Math.max(0, ((openSpaceCount - numOfMoves) / openSpaceCount) * MOVE_EFFICIENCY_BONUS)
-    : 0;
+  const moveEfficiencyBonus = didExit ? Math.max(0, ((openSpaceCount - numOfMoves) / openSpaceCount) * MOVE_EFFICIENCY_BONUS) : 0;
   const cheeseBonus = numOfCheeseEaten * CHEESE_BONUS;
   const actionPenalty = numOfActions * ACTION_PENALTY;
 
