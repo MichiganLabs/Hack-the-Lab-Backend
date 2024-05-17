@@ -23,11 +23,10 @@ import { asyncHandler } from "utils";
 const getMe = asyncHandler(async (req, res) => {
   const { user } = req;
 
-  delete user.apiKey;
-  delete user.id;
-  delete user.disabled;
-
-  res.send(user);
+  res.send({
+    name: user.name,
+    role: user.role,
+  });
 });
 
 export default getMe;
