@@ -22,6 +22,7 @@ This is the API for Hack the Lab 2024. It's written with Typescript for Node.js 
 - Edit your environment file (`.env`) in the root directory of the project directory. (Reference below, you can also copy the `.env.example`)
 - Install the dependencies: `npm i`
 - If you have docker installed, start the containers: `docker compose up --detach` (or `-d`) (You do not need to do this between server restarts.)
+- To insert the example mazes from the `/mazes` directory into the database, run `npm run sync-mazes`
 - Run the server locally: `npm run dev`
 
 ## Running Load Tests
@@ -32,7 +33,7 @@ This is the API for Hack the Lab 2024. It's written with Typescript for Node.js 
 
 ## How things are organized
 
-`package.json`: This contains all of the dependencies and helpful scripts for the project. You can run any of these scripts with `npm run <script-name>`, or create your own. They will always run as though you're running them from the root of the project, via terminal. We can use these commands to help speed up tasks, and automate deployments.
+`package.json`: This contains all of the dependencies and helpful scripts for` the project. You can run any of these scripts with `npm run <script-name>`, or create your own. They will always run as though you're running them from the root of the project, via terminal. We can use these commands to help speed up tasks, and automate deployments.
 
 ![package.json scripts](resources/deps.png)
 

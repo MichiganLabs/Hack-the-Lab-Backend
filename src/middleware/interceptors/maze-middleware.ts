@@ -1,3 +1,4 @@
+import { Role } from "@enums";
 import console from "console";
 import { MazeRequest } from "hackthelab";
 import { MazeService } from "services";
@@ -45,9 +46,13 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
   try {
     const environments = MazeService.getEnvironmentsForRole(req.user.role);
 
-    const maze = await MazeService.getMazeById(environments, mazeId);
+    const maze = await MazeService.getMazeById(mazeId);
 
-    if (!maze) {
+    const hasAccess = environments.includes(maze?.environment);
+    const isLocked = maze?.locked && req.user.role !== Role.Admin;
+
+    // If the maze is undefined, or defined but not the right environment, or locked (and the user is not an Admin)
+    if (maze == null || !hasAccess || isLocked) {
       throw createError(404, "Maze Not Found", `Maze '${mazeId}' not found!`);
     }
 

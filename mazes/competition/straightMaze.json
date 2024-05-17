@@ -1,0 +1,655 @@
+{
+    "cells": [
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 0
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 1,
+                "y": 0
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 2,
+                "y": 0
+            },
+            "surroundings": {
+                "east": "Exit",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 3,
+                "y": 0
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Open",
+                "west": "Wall"
+            },
+            "type": "Exit"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 0
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Exit"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 0
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 6,
+                "y": 0
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 1
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 1,
+                "y": 1
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 2,
+                "y": 1
+            },
+            "surroundings": {
+                "east": "Open",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 3,
+                "y": 1
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Exit",
+                "south": "Open",
+                "west": "Wall"
+            },
+            "type": "Open"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 1
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Open"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 1
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 6,
+                "y": 1
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 2
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 1,
+                "y": 2
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 2,
+                "y": 2
+            },
+            "surroundings": {
+                "east": "Open",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 3,
+                "y": 2
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Open",
+                "south": "Open",
+                "west": "Wall"
+            },
+            "type": "Open"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 2
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Open"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 2
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 6,
+                "y": 2
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 1,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 2,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Open",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 3,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Open",
+                "south": "Open",
+                "west": "Wall"
+            },
+            "type": "Open"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Open"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 6,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 1,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 2,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Open",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 3,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Open",
+                "south": "Open",
+                "west": "Wall"
+            },
+            "type": "Open"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Open"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 6,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 5
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 1,
+                "y": 5
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 2,
+                "y": 5
+            },
+            "surroundings": {
+                "east": "Open",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 3,
+                "y": 5
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Open",
+                "south": "Start",
+                "west": "Wall"
+            },
+            "type": "Open"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 5
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Open"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 5
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 6,
+                "y": 5
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 6
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 1,
+                "y": 6
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 2,
+                "y": 6
+            },
+            "surroundings": {
+                "east": "Start",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 3,
+                "y": 6
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Open",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Start"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 6
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Start"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 6
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 6,
+                "y": 6
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        }
+    ],
+    "cheese": [],
+    "dimensions": {
+        "horizontal": 7,
+        "vertical": 7
+    },
+    "exit": {
+        "x": 3,
+        "y": 0
+    },
+    "open_square_count": 7,
+    "start": {
+        "x": 3,
+        "y": 6
+    }
+}
