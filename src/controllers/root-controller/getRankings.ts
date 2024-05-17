@@ -1,4 +1,9 @@
+import { Environment } from "@enums";
 import { ScoreService } from "services";
+import { asyncHandler, rethrowOrCreateError } from "utils";
+import { query } from "utils/custom-validator";
+
+export const environmentSchema = [query("env").isEnvironment()];
 
 /**
  * @swagger
@@ -20,18 +25,16 @@ import { ScoreService } from "services";
  *       403:
  *         description: Forbidden.
  */
-const getRankings = async (req, res, next) => {
-    try {
-        // TODO: Pass in mazes (sandbox / competition)
-        const result = await ScoreService.getRankings(["oneTurn", "straightMaze"]);
+const getRankings = asyncHandler(async (req, res) => {
+  try {
+    const environment = req.query.env as Environment;
+    const result = await ScoreService.getRankings(environment);
 
-        res.status(200).json(result);
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ error: "Internal server error" });
-    }
-    
-    return next();
-};
+    res.status(200).json(result);
+  } catch (e) {
+    console.error(e);
+    throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to fetch rankings.");
+  }
+});
 
 export default getRankings;

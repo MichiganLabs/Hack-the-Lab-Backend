@@ -64,6 +64,8 @@ declare module "hackthelab" {
     locked: boolean;
   }
 
+  type MazeDictionary = { [key: string]: AdminMaze };
+
   /**
    * @swagger
    * components:
@@ -215,30 +217,12 @@ declare module "hackthelab" {
   }
 
   /**
-   * @swagger
-   * components:
-   *   schemas:
-   *     MazeRequest:
-   *       type: object
-   *       properties:
-   *         maze:
-   *           $ref: '#/components/schemas/Maze'
    */
   interface MazeRequest extends Request {
     maze: Maze;
   }
 
   /**
-   * @swagger
-   * components:
-   *   schemas:
-   *     RatActionRequest:
-   *       allOf:
-   *         - $ref: '#/components/schemas/MazeRequest'
-   *         - type: object
-   *           properties:
-   *             ratPosition:
-   *               $ref: '#/components/schemas/Coordinate'
    */
   interface RatActionRequest extends MazeRequest {
     /** If action endpoint: Contains rat position data. */
@@ -246,66 +230,22 @@ declare module "hackthelab" {
   }
 
   /**
-   * @swagger
-   * components:
-   *   schemas:
-   *     Award:
-   *       type: object
-   *       properties:
-   *         name:
-   *           type: string
-   *           example: Greediest
-   *         description:
-   *           type: string
-   *           example: Collected the most cheese
-   *         userId:
-   *           type: string
-   *           example: 1234
-   *         value:
-   *           type: string
-   *           example: 100
    */
   interface Award {
     name: string;
     description: string;
     userId: string;
-    value: string;    
+    value: string;
   }
 
   /**
-   * @swagger
-   * components:
-   *   schemas:
-   *     Score:
-   *       type: object
-   *       properties:
-   *         userId:
-   *           type: string
-   *           example: 1234
-   *         score:
-   *           type: number
-   *           example: 100
    */
   interface Score {
-    userId: string;
+    userId: number;
     score: number;
   }
 
   /**
-   * @swagger
-   * components:
-   *   schemas:
-   *     RankingResult
-   *       type: object
-   *       properties:
-   *         scores:
-   *           type: array
-   *           items:
-   *             $ref: '#/components/schemas/Score'
-   *         awards:
-   *           type: array
-   *           items:
-   *             $ref: '#/components/schemas/Award'
    */
   interface RankingResult {
     scores: Score[];
