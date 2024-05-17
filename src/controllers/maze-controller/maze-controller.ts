@@ -15,16 +15,12 @@ import putMaze, { mazeUpdateSchema } from "./putMaze";
  */
 export class MazeController implements Controller {
   initialize(router: Router): void {
-    const mazeMiddleware = [];
-
-    mazeMiddleware.push(hasRole(Role.Admin));
-
     // Validate the mazeId and inject the `maze` object into the request
-    mazeMiddleware.push(validate(mazePathSchema), resolveMaze);
+    const mazeMiddleware = [validate(mazePathSchema), resolveMaze];
 
-    router.put("/maze/:mazeId", hasRole(Role.Developer), validate([...mazePathSchema, ...mazeUpdateSchema]), resolveMaze, putMaze);
-    router.get("/maze/:mazeId/actions/:userId", ...mazeMiddleware, validate(actionsSchema), getActions);
-    router.get("/maze/:mazeId", ...mazeMiddleware, getMaze);
+    router.put("/maze/:mazeId", hasRole(Role.Developer), validate(mazeUpdateSchema), mazeMiddleware, putMaze);
+    router.get("/maze/:mazeId/actions/:userId", hasRole(Role.Admin), ...mazeMiddleware, validate(actionsSchema), getActions);
+    router.get("/maze/:mazeId", hasRole(Role.Developer), ...mazeMiddleware, getMaze);
     router.get("/mazes", validate(mazesSchema), getMazes);
   }
 }
