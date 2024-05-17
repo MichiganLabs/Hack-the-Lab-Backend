@@ -3,8 +3,9 @@
   "description": "Backend api servicing Michigan Lab's Hack the Lab 2024 Hackathon Event",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "npm run docker && NODE_ENV=development nodemon",
+    "dev": "npm run docker && npm run sync-mazes && NODE_ENV=development nodemon",
     "docker": "docker compose up -d",
+    "rm-docker": "docker compose down -v",
     "build": "node_modules/.bin/rimraf ./dist && npx tsc && npx tsc-alias && npm run post:build",
     "start": "npm run build && node dist/index.js",
     "build:swagger": "node ./swagger.js",
