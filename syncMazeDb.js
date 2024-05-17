@@ -24,16 +24,12 @@ const processMazes = async () => {
     const jsonFiles = fs.readdirSync(dirPath).filter(file => file.endsWith(".json"));
 
     for (const jsonFile of jsonFiles) {
-      console.log(`\nProcessing ${jsonFile}...`);
       const mazeId = jsonFile.replace(".json", "");
       const mazeFilePath = path.join(dirPath, jsonFile);
       const mazeData = JSON.parse(fs.readFileSync(mazeFilePath, "utf8"));
 
       // Check if a row exists for the file in the mazes table
-      const res = await client.query("SELECT COUNT(*) FROM mazes WHERE id = $1 AND environment = $2", [
-        mazeId,
-        environment,
-      ]);
+      const res = await client.query("SELECT COUNT(*) FROM mazes WHERE id = $1 AND environment = $2", [mazeId, environment]);
       const rowCount = res.rows[0].count;
 
       if (rowCount > 0) {
@@ -48,7 +44,6 @@ const processMazes = async () => {
 };
 
 const updateMaze = async (mazeId, environment, mazeData) => {
-  console.log(`Updating ${mazeId}...`);
   const cells = JSON.stringify(mazeData.cells);
   const cheese = JSON.stringify(mazeData.cheese);
   const mazeExit = JSON.stringify(mazeData.exit);
@@ -61,14 +56,13 @@ const updateMaze = async (mazeId, environment, mazeData) => {
       "UPDATE mazes SET environment = $1, cells = $2, cheese = $3, exit = $4, start = $5, dimensions = $6, opensquarecount = $7 WHERE id = $8",
       [environment, cells, cheese, mazeExit, start, dimensions, openSquareCount, mazeId],
     );
-    console.log(`Maze '${mazeId}' successfully updated`);
+    console.log(`[*] Maze '${mazeId}' successfully updated.`);
   } catch (err) {
     console.error("error executing query", err.stack);
   }
 };
 
 const createMaze = async (mazeId, environment, mazeData) => {
-  console.log(`Creating: ${mazeId}...`);
   const cells = JSON.stringify(mazeData.cells);
   const cheese = JSON.stringify(mazeData.cheese);
   const mazeExit = JSON.stringify(mazeData.exit);
@@ -81,7 +75,7 @@ const createMaze = async (mazeId, environment, mazeData) => {
       "INSERT INTO mazes (id, environment, cells, cheese, exit, start, dimensions, opensquarecount) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
       [mazeId, environment, cells, cheese, mazeExit, start, dimensions, openSquareCount],
     );
-    console.log(`Maze '${mazeId}' successfully created`);
+    console.log(`[+] Maze '${mazeId}' successfully created.`);
   } catch (err) {
     console.error("error executing query", err.stack);
   }
@@ -95,5 +89,4 @@ client
   })
   .finally(() => {
     client.end();
-    console.log("\nFinished!");
   });
