@@ -37443,8 +37443,8 @@
     ],
     "cheese": [],
     "dimensions": {
-        "horizontal": 40,
-        "vertical": 72
+        "horizontal": 72,
+        "vertical": 40
     },
     "exit": {
         "x": 71,

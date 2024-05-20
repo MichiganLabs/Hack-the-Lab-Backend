@@ -2092,8 +2092,8 @@
         }
     ],
     "dimensions": {
-        "horizontal": 16,
-        "vertical": 10
+        "horizontal": 10,
+        "vertical": 16
     },
     "exit": {
         "x": 4,

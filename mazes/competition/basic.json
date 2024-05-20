@@ -5190,8 +5190,8 @@
     ],
     "cheese": [],
     "dimensions": {
-        "horizontal": 21,
-        "vertical": 19
+        "horizontal": 19,
+        "vertical": 21
     },
     "exit": {
         "x": 18,

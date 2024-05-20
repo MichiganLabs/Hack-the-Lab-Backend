@@ -1828,8 +1828,8 @@
         }
     ],
     "dimensions": {
-        "horizontal": 14,
-        "vertical": 10
+        "horizontal": 10,
+        "vertical": 14
     },
     "exit": {
         "x": 4,
