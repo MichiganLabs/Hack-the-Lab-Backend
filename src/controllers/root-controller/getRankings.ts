@@ -11,19 +11,29 @@ export const environmentSchema = [query("env").isEnvironment()];
  *   get:
  *     tags: [Root (ADMIN)]
  *     summary: Returns the rankings of all users
+ *     parameters:
+ *       - in: query
+ *         name: env
+ *         schema:
+ *           type: string
+ *           example: "COMPETITION"
+ *         required: true
+ *         description: Name of the environment
  *     responses:
  *       200:
- *         description: Request successful
- *       400:
- *         description: Invalid request body.
+ *         description: Actions successful
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *               $ref: '#/components/schemas/RankingResult'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden.
+ *         $ref: '#/components/responses/Forbidden'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 const getRankings = asyncHandler(async (req, res) => {
   try {

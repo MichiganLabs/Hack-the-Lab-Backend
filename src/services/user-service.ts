@@ -24,8 +24,9 @@ export const getEnvironmentsForRequest = (req: Request): Environment[] => {
   let environments = getEnvironmentsForRole(req.user.role);
 
   // Admin users are allowed to select a specific environment when requesting the list of mazes.
-  if (req.user.role == Role.Admin && req.query.env !== undefined) {
-    environments = [req.query.env as Environment] ?? Object.values(Environment);
+  const queryEnv = req.query.env as Environment;
+  if (req.user.role == Role.Admin && queryEnv !== undefined) {
+    environments = [queryEnv];
   }
 
   return environments;
