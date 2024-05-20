@@ -4,6 +4,8 @@ const fs = require("fs");
 const path = require("path");
 const { Client } = require("pg");
 
+require("dotenv").config();
+
 // Connect to the PostgreSQL database
 const client = new Client({
   host: process.env.POSTGRES_HOST,
