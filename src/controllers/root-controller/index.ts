@@ -1,9 +1,9 @@
 import { Role } from "@enums";
 import { RequestHandler, Router } from "express";
-import { hasRole, validate } from "middleware/interceptors";
+import { hasRole } from "middleware/interceptors";
 import { Controller } from "../index";
 import getMe from "./getMe";
-import getRankings, { environmentSchema } from "./getRankings";
+import getRankings from "./getRankings";
 
 let counter: number = 1;
 
@@ -64,7 +64,7 @@ export class RootController implements Controller {
     router.get("/", this.root.bind(this));
 
     router.get("/me", getMe);
-    router.get("/rankings", hasRole(Role.Admin), validate(environmentSchema), getRankings);
+    router.get("/rankings", hasRole(Role.Admin), getRankings);
   }
 
   private readonly root: RequestHandler = async (req, res, next) => {

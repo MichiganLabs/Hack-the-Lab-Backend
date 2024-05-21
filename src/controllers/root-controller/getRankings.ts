@@ -1,9 +1,6 @@
 import { Environment } from "@enums";
 import { ScoreService } from "services";
 import { asyncHandler, rethrowOrCreateError } from "utils";
-import { query } from "utils/custom-validator";
-
-export const environmentSchema = [query("env").isEnvironment()];
 
 /**
  * @swagger
@@ -11,17 +8,9 @@ export const environmentSchema = [query("env").isEnvironment()];
  *   get:
  *     tags: [Root (ADMIN)]
  *     summary: Returns the rankings of all users
- *     parameters:
- *       - in: query
- *         name: env
- *         schema:
- *           type: string
- *           example: "COMPETITION"
- *         required: true
- *         description: Name of the environment
  *     responses:
  *       200:
- *         description: Actions successful
+ *         description: Returns the score and ranking for all participants
  *         content:
  *           application/json:
  *             schema:
@@ -37,8 +26,7 @@ export const environmentSchema = [query("env").isEnvironment()];
  */
 const getRankings = asyncHandler(async (req, res) => {
   try {
-    const environment = req.query.env as Environment;
-    const result = await ScoreService.getRankings(environment);
+    const result = await ScoreService.getRankings(Environment.Competition);
 
     res.status(200).json(result);
   } catch (e) {
