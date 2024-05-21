@@ -16,7 +16,7 @@ import getSurroundings from "./getSurroundings";
 import postEat from "./postEat";
 import postExit from "./postExit";
 import postMove, { moveSchema } from "./postMove";
-import postReset from "./postReset";
+import postReset, { resetSchema } from "./postReset";
 import postSmell from "./postSmell";
 
 /**
@@ -35,7 +35,12 @@ export class RatController implements Controller {
     router.get("/rat/:mazeId/surroundings", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazePathSchema), getSurroundings);
 
     // Additional endpoints for rat control while in the SANDBOX environment.
-    router.post("/rat/reset", hasRole(Role.Developer), this.buildMiddlewareWithSchema(mazeBodySchema, false), postReset);
+    router.post(
+      "/rat/reset",
+      hasRole(Role.Developer),
+      this.buildMiddlewareWithSchema([...mazeBodySchema, ...resetSchema], false),
+      postReset,
+    );
     router.get("/rat/:mazeId/actions", hasRole(Role.Developer), this.buildMiddlewareWithSchema(mazePathSchema, false), getActions);
   }
 
