@@ -28127,7 +28127,7 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Wall",
-                "south": "Open",
+                "south": "Wall",
                 "west": "Open"
             },
             "type": "Wall"
@@ -29048,7 +29048,7 @@
                 "y": 31
             },
             "surroundings": {
-                "east": "Open",
+                "east": "Wall",
                 "north": "Open",
                 "south": "Open",
                 "west": "Wall"
@@ -29066,7 +29066,7 @@
                 "south": "Open",
                 "west": "Open"
             },
-            "type": "Open"
+            "type": "Wall"
         },
         {
             "coordinates": {
@@ -29077,7 +29077,7 @@
                 "east": "Open",
                 "north": "Wall",
                 "south": "Wall",
-                "west": "Open"
+                "west": "Wall"
             },
             "type": "Wall"
         },
@@ -29986,7 +29986,7 @@
             "surroundings": {
                 "east": "Open",
                 "north": "Open",
-                "south": "Open",
+                "south": "Wall",
                 "west": "Wall"
             },
             "type": "Open"
@@ -29998,7 +29998,7 @@
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Open",
+                "north": "Wall",
                 "south": "Open",
                 "west": "Open"
             },
@@ -30907,7 +30907,7 @@
                 "y": 33
             },
             "surroundings": {
-                "east": "Open",
+                "east": "Wall",
                 "north": "Wall",
                 "south": "Wall",
                 "west": "Wall"
@@ -30925,7 +30925,7 @@
                 "south": "Wall",
                 "west": "Wall"
             },
-            "type": "Open"
+            "type": "Wall"
         },
         {
             "coordinates": {
@@ -30936,7 +30936,7 @@
                 "east": "Open",
                 "north": "Open",
                 "south": "Wall",
-                "west": "Open"
+                "west": "Wall"
             },
             "type": "Open"
         },
@@ -31857,7 +31857,7 @@
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Open",
+                "north": "Wall",
                 "south": "Wall",
                 "west": "Wall"
             },
@@ -37450,7 +37450,7 @@
         "x": 71,
         "y": 21
     },
-    "open_square_count": 523,
+    "open_square_count": 521,
     "start": {
         "x": 0,
         "y": 21
