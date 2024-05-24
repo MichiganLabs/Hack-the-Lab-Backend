@@ -2,10 +2,29 @@ import { CellType, Environment, Role } from "@enums";
 import { Request } from "express";
 
 declare module "hackthelab" {
-  interface AuthUser {
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     User:
+   *       type: object
+   *       properties:
+   *         id:
+   *           type: integer
+   *           example: 34
+   *         name:
+   *           type: string
+   *           example: "Alice"
+   *         role:
+   *           $ref: '#/components/schemas/Role'
+   */
+  interface User {
     id: number;
     name: string;
     role: Role;
+  }
+
+  interface AuthUser extends User {
     apiKey: string;
     disabled: boolean;
   }
@@ -78,7 +97,6 @@ declare module "hackthelab" {
    *         surroundings:
    *           $ref: '#/components/schemas/Surroundings'
    */
-
   interface Cell {
     type: CellType;
     surroundings: Surroundings;
