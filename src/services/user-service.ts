@@ -1,5 +1,7 @@
 import { Environment, Role } from "@enums";
+import { UserRepository } from "data/repository";
 import { Request } from "express";
+import { AuthUser } from "hackthelab";
 
 export const getEnvironmentsForRole = (role: Role): Environment[] => {
   switch (role) {
@@ -30,4 +32,11 @@ export const getEnvironmentsForRequest = (req: Request): Environment[] => {
   }
 
   return environments;
+};
+
+/**
+ * @returns The list of users in the competition.
+ */
+export const getParticipants = async (): Promise<AuthUser[]> => {
+  return await UserRepository.getUsersOfRole(Role.Participant);
 };

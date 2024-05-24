@@ -3,6 +3,15 @@ export enum Environment {
   Competition = "COMPETITION",
 }
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Role:
+ *       type: string
+ *       enum: [PARTICIPANT, DEVELOPER, ADMIN]
+ *       example: PARTICIPANT
+ */
 export enum Role {
   Participant = "PARTICIPANT",
   Developer = "DEVELOPER",

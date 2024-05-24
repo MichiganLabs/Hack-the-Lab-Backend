@@ -3,6 +3,7 @@ import { RequestHandler, Router } from "express";
 import { hasRole } from "middleware/interceptors";
 import { Controller } from "../index";
 import getMe from "./getMe";
+import getParticipants from "./getParticipants";
 import getRankings from "./getRankings";
 
 let counter: number = 1;
@@ -65,6 +66,7 @@ export class RootController implements Controller {
 
     router.get("/me", getMe);
     router.get("/rankings", hasRole(Role.Admin), getRankings);
+    router.get("/participants", hasRole(Role.Admin), getParticipants);
   }
 
   private readonly root: RequestHandler = async (req, res, next) => {
