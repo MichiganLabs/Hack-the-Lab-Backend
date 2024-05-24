@@ -138,7 +138,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     JOIN move_counts m ON e.user_id = m.user_id
     WHERE e.exit_count = (SELECT MAX(exit_count) FROM exit_counts)
     AND m.move_count = (SELECT MIN(move_count) FROM move_counts)
-    ORDER BY e.exit_count DESC AND m.move_count ASC
+    ORDER BY e.exit_count DESC, m.move_count ASC
     `,
     [mazeIds, ActionType.Exit, ActionType.Move],
   );
