@@ -18,15 +18,13 @@ import { asyncHandler } from "utils";
  *             schema:
  *               $ref: '#/components/schemas/Cell'
  *       400:
- *         description: Invalid request body.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/BadRequestResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       401:
- *         description: Unauthorized.
+ *         $ref: '#/components/responses/Unauthorized'
  *       403:
- *         description: Forbidden.
+ *         $ref: '#/components/responses/Forbidden'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 const getSurroundings = asyncHandler(async (req, res, next) => {
   const { maze, ratPosition } = req as RatActionRequest;

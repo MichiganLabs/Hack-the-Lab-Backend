@@ -1,7 +1,7 @@
 import { Role } from "@enums";
 import console from "console";
 import { MazeRequest } from "hackthelab";
-import { MazeService } from "services";
+import { MazeService, UserService } from "services";
 import { asyncHandler, createError, rethrowOrCreateError } from "utils";
 import { body, matchedData, param } from "utils/custom-validator";
 
@@ -44,8 +44,7 @@ export const resolveMaze = asyncHandler(async (req, _res, next) => {
   const { mazeId } = matchedData(req);
 
   try {
-    const environments = MazeService.getEnvironmentsForRole(req.user.role);
-
+    const environments = UserService.getEnvironmentsForRequest(req);
     const maze = await MazeService.getMazeById(mazeId);
 
     const hasAccess = environments.includes(maze?.environment);

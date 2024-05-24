@@ -1,9 +1,6 @@
-import { ActionType, CellType, Environment, Role } from "@enums";
+import { ActionType, CellType, Environment } from "@enums";
 import { ActionRepository, MazeRepository } from "data/repository";
-import { Action, AdminCell, AdminMaze, Coordinate, Maze } from "hackthelab";
-import { MazeService } from "services";
-
-type MazeDictionary = { [key: string]: AdminMaze };
+import { Action, AdminCell, AdminMaze, Coordinate, Maze, MazeDictionary } from "hackthelab";
 
 const mazeStore: { [key in Environment]: MazeDictionary } = {
   [Environment.Competition]: {},
@@ -26,17 +23,12 @@ export const getMazes = async (): Promise<MazeDictionary> => {
   return combinedMazes;
 };
 
-export const getEnvironmentsForRole = (role: Role): Environment[] => {
-  switch (role) {
-    case Role.Admin:
-      return Object.values(Environment);
-    case Role.Developer:
-      return [Environment.Sandbox];
-    case Role.Participant:
-      return [Environment.Competition];
-    default:
-      return [];
-  }
+export const getMazesForEnvironments = async (environments: Environment[], includeLocked: boolean): Promise<MazeDictionary> => {
+  const mazes = await getMazes();
+
+  return Object.fromEntries(
+    Object.entries(mazes).filter(([_key, maze]) => environments.includes(maze.environment) && (includeLocked || !maze.locked)),
+  );
 };
 
 export const getMazeById = async (mazeId: string): Promise<AdminMaze | null> => {
@@ -69,7 +61,7 @@ export const setLocked = async (mazeId: string, locked: boolean): Promise<void> 
 };
 
 export const isLocked = async (mazeId: string): Promise<boolean> => {
-  return (await MazeService.getMazeById(mazeId)).locked;
+  return (await getMazeById(mazeId)).locked;
 };
 
 export const getScore = (userId: number, maze: Maze, actions: Action[]): number => {

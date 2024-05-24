@@ -4,7 +4,7 @@ import { pgQuery } from "../db";
 
 const mazeListCacheKey = "maze-list";
 
-export const getAll = async () => {
+export const getAll = async (): Promise<AdminMaze[]> => {
   try {
     const mazes = await cache.getCache(mazeListCacheKey);
 

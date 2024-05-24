@@ -64,6 +64,8 @@ declare module "hackthelab" {
     locked: boolean;
   }
 
+  type MazeDictionary = { [key: string]: AdminMaze };
+
   /**
    * @swagger
    * components:
@@ -159,7 +161,7 @@ declare module "hackthelab" {
    *           items:
    *             $ref: '#/components/schemas/Action'
    *         score:
-   *           type: number
+   *           type: integer
    *           example: 1234
    */
   interface ActionsResponse {
@@ -215,19 +217,79 @@ declare module "hackthelab" {
   }
 
   /**
-   *
-   *
-   *
    */
   interface MazeRequest extends Request {
     maze: Maze;
   }
 
   /**
-   *
    */
   interface RatActionRequest extends MazeRequest {
     /** If action endpoint: Contains rat position data. */
     ratPosition: Coordinate;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     Award:
+   *       type: object
+   *       properties:
+   *         name:
+   *           type: string
+   *           example: "Best Rat"
+   *         description:
+   *           type: string
+   *           example: "Awarded to the rat with the highest score."
+   *         userId:
+   *           type: string
+   *           example: "34"
+   */
+  interface Award {
+    name: string;
+    description: string;
+    userId: number;
+    value: string;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     Score:
+   *       type: object
+   *       properties:
+   *         userId:
+   *           type: integer
+   *           example: 34
+   *         score:
+   *           type: integer
+   *           example: 1234
+   */
+  interface Score {
+    userId: number;
+    score: number;
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     RankingResult:
+   *       type: object
+   *       properties:
+   *         scores:
+   *           type: array
+   *           items:
+   *             $ref: '#/components/schemas/Score'
+   *         awards:
+   *           type: array
+   *           items:
+   *             $ref: '#/components/schemas/Award'
+   */
+  interface RankingResult {
+    scores: Score[];
+    awards: Award[];
   }
 }
