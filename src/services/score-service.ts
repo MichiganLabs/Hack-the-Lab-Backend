@@ -392,18 +392,40 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     }
   }
 
-  // No failed actions
+  // Least failed actions while completing the most mazes
   // -------------------------
-  const noFailedActions = participants.filter(participant => !mostFailedActions.some(item => item.user_id === participant.id));
+  const leastFailedActions = await pgQuery(
+    `
+    WITH exit_counts AS (
+      SELECT user_id, COUNT(*) as exit_count
+      FROM actions
+      WHERE maze_id = ANY($1) AND action_type = $2 AND success = true
+      GROUP BY user_id
+    ),
+    failed_counts AS (
+      SELECT user_id, COUNT(*) as failed_count
+      FROM actions
+      WHERE maze_id = ANY($1) AND success = false
+      GROUP BY user_id
+    )
+    SELECT e.user_id, e.exit_count, m.failed_count
+    FROM exit_counts e
+    JOIN failed_counts m ON e.user_id = m.user_id
+    WHERE e.exit_count = (SELECT MAX(exit_count) FROM exit_counts)
+    AND m.failed_count = (SELECT MIN(failed_count) FROM failed_counts)
+    ORDER BY e.exit_count DESC, m.failed_count ASC
+    `,
+    [mazeIds, ActionType.Exit],
+  );
 
   // *AWARD* No Failed Actions
-  if (noFailedActions.length > 0) {
-    for (const result of noFailedActions) {
+  if (leastFailedActions.length > 0) {
+    for (const result of leastFailedActions) {
       const noFailedActionsAward: Award = {
         name: "Coordinated",
-        description: "The rat who did not make a single failed action and completed all mazes",
+        description: "The rat who made the least amount of failed actions while completing the most mazes",
         userId: result.id,
-        value: "0",
+        value: result.failedCount,
       };
       awards.push(noFailedActionsAward);
     }
