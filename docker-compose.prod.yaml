@@ -1,10 +1,9 @@
 services:
-  postgres:
-    container_name: postgres
+  db:
     restart: unless-stopped
     image: postgres:latest
     env_file:
-      - .env
+      - prod.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./.docker/init.sql:/docker-entrypoint-initdb.d/1-schema.sql
@@ -12,11 +11,12 @@ services:
       - 5432:5432
 
   redis:
-    container_name: redis
     restart: unless-stopped
+    image: redis:latest
+    env_file:
+      - prod.env
     ports:
       - 6379:6379
-    image: redis:latest
 
   api:
     build:
@@ -24,12 +24,14 @@ services:
       target: production
     restart: unless-stopped
     ports:
-      - 80:8080
+      - 8080:8080
     depends_on:
-      - postgres
+      - db
       - redis
     env_file:
-      - .env
+      - prod.env
+    environment:
+      DB_UPSTREAM: ${DOCKER_GATEWAY_HOST:-host.docker.internal}
 
 volumes:
   postgres_data:
