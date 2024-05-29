@@ -12,16 +12,10 @@ const pool = new Pool({
 });
 
 export const pgQuery = async (text: string, params: any) => {
-  const start = Date.now();
-
   const result = await pool.query(text, params);
 
   // Convert snake_case column names to camelCase for interfaces.
   result.rows = result.rows.map(row => camelizeKeys(row));
-
-  const duration = Date.now() - start;
-
-  console.debug("executed query", { text, params, duration, rows: result.rowCount });
 
   return result.rows;
 };

@@ -3,7 +3,6 @@ import cors from "cors";
 import express, { Express } from "express";
 import http from "http";
 import { exceptionMiddleware } from "middleware/interceptors";
-import morgan from "morgan";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
 import { getControllers } from "./controllers/controllers";
@@ -18,6 +17,8 @@ const v1Router = express.Router();
 v1Router.use(bodyParser.json());
 
 if (process.env.NODE_ENV === "development") {
+  const morgan = require("morgan");
+
   app.use(morgan("dev"));
 }
 
@@ -35,11 +36,7 @@ app.use("/v1", v1Router);
 
 app.use(exceptionMiddleware);
 
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(undefined, { swaggerOptions: { url: "/swagger.json", validatorUrl: null } }),
-);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(undefined, { swaggerOptions: { url: "/swagger.json", validatorUrl: null } }));
 
 app.use("/swagger.json", (req, res) => {
   if (process.env.NODE_ENV === "development") {
