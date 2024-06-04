@@ -45,7 +45,7 @@ enum CellType {
 }
 
 function getCellType(cellTypeString: string): CellType {
-  switch(cellTypeString) {
+  switch(cellTypeString.toUpperCase()) {
     case "W": return CellType.Wall
     case "C": return CellType.Cheese
     case "B": return CellType.Beginning
@@ -73,7 +73,7 @@ function convertCsvToJson(csvFromGoogle: string) {
     openSquareCount: 0
   }
 
-  let splitByNewLine = csvFromGoogle.split("\n")
+  let splitByNewLine = csvFromGoogle.replace(/\r/g, "").split("\n")
   let rows: Row[] = splitByNewLine.map((row, rowIndex): Row => {
     let splitCellTypes = row.split(",")
 
@@ -140,7 +140,7 @@ function convertCsvToJson(csvFromGoogle: string) {
       if (rowIndex == (rows.length - 1)) {
         cell.surroundings.south = CellType.Wall
       } else {
-        cell.surroundings.south = rows[rowIndex + 1].cells[cellIndex].type == CellType.Wall ? CellType.Wall : CellType.Open
+        cell.surroundings.south = rows[rowIndex + 1].cells[cellIndex].type
       }
 
       // West
@@ -148,7 +148,7 @@ function convertCsvToJson(csvFromGoogle: string) {
       if (cellIndex == 0) {
         cell.surroundings.west = CellType.Wall
       } else {
-        cell.surroundings.west = row.cells[cellIndex - 1].type == CellType.Wall ? CellType.Wall : CellType.Open
+        cell.surroundings.west = row.cells[cellIndex - 1].type
       }
 
       // East
@@ -156,7 +156,7 @@ function convertCsvToJson(csvFromGoogle: string) {
       if (cellIndex == (row.cells.length - 1)) {
         cell.surroundings.east = CellType.Wall
       } else {
-        cell.surroundings.east = row.cells[cellIndex + 1].type == CellType.Wall ? CellType.Wall : CellType.Open
+        cell.surroundings.east = row.cells[cellIndex + 1].type
       }
 
       return newCell
@@ -199,6 +199,7 @@ async function convertFromUrl (csvUrl: string, mazeName: string) {
     console.log(`Error ${err}`);
   }
 }
+
 
 async function createMazes() {
   if (!fs.existsSync("mazes")){
