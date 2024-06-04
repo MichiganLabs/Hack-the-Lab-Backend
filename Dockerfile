@@ -1,6 +1,8 @@
 # pull official base image
 FROM node:21.6.2-bullseye as build
 
+LABEL org.opencontainers.image.source=https://github.com/MichiganLabs/Hack-the-Lab-Backend
+
 # set working directory
 WORKDIR /app
 
