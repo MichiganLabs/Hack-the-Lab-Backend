@@ -1,6 +1,7 @@
 import bodyParser from "body-parser";
 import cors from "cors";
 import express, { Express } from "express";
+import rateLimit from "express-rate-limit";
 import http from "http";
 import { exceptionMiddleware } from "middleware/interceptors";
 import path from "path";
@@ -13,14 +14,24 @@ import { log } from "./utils/logger";
 const app: Express = express();
 const port = process.env.PORT || 8080;
 
-const v1Router = express.Router();
-v1Router.use(bodyParser.json());
-
 if (process.env.NODE_ENV === "development") {
   const morgan = require("morgan");
 
   app.use(morgan("dev"));
 }
+
+const limiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 5 minutes).
+  standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+});
+
+// Apply the rate limiting middleware to all requests.
+app.use(limiter);
+
+const v1Router = express.Router();
+v1Router.use(bodyParser.json());
 
 for (let i = 0; i < interceptors.length; i++) {
   v1Router.use(interceptors[i]);
