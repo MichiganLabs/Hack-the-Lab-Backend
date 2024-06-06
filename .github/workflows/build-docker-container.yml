@@ -1,0 +1,32 @@
+name: "Build backend docker container"
+
+on:
+  push:
+    branches: [ "main" ] # Trigger workflow on git push to main branch
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: # Allow manual invocation of the workflow
+
+env:
+  TAG: ghcr.io/michiganlabs/hack-the-lab-backend:latest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push to GHCR
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ env.TAG }}
