@@ -1,9 +1,8 @@
-name: "Build backend docker container"
+name: "Build & Deploy Docker"
 
 on:
   push:
-  pull_request:
-    branches: [ "main" ]
+    # branches: [ "main" ]
   workflow_dispatch: # Allow manual invocation of the workflow
 
 env:
@@ -29,3 +28,7 @@ jobs:
         with:
           push: true
           tags: ${{ env.TAG }}
+
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deploy-run-app.yml

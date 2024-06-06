@@ -1,12 +1,11 @@
-name: "Deploy Docker container to self-managed Runner"
+name: "Deploy Docker"
 
-on:
-    push:
-# workflow_dispatch
+on: 
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
     run_container:
-        name: Pull Docker image
         runs-on: 
             labels: [ "self-hosted", "Linux" ]
 
@@ -28,7 +27,7 @@ jobs:
               run: docker pull $TAG
 
             - name: stop any existing containers
-              run: docker compose -f docker-compose.prod.yaml down
+              run: docker compose -f docker-compose.prod.yml down --remove-orphans
 
             - name: execute container
-              run: docker compose -f docker-compose.prod.yaml up -d
+              run: docker compose -f docker-compose.prod.yml up -d
