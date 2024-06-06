@@ -30,8 +30,6 @@ services:
       - redis
     env_file:
       - prod.env
-    environment:
-      DB_UPSTREAM: ${DOCKER_GATEWAY_HOST:-host.docker.internal}
 
 volumes:
   postgres_data:
