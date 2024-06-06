@@ -2,7 +2,6 @@ name: "Build backend docker container"
 
 on:
   push:
-    branches: [ "main" ] # Trigger workflow on git push to main branch
   pull_request:
     branches: [ "main" ]
   workflow_dispatch: # Allow manual invocation of the workflow
