@@ -2,6 +2,6 @@
 !src/environment/*
 node_modules/*
 dist/*
-.env
+# .env
 .DS_Store
 postgres_data
