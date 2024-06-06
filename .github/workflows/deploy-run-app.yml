@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-    run_container:
+    deploy:
         runs-on: 
             labels: [ "self-hosted", "Linux" ]
 

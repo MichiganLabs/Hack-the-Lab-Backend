@@ -1,14 +1,12 @@
 import { Pool } from "pg";
 import { camelizeKeys } from "utils";
 
-const { POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT } = process.env;
-
 const pool = new Pool({
-  user: POSTGRES_USER,
-  host: POSTGRES_HOST,
-  database: POSTGRES_DB,
-  password: POSTGRES_PASSWORD,
-  port: parseInt(POSTGRES_PORT),
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASS,
+  port: parseInt(process.env.POSTGRES_PORT),
 });
 
 export const pgQuery = async (text: string, params: any) => {
