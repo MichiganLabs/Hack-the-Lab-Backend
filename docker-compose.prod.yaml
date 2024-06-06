@@ -2,8 +2,6 @@ services:
   db:
     restart: unless-stopped
     image: postgres:latest
-    env_file:
-      - prod.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./.docker/init.sql:/docker-entrypoint-initdb.d/1-schema.sql
@@ -13,8 +11,6 @@ services:
   redis:
     restart: unless-stopped
     image: redis:latest
-    env_file:
-      - prod.env
     ports:
       - 6379:6379
 
@@ -28,8 +24,6 @@ services:
     depends_on:
       - db
       - redis
-    env_file:
-      - prod.env
 
 volumes:
   postgres_data:
