@@ -33,7 +33,10 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           REDIS_USER: ${{ secrets.REDIS_USER }}
           REDIS_PASS: ${{ secrets.REDIS_PASS }}
+          TEST_VARIABLE: ${{ vars.TEST_VARIABLE}}
         run: |
+          echo "Nonsecret: $TEST_VARIABLE"
+          echo "Nonsecret: ${{vars.TEST_VARIABLE}}"
           echo "Env: $POSTGRES_DB"
           echo "Secret: ${{ secrets.POSTGRES_DB }}"
           echo POSTGRES_DB=$POSTGRES_DB >> prod.env
