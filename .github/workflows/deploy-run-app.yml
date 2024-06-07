@@ -26,8 +26,16 @@ jobs:
       - name: Pull docker image
         run: docker pull $TAG
 
+      - name: Create environment file
+        run: |
+          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> prod.env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> prod.env
+          echo POSTGRES_PASS=${{ secrets.POSTGRES_PASS }} >> prod.env
+          echo REDIS_USER=${{ secrets.REDIS_USER }} >> prod.env
+          echo REDIS_PASS=${{ secrets.REDIS_PASS }} >> prod.env
+
       - name: stop any existing containers
-        run: docker compose -f docker-compose.prod.yml down --remove-orphans
+        run: docker compose -f docker-compose.prod.yml down hack-the-lab-backend
 
       - name: execute container
         run: docker compose -f docker-compose.prod.yml up -d
