@@ -5,29 +5,29 @@ on:
   workflow_dispatch:
 
 jobs:
-    deploy:
-        runs-on: 
-            labels: [ "self-hosted", "Linux" ]
+  run_container:
+    runs-on: 
+      labels: [ "self-hosted", "Linux" ]
 
-        env:
-            TAG: "ghcr.io/michiganlabs/hack-the-lab-backend:latest"
+    env:
+      TAG: "ghcr.io/michiganlabs/hack-the-lab-backend:latest"
+    
+    steps: 
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         
-        steps: 
-            - name: Checkout repo
-              uses: actions/checkout@v4
+      - name: Pull docker image
+        run: docker pull $TAG
 
-            - name: Login to GitHub Container Registry
-              uses: docker/login-action@v3
-              with:
-                registry: ghcr.io
-                username: ${{ github.actor }}
-                password: ${{ secrets.GITHUB_TOKEN }}
-                
-            - name: Pull docker image
-              run: docker pull $TAG
+      - name: stop any existing containers
+        run: docker compose -f docker-compose.prod.yml down --remove-orphans
 
-            - name: stop any existing containers
-              run: docker compose -f docker-compose.prod.yml down --remove-orphans
-
-            - name: execute container
-              run: docker compose -f docker-compose.prod.yml up -d
+      - name: execute container
+        run: docker compose -f docker-compose.prod.yml up -d
