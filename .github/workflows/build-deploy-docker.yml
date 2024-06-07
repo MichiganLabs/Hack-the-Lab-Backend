@@ -32,3 +32,4 @@ jobs:
   deploy:
     needs: build
     uses: ./.github/workflows/deploy-run-app.yml
+    secrets: inherit
