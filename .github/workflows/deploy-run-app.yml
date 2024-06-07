@@ -34,11 +34,11 @@ jobs:
           REDIS_USER: ${{ secrets.REDIS_USER }}
           REDIS_PASS: ${{ secrets.REDIS_PASS }}     
         run: |
-          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> prod.env
-          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> prod.env
-          echo POSTGRES_PASS=${{ secrets.POSTGRES_PASS }} >> prod.env
-          echo REDIS_USER=${{ secrets.REDIS_USER }} >> prod.env
-          echo REDIS_PASS=${{ secrets.REDIS_PASS }} >> prod.env
+          echo POSTGRES_DB=${#POSTGRES_DB} >> prod.env
+          echo POSTGRES_USER=${#POSTGRES_USER} >> prod.env
+          echo POSTGRES_PASS=${#secrets.POSTGRES_PASS} >> prod.env
+          echo REDIS_USER=${#secrets.REDIS_USER} >> prod.env
+          echo REDIS_PASS=${#secrets.REDIS_PASS} >> prod.env
 
       - name: Stop any existing containers
         run: docker compose -f docker-compose.prod.yml down
