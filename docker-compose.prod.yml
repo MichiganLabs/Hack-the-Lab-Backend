@@ -3,8 +3,10 @@ services:
     container_name: hackthelab-db
     restart: unless-stopped
     image: postgres:latest
-    env_file:
-      - .env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./.docker/init.sql:/docker-entrypoint-initdb.d/1-schema.sql
@@ -15,8 +17,9 @@ services:
     container_name: hackthelab-redis
     restart: unless-stopped
     image: redis:latest
-    env_file:
-      - .env
+    environment:
+      - REDIS_USER
+      - REDIS_PASS
     ports:
       - 6379:6379
 
@@ -27,12 +30,15 @@ services:
     ports:
       - 8080:8080
     environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
+      - REDIS_USER
+      - REDIS_PASS
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    env_file:
-      - .env
     depends_on:
       - db
       - redis

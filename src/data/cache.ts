@@ -6,7 +6,12 @@ const client = createClient({
   url: `redis://${REDIS_USER}:${REDIS_PASS}@${REDIS_HOST}:${REDIS_PORT}`,
 });
 
-client.connect();
+try {
+  client.connect();
+} catch (e) {
+  console.log(`Error occurred while trying to connect to Redis: ${e}`);
+  process.exit(1);
+}
 
 const sleep = (ms: number) =>
   new Promise(resolve => {
