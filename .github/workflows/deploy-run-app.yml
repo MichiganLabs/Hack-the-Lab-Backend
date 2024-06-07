@@ -35,7 +35,7 @@ jobs:
           echo REDIS_PASS=${{ secrets.REDIS_PASS }} >> prod.env
 
       - name: stop any existing containers
-        run: docker compose -f docker-compose.prod.yml down hack-the-lab-backend
+        run: docker compose -f docker-compose.prod.yml down
 
       - name: execute container
         run: docker compose -f docker-compose.prod.yml up -d
