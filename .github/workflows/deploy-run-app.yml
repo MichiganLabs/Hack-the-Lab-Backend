@@ -8,6 +8,8 @@ jobs:
   run_container:
     runs-on: 
       labels: [ "self-hosted", "Linux" ]
+    permissions:
+      contents: read
 
     env:
       TAG: "ghcr.io/michiganlabs/hack-the-lab-backend:latest"
