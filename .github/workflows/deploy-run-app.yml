@@ -35,5 +35,4 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          REDIS_USER: ${{ secrets.REDIS_USER }}
           REDIS_PASS: ${{ secrets.REDIS_PASS }}
