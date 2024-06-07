@@ -17,9 +17,12 @@ services:
     container_name: hackthelab-redis
     restart: unless-stopped
     image: redis:latest
+    volumes:
+      - ./.docker/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       - REDIS_USER
       - REDIS_PASS
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
     ports:
       - 6379:6379
 
