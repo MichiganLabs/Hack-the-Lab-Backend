@@ -46,6 +46,8 @@ import { ProblemDetailsError } from "utils";
  *                     example: body
  */
 export const exceptionMiddleware = (error: ProblemDetailsError, _req, res, _next) => {
+  console.log("Something went wrong");
+  console.log(error.stack);
   res
     .setHeader("Content-Type", "application/problem+json")
     .status(error.statusCode || 500)
