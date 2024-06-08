@@ -2,7 +2,7 @@ name: "Build & Deploy Docker"
 
 on:
   push:
-    # branches: [ "main" ]
+    branches: [ "main" ]
   workflow_dispatch: # Allow manual invocation of the workflow
 
 env:
