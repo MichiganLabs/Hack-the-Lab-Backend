@@ -24,14 +24,14 @@ export enum Role {
  *   schemas:
  *     CellType:
  *       type: string
- *       enum: [Open, Wall, Cheese, Entrance, Exit]
+ *       enum: [Open, Wall, Cheese, Start, Exit]
  *       example: Open
  */
 export enum CellType {
   Open = "Open",
   Wall = "Wall",
   Cheese = "Cheese",
-  Entrance = "Entrance",
+  Start = "Start",
   Exit = "Exit",
 }
 

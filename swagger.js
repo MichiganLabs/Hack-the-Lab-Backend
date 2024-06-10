@@ -12,6 +12,7 @@ exports.getOpenapiSpecification = additionalApis => {
 
   const apis = [
     "./src/controllers/rat-controller/*.ts",
+    "./src/controllers/root-controller/*.ts",
     "./src/enums/**/*.ts",
     "./src/@types/**/*.d.ts",
     "./src/middleware/interceptors/**/*.ts",

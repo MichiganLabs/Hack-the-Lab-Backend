@@ -1,0 +1,26 @@
+name: CI Test Backend
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.6.2
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Build project
+        run: npm run build 

@@ -1,0 +1,34 @@
+name: Sync Mazes
+
+on:
+  push:
+    paths:
+      - 'maze/*'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on:
+      labels: [ "self-hosted", "Linux" ]
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with: 
+            node-version: 21.6.2
+        
+      - name: Install packages
+        run: npm ci
+        
+      - name: Sync mazes
+        run: npm run sync-mazes
