@@ -16,11 +16,11 @@ const port = process.env.PORT || 8080;
 const v1Router = express.Router();
 v1Router.use(bodyParser.json());
 
-if (process.env.NODE_ENV === "development") {
-  const morgan = require("morgan");
+// if (process.env.NODE_ENV === "development") {
+const morgan = require("morgan");
 
-  app.use(morgan("dev"));
-}
+app.use(morgan("dev"));
+// }
 
 for (let i = 0; i < interceptors.length; i++) {
   v1Router.use(interceptors[i]);
