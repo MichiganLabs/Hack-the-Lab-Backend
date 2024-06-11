@@ -3,7 +3,7 @@ name: Sync Mazes
 on:
   push:
     paths:
-      - 'maze/*'
+      - 'mazes/*'
   workflow_dispatch:
 
 jobs:
