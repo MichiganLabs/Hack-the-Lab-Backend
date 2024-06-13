@@ -6,7 +6,7 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  * @swagger
  * /v1/rankings:
  *   get:
- *     tags: [General]
+ *     tags: [General (ADMIN)]
  *     summary: Returns the rankings of all users
  *     responses:
  *       200:

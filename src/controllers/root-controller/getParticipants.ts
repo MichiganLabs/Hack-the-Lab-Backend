@@ -6,7 +6,7 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  * @swagger
  * /v1/participants:
  *   get:
- *     tags: [General]
+ *     tags: [General (ADMIN)]
  *     summary: Get participants in the competition
  *     responses:
  *       200:

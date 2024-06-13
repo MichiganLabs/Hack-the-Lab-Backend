@@ -11,8 +11,7 @@ exports.getOpenapiSpecification = additionalApis => {
   }
 
   const apis = [
-    "./src/controllers/rat-controller/*.ts",
-    "./src/controllers/root-controller/*.ts",
+    "./src/controllers/**/*.ts",
     "./src/enums/**/*.ts",
     "./src/@types/**/*.d.ts",
     "./src/middleware/interceptors/**/*.ts",
@@ -48,6 +47,7 @@ exports.getOpenapiSpecification = additionalApis => {
 
 if (require.main === module) {
   // File is being called directory, write the openapi spec.
+  // const additionalApis = ["./src/controllers/**/*.ts"];
   const data = this.getOpenapiSpecification();
   fs.writeFile(outputFile, JSON.stringify(data), err => {
     if (err) {

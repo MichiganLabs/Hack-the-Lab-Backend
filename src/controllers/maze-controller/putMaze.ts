@@ -12,16 +12,14 @@ import { MazeService } from "services";
  *           type: boolean
  *           example: true
  */
-export const mazeUpdateSchema = [
-  body("locked").isBoolean().withMessage("'locked' must be provided and a boolean type."),
-];
+export const mazeUpdateSchema = [body("locked").isBoolean().withMessage("'locked' must be provided and a boolean type.")];
 
 /**
  * @swagger
  * /v1/maze/{mazeId}:
  *   put:
  *     tags: [Maze (ADMIN)]
- *     summary: Updates a maze
+ *     summary: Updates a maze.
  *     parameters:
  *       - $ref: '#/components/parameters/MazeRequestPathBase'
  *     requestBody:
