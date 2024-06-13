@@ -7,7 +7,7 @@ import { asyncHandler } from "utils";
  * /v1/rat/{mazeId}/surroundings:
  *   get:
  *     tags: [Rat]
- *     summary: Returns the rat's immediate surroundings.
+ *     summary: Returns the rat's immediate surroundings for the provided maze ID.
  *     parameters:
  *       - $ref: '#/components/parameters/MazeRequestPathBase'
  *     responses:

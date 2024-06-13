@@ -18,7 +18,7 @@ export const actionsSchema = [
  * /v1/maze/{mazeId}/actions/{userId}:
  *   get:
  *     tags: [Maze (ADMIN)]
- *     summary: Returns recorded actions and score for a specific rat in a maze.
+ *     summary: Returns recorded actions and score for a specific user in a maze.
  *     parameters:
  *       - $ref: '#/components/parameters/MazeRequestPathBase'
  *       - in: path

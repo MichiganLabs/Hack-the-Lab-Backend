@@ -22,8 +22,10 @@ import postSmell from "./postSmell";
 /**
  * @swagger
  * tags:
- *   name: Rat
- *   description: Rat management
+ *   - name: Rat
+ *     description: Rat management
+ *   - name: Rat (SANDBOX)
+ *     description: Rat management for sandbox
  */
 export class RatController implements Controller {
   initialize(router: Router): void {

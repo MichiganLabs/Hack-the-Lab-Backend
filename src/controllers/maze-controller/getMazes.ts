@@ -10,7 +10,7 @@ export const mazesSchema = [query("env").optional().isEnvironment()];
  * /v1/mazes:
  *   get:
  *     tags: [Maze]
- *     summary: Returns a list of maze ids.
+ *     summary: Returns a list of available maze IDs.
  *     responses:
  *       200:
  *         description: Fetch successful

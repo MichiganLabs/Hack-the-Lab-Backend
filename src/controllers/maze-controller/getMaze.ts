@@ -5,8 +5,8 @@ import { asyncHandler } from "utils";
  * @swagger
  * /v1/maze/{mazeId}:
  *   get:
- *     tags: [Maze (ADMIN)]
- *     summary: Returns a maze
+ *     tags: [Maze (SANDBOX)]
+ *     summary: Returns maze information for a given maze ID. (Sandbox only)
  *     parameters:
  *       - $ref: '#/components/parameters/MazeRequestPathBase'
  *     responses:

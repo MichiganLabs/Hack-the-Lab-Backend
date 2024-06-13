@@ -10,8 +10,12 @@ import putMaze, { mazeUpdateSchema } from "./putMaze";
 /**
  * @swagger
  * tags:
- *   name: Maze (ADMIN)
- *   description: Maze management for administrators
+ *   - name: Maze
+ *     description: Maze management
+ *   - name: Maze (SANDBOX)
+ *     description: Maze management for sandbox
+ *   - name: Maze (ADMIN)
+ *     description: Maze management for administrators
  */
 export class MazeController implements Controller {
   initialize(router: Router): void {
