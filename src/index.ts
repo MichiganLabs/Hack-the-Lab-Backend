@@ -25,6 +25,10 @@ const limiter = rateLimit({
   limit: 50, // Limit each IP to 100 requests per `window` (here, per 5 minutes).
   standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+  keyGenerator: (req, _res) => {
+    const realIp = req.headers["x-real-ip"];
+    return typeof realIp === "string" ? realIp : req.ip;
+  },
 });
 
 // Apply the rate limiting middleware to all requests.
