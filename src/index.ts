@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const limiter = rateLimit({
   windowMs: 1000, // 1 second
   limit: 50, // Limit each IP to 100 requests per `window` (here, per 5 minutes).
@@ -32,7 +33,7 @@ const limiter = rateLimit({
 });
 
 // Apply the rate limiting middleware to all requests.
-app.use(limiter);
+// app.use(limiter);
 
 const v1Router = express.Router();
 v1Router.use(bodyParser.json());
