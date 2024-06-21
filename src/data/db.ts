@@ -13,7 +13,5 @@ export const pgQuery = async (text: string, params: any) => {
   const result = await pool.query(text, params);
 
   // Convert snake_case column names to camelCase for interfaces.
-  result.rows = result.rows.map(row => camelizeKeys(row));
-
-  return result.rows;
+  return result.rows.map(row => camelizeKeys(row));
 };

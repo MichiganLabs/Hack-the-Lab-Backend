@@ -222,6 +222,8 @@ declare module "hackthelab" {
    *           example: "practice-maze-0"
    *         actionType:
    *           $ref: '#/components/schemas/ActionType'
+   *         timeTs:
+   *           type: string
    *         position:
    *           $ref: '#/components/schemas/Coordinate'
    */
@@ -230,6 +232,7 @@ declare module "hackthelab" {
     userId: string;
     mazeId: string;
     actionType: ActionType;
+    time_ts: Date;
     position: Coordinate;
     success: boolean;
   }
