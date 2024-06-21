@@ -2,6 +2,7 @@ import { Direction } from "@enums";
 import { ActionResponse, RatActionRequest } from "hackthelab";
 import { RatService } from "services";
 import { asyncHandler, rethrowOrCreateError } from "utils";
+import { convertToDirection } from "utils/converters";
 import { body, matchedData } from "utils/custom-validator";
 
 /**
@@ -58,6 +59,8 @@ const postMove = asyncHandler(async (req, res) => {
   const { user, maze, ratPosition } = req as RatActionRequest;
 
   const data = matchedData(req) as MoveRequestBody;
+
+  data.direction = convertToDirection(data.direction);
 
   try {
     // Attempt to move user's rat in mazeId with provided direction. If move fails, returns null.
