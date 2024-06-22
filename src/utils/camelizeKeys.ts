@@ -18,5 +18,5 @@ export const camelizeKeys = (obj: any): any => {
     }
   }
 
-  return newObj;
+  return Object.keys(newObj).length > 0 ? newObj : obj;
 };
