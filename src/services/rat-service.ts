@@ -2,6 +2,7 @@ import { ActionType, CellType, Direction } from "@enums";
 import { ActionRepository, RatRepository } from "data/repository";
 import { Cell, Coordinate, Maze } from "hackthelab";
 import { MazeService } from "services";
+import { dijkstra } from "utils";
 
 export const moveRat = async (userId: number, maze: Maze, position: Coordinate, direction: Direction): Promise<boolean> => {
   // Keep track of whether the rat moved, or not.
@@ -60,22 +61,15 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
   const uneatenCheese = maze.cheese.filter(cheese => !eatenCheese.some(eaten => eaten.x === cheese.x && eaten.y === cheese.y));
 
   // Calculate smell intensity based on distance to uneaten cheese.
-  // A cheese has a smell radius of 10 cells. The smell intensity is inversely proportional to the distance.
+  // A cheese has a smell radius of 10 cells. The smell intensity is the number of steps to the nearest cheese.
   const radius = 10;
-  let smellIntensity = 0;
-  for (const cheese of uneatenCheese) {
-    // Euclidean distance (as the crow files) - pythagorean theorem
-    const distance = Math.sqrt(Math.pow(cheese.x - position.x, 2) + Math.pow(cheese.y - position.y, 2));
-
-    // Divide by `radius` to normalize the smell intensity to a value between 0 and 1.
-    smellIntensity += Math.max(0, radius - distance) / radius;
-  }
+  const smellIntensity = dijkstra(maze, position, uneatenCheese, radius);
 
   // Insert an action denoting the rat has smelled.
   await insertAction(userId, maze.id, ActionType.Smell, position, true);
 
   // Return the smell intensity to the nearest 4 decimal places.
-  return parseFloat(smellIntensity.toFixed(4));
+  return smellIntensity;
 };
 
 export const eatCheese = async (userId: number, maze: Maze, position: Coordinate): Promise<boolean> => {
