@@ -60,16 +60,16 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
   // Get a list of uneaten cheese that is still in the maze.
   const uneatenCheese = maze.cheese.filter(cheese => !eatenCheese.some(eaten => eaten.x === cheese.x && eaten.y === cheese.y));
 
-  // Calculate smell intensity based on distance to uneaten cheese.
-  // A cheese has a smell radius of 10 cells. The smell intensity is the number of steps to the nearest cheese.
+  // Calculates the distance to the closest uneaten cheese.
+  // A rat has a smell radius of 10 cells. The distance is the number of steps to the nearest cheese.
   const radius = 10;
-  const smellIntensity = dijkstra(maze, position, uneatenCheese, radius);
+  const distance = dijkstra(maze, position, uneatenCheese, radius);
 
   // Insert an action denoting the rat has smelled.
   await insertAction(userId, maze.id, ActionType.Smell, position, true);
 
-  // Return the smell intensity to the nearest 4 decimal places.
-  return smellIntensity;
+  // Return the distance.
+  return distance;
 };
 
 export const eatCheese = async (userId: number, maze: Maze, position: Coordinate): Promise<boolean> => {
