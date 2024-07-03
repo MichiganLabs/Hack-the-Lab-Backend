@@ -23,9 +23,9 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  *            schema:
  *              type: object
  *              properties:
- *                intensity:
+ *                distance:
  *                  type: number
- *                  example: 0.6
+ *                  example: 6
  *       400:
  *         $ref: '#/components/responses/BadRequest'
  *       401:
@@ -41,7 +41,7 @@ const postSmell = asyncHandler(async (req, res) => {
   try {
     const smellResult = await RatService.smell(user.id, maze, ratPosition);
 
-    res.status(200).json({ intensity: smellResult });
+    res.status(200).json({ distance: smellResult });
   } catch (e) {
     console.error(e);
     throw rethrowOrCreateError(e, 500, "Server Error", "An error occurred while trying to smell.");
