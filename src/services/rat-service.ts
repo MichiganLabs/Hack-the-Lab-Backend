@@ -90,6 +90,7 @@ export const eatCheese = async (userId: number, maze: Maze, position: Coordinate
   const canEat = currentCell.type == CellType.Cheese;
   const grabbedCheese = await getGrabbedCheese(userId, maze.id);
 
+  // Keep track of whether the rat moved, or not.
   const didEat = canEat || grabbedCheese != null;
 
   // Is the cell the rat is standing on cheese?
@@ -120,12 +121,12 @@ export const grabCheese = async (userId: number, maze: Maze, position: Coordinat
   // If the rat can grab the cheese, and is not holding on to cheese.
   const didGrab = canGrab && grabbedCheese == null;
 
+  // If the rat grabbed the cheese, update the cache.
   if (didGrab) {
-    // If the rat grabbed the cheese, update the cache.
     await RatRepository.saveGrabbedCheeseToCache(userId, maze.id, position);
   }
 
-  // If the rat grabbed the cheese, update the cache. Action data is the cheese position.
+  // Insert an action denoting the rat attempted to grab.
   await insertAction(userId, maze.id, ActionType.Grab, position, position, didGrab);
 
   return didGrab;
@@ -143,7 +144,7 @@ export const dropCheese = async (userId: number, maze: Maze, position: Coordinat
   // If the rat can drop the cheese, and is holding on to cheese.
   const didDrop = canDrop && grabbedCheese != null;
 
-  // If the rat is holding on to cheese.
+  // If the rat dropped the cheese, update the cache.
   if (didDrop) {
     await RatRepository.saveDroppedCheeseToCache(userId, maze.id, [grabbedCheese]);
     await RatRepository.clearGrabbedCheeseCache(userId, maze.id);
