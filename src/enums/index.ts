@@ -66,4 +66,6 @@ export enum ActionType {
   Eat = "EAT",
   Exit = "EXIT",
   Smell = "SMELL",
+  Grab = "GRAB",
+  Drop = "DROP",
 }

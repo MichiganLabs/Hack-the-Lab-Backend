@@ -87,6 +87,7 @@ CREATE TABLE
     maze_id     VARCHAR,
     action_type VARCHAR,
     position    jsonb,
+    action_data jsonb,
     time_ts     timestamptz DEFAULT CURRENT_TIMESTAMP,
     success     BOOLEAN     DEFAULT TRUE
 );

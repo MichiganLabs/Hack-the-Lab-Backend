@@ -13,8 +13,10 @@ import {
 import { Controller } from "../index";
 import getActions from "./getActions";
 import getSurroundings from "./getSurroundings";
+import postDrop from "./postDrop";
 import postEat from "./postEat";
 import postExit from "./postExit";
+import postGrab from "./postGrab";
 import postMove, { moveSchema } from "./postMove";
 import postReset, { resetSchema } from "./postReset";
 import postSmell from "./postSmell";
@@ -33,6 +35,8 @@ export class RatController implements Controller {
     router.post("/rat/move", hasRole(Role.Participant), this.buildMiddlewareWithSchema([...mazeBodySchema, ...moveSchema]), postMove);
     router.post("/rat/smell", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postSmell);
     router.post("/rat/eat", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postEat);
+    router.post("/rat/grab", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postGrab);
+    router.post("/rat/drop", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postDrop);
     router.post("/rat/exit", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazeBodySchema), postExit);
     router.get("/rat/:mazeId/surroundings", hasRole(Role.Participant), this.buildMiddlewareWithSchema(mazePathSchema), getSurroundings);
 

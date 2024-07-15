@@ -33,12 +33,20 @@ export const getMoveCount = async (userId: number, mazeId: string): Promise<numb
   return numOfMoves[0].count;
 };
 
-export const create = async (userId: number, mazeId: string, actionType: ActionType, position: Coordinate, success: boolean = true) => {
-  await pgQuery("INSERT INTO actions (user_id, maze_id, action_type, position, success) VALUES ($1, $2, $3, $4, $5)", [
+export const create = async (
+  userId: number,
+  mazeId: string,
+  actionType: ActionType,
+  position: Coordinate,
+  actionData: any,
+  success: boolean = true,
+) => {
+  await pgQuery("INSERT INTO actions (user_id, maze_id, action_type, position, action_data, success) VALUES ($1, $2, $3, $4, $5, $6)", [
     userId,
     mazeId,
     actionType,
     position,
+    actionData,
     success,
   ]);
 };
