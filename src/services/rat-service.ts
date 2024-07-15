@@ -145,7 +145,7 @@ export const dropCheese = async (userId: number, maze: Maze, position: Coordinat
 
   // If the rat is holding on to cheese.
   if (didDrop) {
-    await RatRepository.saveDroppedCheeseToCache(userId, maze.id, [position]);
+    await RatRepository.saveDroppedCheeseToCache(userId, maze.id, [grabbedCheese]);
     await RatRepository.clearGrabbedCheeseCache(userId, maze.id);
   }
 
