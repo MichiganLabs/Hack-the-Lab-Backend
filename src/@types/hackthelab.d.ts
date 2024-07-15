@@ -226,6 +226,8 @@ declare module "hackthelab" {
    *           type: string
    *         position:
    *           $ref: '#/components/schemas/Coordinate'
+   *         actionData:
+   *           type: object
    */
   interface Action {
     actionId: string;
@@ -233,6 +235,7 @@ declare module "hackthelab" {
     mazeId: string;
     actionType: ActionType;
     time_ts: Date;
+    actionData: object;
     position: Coordinate;
     success: boolean;
   }

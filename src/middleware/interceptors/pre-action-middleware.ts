@@ -36,7 +36,7 @@ export const preActionMiddleware = asyncHandler(async (req, _res, next) => {
       position = maze.start;
 
       // Insert an action denoting the rat has started the maze.
-      await RatService.insertAction(req.user.id, maze.id, ActionType.Start, position);
+      await RatService.insertAction(req.user.id, maze.id, ActionType.Start, position, null);
     }
 
     // Add the rat position to the request

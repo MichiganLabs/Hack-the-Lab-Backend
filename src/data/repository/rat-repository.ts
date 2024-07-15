@@ -53,6 +53,125 @@ export const clearRatPositionCache = async (userId: number, mazeId: string): Pro
   await cache.delCache(cacheKey);
 };
 
+const getGrabbedCheeseCacheKey = (userId: number, mazeId: string) => `cheese:grabbed-${userId}-${mazeId}`;
+
+export const getGrabbedCheese = async (userId: number, mazeId: string): Promise<Coordinate> => {
+  const cacheKey = getGrabbedCheeseCacheKey(userId, mazeId);
+
+  try {
+    const cacheCheese = await cache.getCache(cacheKey);
+
+    if (cacheCheese) {
+      return cacheCheese as Coordinate;
+    }
+  } catch (e) {
+    console.error(e);
+    /* empty */
+  }
+
+  // Could not read from cache, or expired, query the database.
+
+  const sql = `
+  SELECT action_data 
+  FROM actions 
+  WHERE action_type = $1 
+    AND maze_id = $2 
+    AND user_id = $3 
+    AND success = true 
+    AND action_data NOT IN (
+      SELECT action_data 
+      FROM actions 
+      WHERE action_type IN ($4, $5)
+        AND maze_id = $2 
+        AND user_id = $3
+        AND success = true
+    ) 
+  ORDER BY time_ts DESC 
+  LIMIT 1
+`;
+
+  const dbGrabRows = await pgQuery(sql, [ActionType.Grab, mazeId, userId, ActionType.Drop, ActionType.Eat]);
+
+  if (0 == dbGrabRows.length) {
+    return null;
+  }
+
+  const grabbedCheese = dbGrabRows[0].actionData as Coordinate;
+
+  // Clear existing cache since we are starting from scratch
+  clearGrabbedCheeseCache(userId, mazeId);
+
+  // Save the result to cache so that we don't have to retrieve it again from the DB.
+  saveGrabbedCheeseToCache(userId, mazeId, grabbedCheese);
+
+  return grabbedCheese;
+};
+
+export const saveGrabbedCheeseToCache = async (userId: number, mazeId: string, data: Coordinate): Promise<void> => {
+  const cacheKey = getGrabbedCheeseCacheKey(userId, mazeId);
+  await cache.setCache(cacheKey, data);
+};
+
+export const clearGrabbedCheeseCache = async (userId: number, mazeId: string): Promise<void> => {
+  const cacheKey = getGrabbedCheeseCacheKey(userId, mazeId);
+  await cache.delCache(cacheKey);
+};
+
+const getDroppedCheeseCacheKey = (userId: number, mazeId: string) => `cheese:dropped-${userId}-${mazeId}`;
+
+export const getDroppedCheesePositions = async (userId: number, mazeId: string): Promise<Coordinate[]> => {
+  const cacheKey = getDroppedCheeseCacheKey(userId, mazeId);
+
+  try {
+    const cachePositions = await cache.getCache(cacheKey);
+
+    if (cachePositions) {
+      return cachePositions as Coordinate[];
+    }
+  } catch (e) {
+    console.error(e);
+    /* empty */
+  }
+
+  // Could not read from cache, or expired, query the database.
+  const dbDroppedCheeseRows = await pgQuery(
+    "SELECT action_data FROM actions WHERE maze_id = $1 AND user_id = $2 AND action_type = $3 AND success = true",
+    [mazeId, userId, ActionType.Drop],
+  );
+
+  if (0 == dbDroppedCheeseRows.length) {
+    return [];
+  }
+
+  const positions = dbDroppedCheeseRows.map(row => row.actionData) as Coordinate[];
+
+  // Clear existing cache since we are starting from scratch
+  clearDroppedCheeseCache(userId, mazeId);
+
+  // Save the result to cache so that we don't have to retrieve it again from the DB.
+  saveDroppedCheeseToCache(userId, mazeId, positions);
+
+  return positions;
+};
+
+// Update the cached value for the dropped cheese.
+export const saveDroppedCheeseToCache = async (userId: number, mazeId: string, newCoordinates: Coordinate[]): Promise<void> => {
+  const cacheKey = getDroppedCheeseCacheKey(userId, mazeId);
+  const existingCoordinates = (await cache.getCache(cacheKey)) || [];
+
+  // Combine the existing and new coordinates, and remove any duplicates.
+  const combined = [...existingCoordinates, ...newCoordinates].filter(
+    (item, index, array) => index === array.findIndex(other => other.x === item.x && other.y === item.y),
+  );
+
+  await cache.setCache(cacheKey, combined);
+};
+
+export const clearDroppedCheeseCache = async (userId: number, mazeId: string): Promise<void> => {
+  const cacheKey = getDroppedCheeseCacheKey(userId, mazeId);
+  await cache.delCache(cacheKey);
+};
+
 const getEatenCheeseCacheKey = (userId: number, mazeId: string) => `cheese:eaten-${userId}-${mazeId}`;
 
 // Rat position result is not stored in cache on query, but instead on update. (see `saveRatPositionToCache`)
