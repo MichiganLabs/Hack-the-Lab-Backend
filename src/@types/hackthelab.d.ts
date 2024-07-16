@@ -78,6 +78,40 @@ declare module "hackthelab" {
     open_square_count: number;
   }
 
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     MazeResponse:
+   *       type: object
+   *       properties:
+   *         id:
+   *           type: string
+   *           example: "practice-maze-0"
+   *           description: The unique identifier for the maze.
+   *         numberOfCheese:
+   *           type: number
+   *           example: 3
+   *           description: The number of cheese in the maze.
+   *         dimensions:
+   *           type: object
+   *           properties:
+   *             horizontal:
+   *               type: integer
+   *               example: 7
+   *             vertical:
+   *               type: integer
+   *               example: 7
+   */
+  interface MazeResponse {
+    id: string;
+    dimensions: {
+      horizontal: number;
+      vertical: number;
+    };
+    numberOfCheese: number;
+  }
+
   interface AdminMaze extends Maze {
     environment: Environment;
     locked: boolean;
