@@ -1,4 +1,5 @@
 import { Role } from "@enums";
+import { MazeResponse } from "hackthelab";
 import { MazeService, UserService } from "services";
 import { asyncHandler, rethrowOrCreateError } from "utils";
 import { query } from "utils/custom-validator";
@@ -19,8 +20,8 @@ export const mazesSchema = [query("env").optional().isEnvironment()];
  *             schema:
  *               type: array
  *               items:
- *                 type: string
- *                 example: "oneTurn"
+ *                 $ref: '#/components/schemas/MazeResponse'
+ *                 type: object
  *       400:
  *         $ref: '#/components/responses/BadRequest'
  *       401:
@@ -35,7 +36,12 @@ const getMazes = asyncHandler(async (req, res) => {
     const environments = UserService.getEnvironmentsForRequest(req);
     const includeLockedMazes = req.user.role == Role.Admin;
     const mazes = await MazeService.getMazesForEnvironments(environments, includeLockedMazes);
-    const mazeList = Object.keys(mazes);
+
+    const mazeList: MazeResponse[] = Object.entries(mazes).map(([mazeId, maze]) => ({
+      id: mazeId,
+      dimensions: maze.dimensions,
+      numberOfCheese: maze.cheese.length,
+    }));
 
     res.status(200).json(mazeList);
   } catch (e) {
