@@ -18,7 +18,6 @@ export const getActionCount = async (userId: number, mazeId: string): Promise<nu
           FROM actions
           WHERE user_id = $1
           AND maze_id = $2
-          GROUP BY action_type
         `,
     [userId, mazeId],
   );
