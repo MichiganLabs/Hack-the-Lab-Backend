@@ -240,6 +240,11 @@ export const insertAction = async (
   await ActionRepository.create(userId, mazeId, actionType, position, actionData, success);
 };
 
+// Retrieve the number of actions for a rat in a maze whether they are successful actions or not.
+export const getNumOfActions = (userId: number, mazeId: string): Promise<number> => {
+  return ActionRepository.getActionCount(userId, mazeId);
+};
+
 // Retrieve the number of moves for a rat in a maze whether they are successful moves or not.
 export const getNumOfMoves = (userId: number, mazeId: string): Promise<number> => {
   return ActionRepository.getMoveCount(userId, mazeId);

@@ -10,6 +10,27 @@ export const deleteForUserMaze = async (userId: number, mazeId: string): Promise
   await pgQuery("DELETE FROM actions WHERE user_id = $1 AND maze_id = $2", [userId, mazeId]);
 };
 
+// Retrieve the number of actions for a rat in a maze whether they are successful actions or not.
+export const getActionCount = async (userId: number, mazeId: string): Promise<number> => {
+  const numOfActions = await pgQuery(
+    `
+          SELECT COUNT(*)
+          FROM actions
+          WHERE user_id = $1
+          AND maze_id = $2
+        `,
+    [userId, mazeId],
+  );
+
+  // Verify that we return some rows from the database query.
+  if (numOfActions.length === 0) {
+    return 0;
+  }
+
+  // Return the count property from the database row that was queried.
+  return numOfActions[0].count;
+};
+
 // Retrieve the number of moves for a rat in a maze whether they are successful moves or not.
 export const getMoveCount = async (userId: number, mazeId: string): Promise<number> => {
   const numOfMoves = await pgQuery(
