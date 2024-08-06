@@ -75,7 +75,7 @@ declare module "hackthelab" {
       horizontal: number;
       vertical: number;
     };
-    open_square_count: number;
+    openSquareCount: number;
   }
 
   /**
