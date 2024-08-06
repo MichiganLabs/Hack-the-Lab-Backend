@@ -121,5 +121,5 @@ CREATE TABLE
     exit            jsonb,
     start           jsonb,
     dimensions      jsonb,
-    openSquareCount NUMERIC
+    open_square_count NUMERIC
 );
