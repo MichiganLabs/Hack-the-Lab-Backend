@@ -55,7 +55,7 @@ const updateMaze = async (mazeId, environment, mazeData) => {
 
   try {
     await client.query(
-      "UPDATE mazes SET environment = $1, cells = $2, cheese = $3, exit = $4, start = $5, dimensions = $6, opensquarecount = $7 WHERE id = $8",
+      "UPDATE mazes SET environment = $1, cells = $2, cheese = $3, exit = $4, start = $5, dimensions = $6, open_square_count = $7 WHERE id = $8",
       [environment, cells, cheese, mazeExit, start, dimensions, openSquareCount, mazeId],
     );
     console.log(`[*] Maze '${mazeId}' successfully updated.`);
@@ -74,7 +74,7 @@ const createMaze = async (mazeId, environment, mazeData) => {
 
   try {
     await client.query(
-      "INSERT INTO mazes (id, environment, cells, cheese, exit, start, dimensions, opensquarecount) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+      "INSERT INTO mazes (id, environment, cells, cheese, exit, start, dimensions, open_square_count) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
       [mazeId, environment, cells, cheese, mazeExit, start, dimensions, openSquareCount],
     );
     console.log(`[+] Maze '${mazeId}' successfully created.`);

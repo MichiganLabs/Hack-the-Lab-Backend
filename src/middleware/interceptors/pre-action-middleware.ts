@@ -22,7 +22,7 @@ export const preActionMiddleware = asyncHandler(async (req, _res, next) => {
     // Verify that the rat hasn't exceeded the number of actions limit.
     const MOVE_LIMIT_MULTIPLIER = 12;
     const ratNumOfActions = await RatService.getNumOfActions(req.user.id, maze.id);
-    const ratMoveLimit = maze.open_square_count * MOVE_LIMIT_MULTIPLIER;
+    const ratMoveLimit = maze.openSquareCount * MOVE_LIMIT_MULTIPLIER;
     // If the rat's action count exceeds the move limit, we return a 403 forbidden response.
     if (ratNumOfActions >= ratMoveLimit) {
       throw createError(403, "Action Limit Exceeded", "Rat has exceeded the action limit!");
