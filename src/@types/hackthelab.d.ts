@@ -61,7 +61,7 @@ declare module "hackthelab" {
    *             vertical:
    *               type: integer
    *               example: 7
-   *         open_square_count:
+   *         openSquareCount:
    *           type: integer
    *           example: 7
    */
@@ -268,7 +268,7 @@ declare module "hackthelab" {
     userId: string;
     mazeId: string;
     actionType: ActionType;
-    time_ts: Date;
+    timeTs: Date;
     actionData: object;
     position: Coordinate;
     success: boolean;
