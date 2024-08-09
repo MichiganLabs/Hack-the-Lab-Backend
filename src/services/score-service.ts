@@ -1,7 +1,7 @@
 import { ActionType, Environment, Role } from "@enums";
 import { pgQuery } from "data/db";
 import { UserRepository } from "data/repository";
-import { Action, Award, RankingResult, Score } from "hackthelab";
+import { Action, Award, RankingResult, Score, User } from "hackthelab";
 import { MazeService, ScoreService } from "services";
 
 export const calculateScore = (actions: Action[]): number => {
@@ -61,15 +61,19 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
   const mazes = await MazeService.getMazesForEnvironments([environment], true);
   const mazeIds = Object.keys(mazes);
 
-  // Get all participants in the competition
-  const participants = await UserRepository.getUsersOfRole(Role.Participant);
-  const participantIds = participants.map(participant => participant.id);
+  const participants: { [key: number]: User } = (await UserRepository.getUsersOfRole(Role.Participant)).reduce(
+    (acc, { id, name, role }) => {
+      acc[id] = { id, name, role };
+      return acc;
+    },
+    {},
+  );
 
   const scores: Score[] = [];
 
   // For each participant, calculate their score
   // Loop through all of the participants of the provided mazes
-  for (const userId of participantIds) {
+  for (const participant of Object.values(participants)) {
     let totalScore: number = 0;
 
     // Loop through each maze to determine the participant's score for each maze
@@ -79,14 +83,14 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
         continue;
       }
 
-      const actions = await MazeService.getActions(userId, mazeId);
+      const actions = await MazeService.getActions(participant.id, mazeId);
       const score = ScoreService.calculateScore(actions);
 
       totalScore += score;
     }
 
     scores.push({
-      userId: userId,
+      user: participant,
       score: totalScore,
     });
   }
@@ -118,7 +122,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const mostMovesAward: Award = {
         name: "World Traveler",
         description: "The rat who made the most moves",
-        userId: result.userId,
+        user: participants[result.userId],
         value: result.moveCount,
       };
       awards.push(mostMovesAward);
@@ -163,7 +167,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const leastMovesAward: Award = {
         name: "Move Strategist",
         description: "The rat who made the least amount of moves and completed the most mazes",
-        userId: result.userId,
+        user: participants[result.userId],
         value: result.moveCount,
       };
       awards.push(leastMovesAward);
@@ -195,7 +199,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const mostCheeseEatenAward: Award = {
         name: "Cheese Hoarder",
         description: "The rat who ate the most cheese",
-        userId: result.userId,
+        user: participants[result.userId],
         value: result.cheeseCount,
       };
       awards.push(mostCheeseEatenAward);
@@ -210,7 +214,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const leastCheeseEatenAward: Award = {
         name: "Famished",
         description: "The rat who ate the least amount of cheese",
-        userId: result.userId,
+        user: participants[result.userId],
         value: result.cheeseCount,
       };
       awards.push(leastCheeseEatenAward);
@@ -242,7 +246,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const mostSmellsAward: Award = {
         name: "Nosiest",
         description: "The rat who smelled the most",
-        userId: result.userId,
+        user: participants[result.userId],
         value: result.smellCount,
       };
       awards.push(mostSmellsAward);
@@ -251,7 +255,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
 
   // Did not smell
   // -------------------------
-  const noSmells = participants.filter(participant => !mostSmells.some(item => item.user_id === participant.id));
+  const noSmells = Object.values(participants).filter(participant => !mostSmells.some(item => item.userId === participant.id));
 
   // *AWARD* Never using smell
   if (noSmells.length > 0) {
@@ -259,7 +263,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const neverSmelledAward: Award = {
         name: "Nose Blind",
         description: "The rat who never used their nose",
-        userId: participant.id,
+        user: participants[participant.id],
         value: "0",
       };
       awards.push(neverSmelledAward);
@@ -291,7 +295,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const mostWallsHitAward: Award = {
         name: "Dazed",
         description: "The rat who ran into the most walls",
-        userId: result.userId,
+        user: participants[result.userId],
         value: result.wallCount,
       };
       awards.push(mostWallsHitAward);
@@ -324,7 +328,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const mostRevisitedCellAward: Award = {
         name: "Favorite Spot",
         description: "The rat who revisited a single cell the most",
-        userId: result.userId,
+        user: participants[result.userId],
         value: result.revisitCount,
       };
       awards.push(mostRevisitedCellAward);
@@ -361,7 +365,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const mostRevisitedCellsAward: Award = {
         name: "Deja Vu",
         description: "The rat who revisited the most cells",
-        userId: result.userId,
+        user: participants[result.userId],
         value: result.revisitCount,
       };
       awards.push(mostRevisitedCellsAward);
@@ -393,7 +397,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const mostFailedActionsAward: Award = {
         name: "Clumsiest",
         description: "The rat who attempted actions that failed the most",
-        userId: result.userId,
+        user: participants[result.userId],
         value: result.failCount,
       };
       awards.push(mostFailedActionsAward);
@@ -432,7 +436,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       const noFailedActionsAward: Award = {
         name: "Coordinated",
         description: "The rat who made the least amount of failed actions while completing the most mazes",
-        userId: result.id,
+        user: participants[result.userId],
         value: result.failedCount,
       };
       awards.push(noFailedActionsAward);
@@ -450,7 +454,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     ORDER BY last_hit DESC
     LIMIT 1
     `,
-    [participantIds],
+    [Object.keys(participants)],
   );
 
   // *AWARD* Last to hit the API
@@ -458,7 +462,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     const lastToHitAPIAward: Award = {
       name: "Procrastinator",
       description: "The last rat to hit the API",
-      userId: lastToHitAPI[0].userId,
+      user: participants[lastToHitAPI[0].userId],
       value: lastToHitAPI[0].lastHit,
     };
     awards.push(lastToHitAPIAward);
@@ -475,7 +479,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     ORDER BY first_hit ASC
     LIMIT 1
     `,
-    [participantIds],
+    [Object.keys(participants)],
   );
 
   // *AWARD* First to hit the API
@@ -483,7 +487,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     const firstToHitAPIAward: Award = {
       name: "Is This Thing On?",
       description: "The first rat to hit the API",
-      userId: firstToHitAPI[0].userId,
+      user: participants[firstToHitAPI[0].userId],
       value: firstToHitAPI[0].firstHit,
     };
     awards.push(firstToHitAPIAward);
@@ -508,7 +512,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     const firstToMoveAward: Award = {
       name: "Trail Blazer",
       description: "The first rat to make a move in one of the competition mazes",
-      userId: firstToMove[0].userId,
+      user: participants[firstToMove[0].userId],
       value: firstToMove[0].firstMove,
     };
     awards.push(firstToMoveAward);
