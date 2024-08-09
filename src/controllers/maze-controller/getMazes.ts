@@ -37,11 +37,19 @@ const getMazes = asyncHandler(async (req, res) => {
     const includeLockedMazes = req.user.role == Role.Admin;
     const mazes = await MazeService.getMazesForEnvironments(environments, includeLockedMazes);
 
-    const mazeList: MazeResponse[] = Object.entries(mazes).map(([mazeId, maze]) => ({
-      id: mazeId,
-      dimensions: maze.dimensions,
-      numberOfCheese: maze.cheese.length,
-    }));
+    const mazeList: MazeResponse[] = Object.entries(mazes).map(([mazeId, maze]) => {
+      const mazeResponseObj: MazeResponse = {
+        id: mazeId,
+        dimensions: maze.dimensions,
+        numberOfCheese: maze.cheese.length,
+      };
+
+      if (req.user.role == Role.Admin) {
+        mazeResponseObj.locked = maze.locked;
+      }
+
+      return mazeResponseObj;
+    });
 
     res.status(200).json(mazeList);
   } catch (e) {

@@ -110,6 +110,7 @@ declare module "hackthelab" {
       vertical: number;
     };
     numberOfCheese: number;
+    locked?: boolean;
   }
 
   interface AdminMaze extends Maze {
