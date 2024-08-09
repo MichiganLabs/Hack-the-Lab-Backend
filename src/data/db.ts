@@ -9,9 +9,9 @@ const pool = new Pool({
   port: parseInt(process.env.POSTGRES_PORT),
 });
 
-export const pgQuery = async (text: string, params: any) => {
+export const pgQuery = async <T = any>(text: string, params: any): Promise<T> => {
   const result = await pool.query(text, params);
 
   // Convert snake_case column names to camelCase for interfaces.
-  return result.rows.map(row => camelizeKeys(row));
+  return result.rows.map(row => camelizeKeys(row)) as T;
 };

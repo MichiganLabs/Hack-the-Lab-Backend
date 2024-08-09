@@ -336,7 +336,7 @@ declare module "hackthelab" {
     name: string;
     description: string;
     user: User;
-    value: string;
+    value: string | number;
   }
 
   /**
