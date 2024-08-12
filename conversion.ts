@@ -207,7 +207,7 @@ async function convertFromUrl(csvUrl: string, mazeName: string) {
       const data = await res.text();
       const result = convertCsvToJson(data);
 
-      const fileName = `../mazes/${mazeName}.json`;
+      const fileName = `./mazes/${mazeName}.json`;
 
       // Create parent folder if it doesn't exist
       const parentFolder = fileName.substring(0, fileName.lastIndexOf("/"));
@@ -229,88 +229,132 @@ async function convertFromUrl(csvUrl: string, mazeName: string) {
 
 async function createMazes() {
   // Probably want to make this into a list that loops but whatever for now
+
+  // Practice mazes
+
+  // Straight Maze
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=222529255&single=true&output=csv`,
-    "sandbox/Straight",
+    "sandbox/Practice1",
   );
+
+  // One Turn
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1730653816&single=true&output=csv`,
-    "sandbox/OneTurn",
+    "sandbox/Practice2",
   );
+
+  // Multiple Turns
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1271783319&single=true&output=csv`,
-    "sandbox/MultipleTurns",
+    "sandbox/Practice3",
   );
+
+  // Loop
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1310950333&single=true&output=csv`,
-    "sandbox/Loop",
+    "sandbox/Practice4",
   );
+
+  // Dead Ends
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=189555194&single=true&output=csv`,
-    "sandbox/DeadEnds",
+    "sandbox/Practice5",
   );
+
+  // Cheese
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=113265412&single=true&output=csv`,
-    "sandbox/Cheese",
+    "sandbox/Practice6",
   );
+
+  // Basic (Only One Solution)
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=2081960952&single=true&output=csv`,
-    "sandbox/BasicOneSolution",
+    "sandbox/Practice7",
   );
+
+  // Big Practice
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1800764000&single=true&output=csv`,
-    "sandbox/BigPractice",
+    "sandbox/Practice8",
   );
+
+  // More Cheese
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=859322079&single=true&output=csv`,
-    "sandbox/MoreCheesePractice",
+    "sandbox/Practice9",
   );
+
+  // Practice Cheese / Diverging Paths
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=362959152&single=true&output=csv`,
-    "sandbox/DivergingPaths",
+    "sandbox/Practice10",
   );
+
+  // State of Michigan
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1179414329&single=true&output=csv`,
-    "sandbox/StateOfMichigan",
+    "sandbox/Practice11",
   );
 
   // Competition mazes
+
+  // M Shape
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1844403567&single=true&output=csv`,
-    "competition/MShape",
+    "competition/Competition 1",
   );
+
+  // Competition 2
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1337856033&single=true&output=csv`,
     "competition/Competition2",
   );
+
+  // Devices
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1607378245&single=true&output=csv`,
-    "competition/DevicesShape",
+    "competition/Competition3",
   );
+
+  // Trees and Clouds
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=2040482267&single=true&output=csv`,
-    "competition/TreesAndClouds",
+    "competition/Competition4",
   );
+
+  // Hills and Mountains
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=375286197&single=true&output=csv`,
-    "competition/HillsAndMountains",
+    "competition/Competition5",
   );
+
+  // Olympic Rings
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1565258291&single=true&output=csv`,
-    "competition/OlympicRings",
+    "competition/Competition6",
   );
+
+  // Symmetrical
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=853659835&single=true&output=csv`,
-    "competition/Symmetrical",
+    "competition/Competition7",
   );
+
+  // Abstract
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1533899046&single=true&output=csv`,
-    "competition/Abstract",
+    "competition/Competition8",
   );
+
+  // Cheese
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1581402781&single=true&output=csv`,
-    "competition/Cheese",
+    "competition/Competition9",
   );
+
+  // Copy of Flowers
   // await convertFromUrl(
   //   `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=535007969&single=true&output=csv`,
   //   "competition/CopyOfFlowers"
