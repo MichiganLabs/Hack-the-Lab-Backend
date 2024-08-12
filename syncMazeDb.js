@@ -51,7 +51,7 @@ const updateMaze = async (mazeId, environment, mazeData) => {
   const mazeExit = JSON.stringify(mazeData.exit);
   const start = JSON.stringify(mazeData.start);
   const dimensions = JSON.stringify(mazeData.dimensions);
-  const openSquareCount = mazeData.open_square_count;
+  const openSquareCount = mazeData.openSquareCount;
 
   try {
     await client.query(

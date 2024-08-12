@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as fs from "fs";
 
 export interface Maze {
   cells: Cell[];
@@ -27,7 +27,7 @@ export interface Cell {
   coordinates: Coordinate;
   type: CellType;
   surroundings: Surroundings;
-};
+}
 
 export interface Surroundings {
   north: CellType;
@@ -41,63 +41,72 @@ enum CellType {
   Wall = "Wall",
   Cheese = "Cheese",
   Beginning = "Start",
-  End = "Exit"
+  End = "Exit",
 }
 
 function getCellType(cellTypeString: string): CellType {
-  switch(cellTypeString.toUpperCase()) {
-    case "W": return CellType.Wall
-    case "C": return CellType.Cheese
-    case "B": return CellType.Beginning
-    case "E": return CellType.End
-    default: return CellType.Open
+  switch (cellTypeString.toUpperCase()) {
+    case "W":
+      return CellType.Wall;
+    case "C":
+      return CellType.Cheese;
+    case "B":
+      return CellType.Beginning;
+    case "E":
+      return CellType.End;
+    default:
+      return CellType.Open;
   }
 }
 
 function convertCsvToJson(csvFromGoogle: string) {
-  let maze: Maze = {
+  const maze: Maze = {
     cells: [],
     cheese: [],
     exit: {
       x: 0,
-      y: 0
+      y: 0,
     },
     start: {
       x: 0,
-      y: 0
+      y: 0,
     },
     dimensions: {
       horizontal: 0,
-      vertical: 0
+      vertical: 0,
     },
-    openSquareCount: 0
-  }
+    openSquareCount: 0,
+  };
 
-  let splitByNewLine = csvFromGoogle.replace(/\r/g, "").split("\n")
-  let rows: Row[] = splitByNewLine.map((row, rowIndex): Row => {
-    let splitCellTypes = row.split(",")
+  const splitByNewLine = csvFromGoogle.replace(/\r/g, "").split("\n");
+  const rows: Row[] = splitByNewLine.map((row, rowIndex): Row => {
+    const splitCellTypes = row.split(",");
 
-    let cells: Cell[] = splitCellTypes.map((csvCell: string, cellIndex): Cell => {
-      let cellType: CellType = getCellType(csvCell)
+    const cells: Cell[] = splitCellTypes.map((csvCell: string, cellIndex): Cell => {
+      const cellType: CellType = getCellType(csvCell);
 
-      switch(cellType) {
+      switch (cellType) {
         case CellType.Beginning:
           maze.start = {
             x: cellIndex,
-            y: rowIndex
-          }
+            y: rowIndex,
+          };
+          break;
         case CellType.End:
           maze.exit = {
             x: cellIndex,
-            y: rowIndex
-          }
+            y: rowIndex,
+          };
+          break;
         case CellType.Cheese:
           maze.cheese.push({
             x: cellIndex,
-            y: rowIndex
-          })
+            y: rowIndex,
+          });
+          break;
         case CellType.Open:
-          maze.openSquareCount++
+          maze.openSquareCount++;
+          break;
         default:
       }
 
@@ -111,22 +120,22 @@ function convertCsvToJson(csvFromGoogle: string) {
           north: CellType.Open,
           south: CellType.Open,
           west: CellType.Open,
-          east: CellType.Open
-        }
-      }
+          east: CellType.Open,
+        },
+      };
     });
 
     return {
-      cells: cells
-    }
+      cells: cells,
+    };
   });
 
-  maze.dimensions.horizontal = rows[0].cells.length
-  maze.dimensions.vertical = rows.length
+  maze.dimensions.horizontal = rows[0].cells.length;
+  maze.dimensions.vertical = rows.length;
 
-  let calculatedRows: Row[] = rows.map((row: Row, rowIndex): Row => {
-    let calculatedCells: Cell[] = row.cells.map((cell: Cell, cellIndex): Cell => {
-      var newCell: Cell = row.cells[cellIndex]
+  const calculatedRows: Row[] = rows.map((row: Row, rowIndex): Row => {
+    const calculatedCells: Cell[] = row.cells.map((cell: Cell, cellIndex): Cell => {
+      const newCell: Cell = row.cells[cellIndex];
       // North
       // If most north row, assume wall to north
       if (rowIndex == 0) {
@@ -137,112 +146,175 @@ function convertCsvToJson(csvFromGoogle: string) {
 
       // South
       // If most south row, assume wall to south
-      if (rowIndex == (rows.length - 1)) {
-        cell.surroundings.south = CellType.Wall
+      if (rowIndex == rows.length - 1) {
+        cell.surroundings.south = CellType.Wall;
       } else {
-        cell.surroundings.south = rows[rowIndex + 1].cells[cellIndex].type
+        cell.surroundings.south = rows[rowIndex + 1].cells[cellIndex].type;
       }
 
       // West
       // If furthest west column, assume wall to the west
       if (cellIndex == 0) {
-        cell.surroundings.west = CellType.Wall
+        cell.surroundings.west = CellType.Wall;
       } else {
-        cell.surroundings.west = row.cells[cellIndex - 1].type
+        cell.surroundings.west = row.cells[cellIndex - 1].type;
       }
 
       // East
       // If furthest east column, assume wall to the east
-      if (cellIndex == (row.cells.length - 1)) {
-        cell.surroundings.east = CellType.Wall
+      if (cellIndex == row.cells.length - 1) {
+        cell.surroundings.east = CellType.Wall;
       } else {
-        cell.surroundings.east = row.cells[cellIndex + 1].type
+        cell.surroundings.east = row.cells[cellIndex + 1].type;
       }
 
-      return newCell
+      return newCell;
     });
 
     return {
-      cells: calculatedCells
-    }
+      cells: calculatedCells,
+    };
   });
 
   calculatedRows.forEach((row: Row) => {
     maze.cells = maze.cells.concat(row.cells);
   });
 
-  return JSON.stringify(maze)
+  function jsonSorter(key, value) {
+    if (value === null) {
+      return null;
+    }
+    if (Array.isArray(value)) {
+      return value;
+    }
+    if (typeof value === "object") {
+      return Object.fromEntries(Object.entries(value).sort());
+    }
+    return value;
+  }
+
+  return JSON.stringify(maze, jsonSorter, 4);
 }
 
-async function convertFromUrl (csvUrl: string, mazeName: string) {
+async function convertFromUrl(csvUrl: string, mazeName: string) {
   try {
     const res = await fetch(csvUrl, {
-        method: 'get',
-        headers: { 'content-type': 'text/csv;charset=UTF-8' }
+      method: "get",
+      headers: { "content-type": "text/csv;charset=UTF-8" },
     });
 
     if (res.status === 200) {
       const data = await res.text();
       const result = convertCsvToJson(data);
 
-      fs.writeFile(`./mazes/${mazeName}MazeJson.json`, result,  function(err) {
+      const fileName = `../mazes/${mazeName}.json`;
+
+      // Create parent folder if it doesn't exist
+      const parentFolder = fileName.substring(0, fileName.lastIndexOf("/"));
+      fs.mkdirSync(parentFolder, { recursive: true });
+
+      fs.writeFile(fileName, result, function (err) {
         if (err) {
           return console.error(err);
         }
         console.log(`File created for ${mazeName} Maze!`);
       });
-
     } else {
-        console.log(`Error code ${res.status}`);
+      console.log(`Error code ${res.status}`);
     }
   } catch (err) {
     console.log(`Error ${err}`);
   }
 }
 
-
 async function createMazes() {
-  if (!fs.existsSync("mazes")){
-      fs.mkdirSync("mazes");
-  }
-
   // Probably want to make this into a list that loops but whatever for now
   await convertFromUrl(
-    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=222529255&single=true&output=csv`, 
-    "Straight"
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=222529255&single=true&output=csv`,
+    "sandbox/Straight",
   );
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1730653816&single=true&output=csv`,
-    "OneTurn"
+    "sandbox/OneTurn",
   );
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1271783319&single=true&output=csv`,
-    "MultipleTurns"
+    "sandbox/MultipleTurns",
   );
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1310950333&single=true&output=csv`,
-    "Loop"
+    "sandbox/Loop",
   );
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=189555194&single=true&output=csv`,
-    "DeadEnds"
+    "sandbox/DeadEnds",
   );
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=113265412&single=true&output=csv`,
-    "Cheese"
+    "sandbox/Cheese",
   );
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=2081960952&single=true&output=csv`,
-    "BasicOneSolution"
+    "sandbox/BasicOneSolution",
   );
   await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1800764000&single=true&output=csv`,
+    "sandbox/BigPractice",
+  );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=859322079&single=true&output=csv`,
+    "sandbox/MoreCheesePractice",
+  );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=362959152&single=true&output=csv`,
+    "sandbox/DivergingPaths",
+  );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1179414329&single=true&output=csv`,
+    "sandbox/StateOfMichigan",
+  );
+
+  // Competition mazes
+  await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1844403567&single=true&output=csv`,
-    "MShape"
+    "competition/MShape",
+  );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1337856033&single=true&output=csv`,
+    "competition/Competition2",
   );
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1607378245&single=true&output=csv`,
-    "DevicesShape"
+    "competition/DevicesShape",
   );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=2040482267&single=true&output=csv`,
+    "competition/TreesAndClouds",
+  );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=375286197&single=true&output=csv`,
+    "competition/HillsAndMountains",
+  );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1565258291&single=true&output=csv`,
+    "competition/OlympicRings",
+  );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=853659835&single=true&output=csv`,
+    "competition/Symmetrical",
+  );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1533899046&single=true&output=csv`,
+    "competition/Abstract",
+  );
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1581402781&single=true&output=csv`,
+    "competition/Cheese",
+  );
+  // await convertFromUrl(
+  //   `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=535007969&single=true&output=csv`,
+  //   "competition/CopyOfFlowers"
+  // );
 }
 
 createMazes();

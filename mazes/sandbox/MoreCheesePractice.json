@@ -8133,7 +8133,7 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Open",
-                "south": "Open",
+                "south": "Cheese",
                 "west": "Open"
             },
             "type": "Wall"
@@ -8807,7 +8807,7 @@
                 "y": 12
             },
             "surroundings": {
-                "east": "Open",
+                "east": "Cheese",
                 "north": "Open",
                 "south": "Wall",
                 "west": "Open"
@@ -8825,7 +8825,7 @@
                 "south": "Wall",
                 "west": "Open"
             },
-            "type": "Open"
+            "type": "Cheese"
         },
         {
             "coordinates": {
@@ -8836,7 +8836,7 @@
                 "east": "Open",
                 "north": "Wall",
                 "south": "Wall",
-                "west": "Open"
+                "west": "Cheese"
             },
             "type": "Open"
         },
@@ -9510,7 +9510,7 @@
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Open",
+                "north": "Cheese",
                 "south": "Open",
                 "west": "Wall"
             },
@@ -12826,7 +12826,7 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Open",
-                "south": "Wall",
+                "south": "Open",
                 "west": "Open"
             },
             "type": "Wall"
@@ -13500,7 +13500,7 @@
                 "y": 19
             },
             "surroundings": {
-                "east": "Wall",
+                "east": "Open",
                 "north": "Open",
                 "south": "Wall",
                 "west": "Open"
@@ -13518,7 +13518,7 @@
                 "south": "Wall",
                 "west": "Open"
             },
-            "type": "Wall"
+            "type": "Open"
         },
         {
             "coordinates": {
@@ -13529,7 +13529,7 @@
                 "east": "Open",
                 "north": "Wall",
                 "south": "Open",
-                "west": "Wall"
+                "west": "Open"
             },
             "type": "Open"
         },
@@ -14191,7 +14191,7 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Open",
-                "south": "Open",
+                "south": "Wall",
                 "west": "Wall"
             },
             "type": "Wall"
@@ -14203,7 +14203,7 @@
             },
             "surroundings": {
                 "east": "Open",
-                "north": "Wall",
+                "north": "Open",
                 "south": "Open",
                 "west": "Wall"
             },
@@ -14865,7 +14865,7 @@
                 "y": 21
             },
             "surroundings": {
-                "east": "Open",
+                "east": "Wall",
                 "north": "Wall",
                 "south": "Open",
                 "west": "Wall"
@@ -14883,7 +14883,7 @@
                 "south": "Wall",
                 "west": "Open"
             },
-            "type": "Open"
+            "type": "Wall"
         },
         {
             "coordinates": {
@@ -14894,7 +14894,7 @@
                 "east": "Open",
                 "north": "Wall",
                 "south": "Wall",
-                "west": "Open"
+                "west": "Wall"
             },
             "type": "Open"
         },
@@ -15568,7 +15568,7 @@
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Open",
+                "north": "Wall",
                 "south": "Open",
                 "west": "Open"
             },
@@ -16271,7 +16271,7 @@
             "surroundings": {
                 "east": "Open",
                 "north": "Wall",
-                "south": "Open",
+                "south": "Cheese",
                 "west": "Open"
             },
             "type": "Open"
@@ -16570,7 +16570,7 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Open",
-                "south": "Open",
+                "south": "Cheese",
                 "west": "Open"
             },
             "type": "Wall"
@@ -16945,7 +16945,7 @@
                 "y": 24
             },
             "surroundings": {
-                "east": "Open",
+                "east": "Cheese",
                 "north": "Open",
                 "south": "Wall",
                 "west": "Open"
@@ -16963,7 +16963,7 @@
                 "south": "Open",
                 "west": "Wall"
             },
-            "type": "Open"
+            "type": "Cheese"
         },
         {
             "coordinates": {
@@ -16974,7 +16974,7 @@
                 "east": "Wall",
                 "north": "Open",
                 "south": "Wall",
-                "west": "Open"
+                "west": "Cheese"
             },
             "type": "Wall"
         },
@@ -17244,7 +17244,7 @@
                 "y": 25
             },
             "surroundings": {
-                "east": "Open",
+                "east": "Cheese",
                 "north": "Open",
                 "south": "Open",
                 "west": "Wall"
@@ -17262,7 +17262,7 @@
                 "south": "Wall",
                 "west": "Open"
             },
-            "type": "Open"
+            "type": "Cheese"
         },
         {
             "coordinates": {
@@ -17273,7 +17273,7 @@
                 "east": "Open",
                 "north": "Wall",
                 "south": "Wall",
-                "west": "Open"
+                "west": "Cheese"
             },
             "type": "Open"
         },
@@ -17648,7 +17648,7 @@
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Open",
+                "north": "Cheese",
                 "south": "Open",
                 "west": "Wall"
             },
@@ -17947,7 +17947,7 @@
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Open",
+                "north": "Cheese",
                 "south": "Open",
                 "west": "Open"
             },
@@ -21146,7 +21146,7 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Open",
-                "south": "Open",
+                "south": "Cheese",
                 "west": "Open"
             },
             "type": "Wall"
@@ -21820,7 +21820,7 @@
                 "y": 31
             },
             "surroundings": {
-                "east": "Open",
+                "east": "Cheese",
                 "north": "Open",
                 "south": "Open",
                 "west": "Wall"
@@ -21838,7 +21838,7 @@
                 "south": "Wall",
                 "west": "Open"
             },
-            "type": "Open"
+            "type": "Cheese"
         },
         {
             "coordinates": {
@@ -21849,7 +21849,7 @@
                 "east": "Open",
                 "north": "Wall",
                 "south": "Wall",
-                "west": "Open"
+                "west": "Cheese"
             },
             "type": "Open"
         },
@@ -22523,7 +22523,7 @@
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Open",
+                "north": "Cheese",
                 "south": "Open",
                 "west": "Open"
             },
@@ -24815,6 +24815,10 @@
             "y": 10
         },
         {
+            "x": 42,
+            "y": 12
+        },
+        {
             "x": 5,
             "y": 16
         },
@@ -24823,8 +24827,20 @@
             "y": 20
         },
         {
+            "x": 32,
+            "y": 24
+        },
+        {
+            "x": 2,
+            "y": 25
+        },
+        {
             "x": 45,
             "y": 25
+        },
+        {
+            "x": 36,
+            "y": 31
         },
         {
             "x": 12,
@@ -24843,7 +24859,7 @@
         "x": 51,
         "y": 25
     },
-    "openSquareCount": 911,
+    "openSquareCount": 907,
     "start": {
         "x": 21,
         "y": 1
