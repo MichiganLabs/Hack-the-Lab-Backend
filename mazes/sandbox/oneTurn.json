@@ -21,7 +21,7 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Wall",
-                "south": "Wall",
+                "south": "Open",
                 "west": "Wall"
             },
             "type": "Wall"
@@ -34,7 +34,7 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Wall",
-                "south": "Wall",
+                "south": "Open",
                 "west": "Wall"
             },
             "type": "Wall"
@@ -47,188 +47,6 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 4,
-                "y": 0
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 5,
-                "y": 0
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 6,
-                "y": 0
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 0,
-                "y": 1
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 1,
-                "y": 1
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 2,
-                "y": 1
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 3,
-                "y": 1
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 4,
-                "y": 1
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 5,
-                "y": 1
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 6,
-                "y": 1
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 0,
-                "y": 2
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 1,
-                "y": 2
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 2,
-                "y": 2
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 3,
-                "y": 2
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
                 "south": "Open",
                 "west": "Wall"
             },
@@ -237,33 +55,7 @@
         {
             "coordinates": {
                 "x": 4,
-                "y": 2
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Open",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 5,
-                "y": 2
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Open",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 6,
-                "y": 2
+                "y": 0
             },
             "surroundings": {
                 "east": "Wall",
@@ -275,11 +67,24 @@
         },
         {
             "coordinates": {
-                "x": 0,
-                "y": 3
+                "x": 5,
+                "y": 0
             },
             "surroundings": {
                 "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 1
+            },
+            "surroundings": {
+                "east": "Open",
                 "north": "Wall",
                 "south": "Wall",
                 "west": "Wall"
@@ -289,46 +94,20 @@
         {
             "coordinates": {
                 "x": 1,
-                "y": 3
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 2,
-                "y": 3
+                "y": 1
             },
             "surroundings": {
                 "east": "Open",
                 "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 3,
-                "y": 3
-            },
-            "surroundings": {
-                "east": "Open",
-                "north": "Wall",
-                "south": "Cheese",
+                "south": "Open",
                 "west": "Wall"
             },
             "type": "Open"
         },
         {
             "coordinates": {
-                "x": 4,
-                "y": 3
+                "x": 2,
+                "y": 1
             },
             "surroundings": {
                 "east": "Open",
@@ -340,8 +119,8 @@
         },
         {
             "coordinates": {
-                "x": 5,
-                "y": 3
+                "x": 3,
+                "y": 1
             },
             "surroundings": {
                 "east": "Exit",
@@ -353,8 +132,8 @@
         },
         {
             "coordinates": {
-                "x": 6,
-                "y": 3
+                "x": 4,
+                "y": 1
             },
             "surroundings": {
                 "east": "Wall",
@@ -366,125 +145,21 @@
         },
         {
             "coordinates": {
-                "x": 0,
-                "y": 4
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 1,
-                "y": 4
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 2,
-                "y": 4
-            },
-            "surroundings": {
-                "east": "Cheese",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 3,
-                "y": 4
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Open",
-                "south": "Open",
-                "west": "Wall"
-            },
-            "type": "Cheese"
-        },
-        {
-            "coordinates": {
-                "x": 4,
-                "y": 4
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Open",
-                "south": "Wall",
-                "west": "Cheese"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
                 "x": 5,
-                "y": 4
+                "y": 1
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Open",
+                "north": "Wall",
                 "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 6,
-                "y": 4
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Exit",
-                "south": "Wall",
-                "west": "Wall"
+                "west": "Exit"
             },
             "type": "Wall"
         },
         {
             "coordinates": {
                 "x": 0,
-                "y": 5
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 1,
-                "y": 5
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 2,
-                "y": 5
+                "y": 2
             },
             "surroundings": {
                 "east": "Open",
@@ -496,25 +171,25 @@
         },
         {
             "coordinates": {
-                "x": 3,
-                "y": 5
+                "x": 1,
+                "y": 2
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Cheese",
-                "south": "Start",
+                "north": "Open",
+                "south": "Open",
                 "west": "Wall"
             },
             "type": "Open"
         },
         {
             "coordinates": {
-                "x": 4,
-                "y": 5
+                "x": 2,
+                "y": 2
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Wall",
+                "north": "Open",
                 "south": "Wall",
                 "west": "Open"
             },
@@ -522,12 +197,12 @@
         },
         {
             "coordinates": {
-                "x": 5,
-                "y": 5
+                "x": 3,
+                "y": 2
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Wall",
+                "north": "Open",
                 "south": "Wall",
                 "west": "Wall"
             },
@@ -535,8 +210,21 @@
         },
         {
             "coordinates": {
-                "x": 6,
-                "y": 5
+                "x": 4,
+                "y": 2
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Exit",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 2
             },
             "surroundings": {
                 "east": "Wall",
@@ -549,7 +237,163 @@
         {
             "coordinates": {
                 "x": 0,
-                "y": 6
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Open",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 1,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Open",
+                "south": "Start",
+                "west": "Wall"
+            },
+            "type": "Open"
+        },
+        {
+            "coordinates": {
+                "x": 2,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Open"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 3,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 3
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Start",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 1,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Open",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Start"
+        },
+        {
+            "coordinates": {
+                "x": 2,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Start"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 3,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 5,
+                "y": 4
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 0,
+                "y": 5
             },
             "surroundings": {
                 "east": "Wall",
@@ -562,11 +406,11 @@
         {
             "coordinates": {
                 "x": 1,
-                "y": 6
+                "y": 5
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Wall",
+                "north": "Start",
                 "south": "Wall",
                 "west": "Wall"
             },
@@ -575,10 +419,10 @@
         {
             "coordinates": {
                 "x": 2,
-                "y": 6
+                "y": 5
             },
             "surroundings": {
-                "east": "Start",
+                "east": "Wall",
                 "north": "Wall",
                 "south": "Wall",
                 "west": "Wall"
@@ -588,46 +432,33 @@
         {
             "coordinates": {
                 "x": 3,
-                "y": 6
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Open",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Start"
-        },
-        {
-            "coordinates": {
-                "x": 4,
-                "y": 6
+                "y": 5
             },
             "surroundings": {
                 "east": "Wall",
                 "north": "Wall",
                 "south": "Wall",
-                "west": "Start"
+                "west": "Wall"
+            },
+            "type": "Wall"
+        },
+        {
+            "coordinates": {
+                "x": 4,
+                "y": 5
+            },
+            "surroundings": {
+                "east": "Wall",
+                "north": "Wall",
+                "south": "Wall",
+                "west": "Wall"
             },
             "type": "Wall"
         },
         {
             "coordinates": {
                 "x": 5,
-                "y": 6
-            },
-            "surroundings": {
-                "east": "Wall",
-                "north": "Wall",
-                "south": "Wall",
-                "west": "Wall"
-            },
-            "type": "Wall"
-        },
-        {
-            "coordinates": {
-                "x": 6,
-                "y": 6
+                "y": 5
             },
             "surroundings": {
                 "east": "Wall",
@@ -638,23 +469,18 @@
             "type": "Wall"
         }
     ],
-    "cheese": [
-        {
-            "x": 3,
-            "y": 4
-        }
-    ],
+    "cheese": [],
     "dimensions": {
-        "horizontal": 7,
-        "vertical": 7
+        "horizontal": 6,
+        "vertical": 6
     },
     "exit": {
-        "x": 6,
-        "y": 3
+        "x": 4,
+        "y": 1
     },
-    "open_square_count": 7,
+    "openSquareCount": 5,
     "start": {
-        "x": 3,
-        "y": 6
+        "x": 1,
+        "y": 4
     }
 }
