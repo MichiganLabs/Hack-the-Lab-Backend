@@ -303,7 +303,7 @@ async function createMazes() {
   // M Shape
   await convertFromUrl(
     `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1844403567&single=true&output=csv`,
-    "competition/Competition 1",
+    "competition/Competition1",
   );
 
   // Competition 2
@@ -354,11 +354,11 @@ async function createMazes() {
     "competition/Competition9",
   );
 
-  // Copy of Flowers
-  // await convertFromUrl(
-  //   `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=535007969&single=true&output=csv`,
-  //   "competition/CopyOfFlowers"
-  // );
+  // Competition 10
+  await convertFromUrl(
+    `https://docs.google.com/spreadsheets/d/e/2PACX-1vQoYKSC4H6i1-UhGKfJ3qzOZPcSKqgwf9r6Kf0h_RbRiHUuJ1DUFTJ_q_VYKqXrLg4PLlFfTWpxxUcP/pub?gid=1763186329&single=true&output=csv`,
+    "competition/Competition10",
+  );
 }
 
 createMazes();
