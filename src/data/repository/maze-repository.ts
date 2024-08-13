@@ -15,7 +15,9 @@ export const getAll = async (): Promise<AdminMaze[]> => {
     /* empty */
   }
 
-  const dbMazes = await pgQuery("SELECT * FROM mazes", []);
+  // Select all mazes from the database and order them by the maze id. (substring the suffix number and order by it numerically)
+  // By default order by id will sort maze1, maze10, maze11, maze2 ... which is not what we want.
+  const dbMazes = await pgQuery("SELECT * FROM mazes ORDER BY SUBSTRING(id, '^[^0-9_]*'), (SUBSTRING(id, '[0-9]+'))::INT", []);
 
   if (0 == dbMazes.length) {
     return [];
