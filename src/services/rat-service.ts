@@ -70,7 +70,7 @@ export const smell = async (userId: number, maze: Maze, position: Coordinate): P
 
   // Calculates the distance to the closest uneaten cheese.
   // A rat has a smell radius of 10 cells. The distance is the number of steps to the nearest cheese.
-  const radius = 5;
+  const radius = 10;
   const distance = dijkstra(maze, position, remainingCheese, radius);
 
   // Insert an action denoting the rat has smelled.
