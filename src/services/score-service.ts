@@ -1,24 +1,22 @@
-import { ActionType, CellType, Environment, Role } from "@enums";
+import { ActionType, Environment, Role } from "@enums";
 import { pgQuery } from "data/db";
 import { UserRepository } from "data/repository";
-import { Action, Award, Maze, RankingResult, Score } from "hackthelab";
+import { Action, Award, RankingResult, Score } from "hackthelab";
 import { MazeService, ScoreService } from "services";
 
-export const getScore = (userId: number, maze: Maze, actions: Action[]): number => {
-  const MOVE_EFFICIENCY_BONUS = 2500;
+export const calculateScore = (actions: Action[]): number => {
   const EXIT_BONUS = 5000;
   const CHEESE_BONUS = 1000;
+  const HARVEST_BONUS = 2500;
+  const MOVE_PENALTY = 2;
   const ACTION_PENALTY = 1;
-
-  // Get the maze open spaces
-  const wallCount = maze.cells.filter(cell => cell.type === CellType.Wall);
-  const openSpaceCount = maze.cells.length - wallCount.length;
 
   // Get stats based on the rat's actions
   const numOfActions = actions.length;
 
   let numOfMoves = 0;
   let numOfCheeseEaten = 0;
+  let numOfCheeseHarvested = 0;
   let didExit = false;
 
   actions.forEach(action => {
@@ -33,18 +31,28 @@ export const getScore = (userId: number, maze: Maze, actions: Action[]): number 
         case ActionType.Exit:
           didExit = true;
           break;
+        case ActionType.Drop:
+          numOfCheeseHarvested++;
+          break;
       }
     }
   });
 
   // Calculate the score
   const exitBonus = didExit ? EXIT_BONUS : 0;
-  const moveEfficiencyBonus = didExit ? Math.max(0, ((openSpaceCount - numOfMoves) / openSpaceCount) * MOVE_EFFICIENCY_BONUS) : 0;
   const cheeseBonus = numOfCheeseEaten * CHEESE_BONUS;
+  const harvestBonus = numOfCheeseHarvested * HARVEST_BONUS;
   const actionPenalty = numOfActions * ACTION_PENALTY;
+  const movePenalty = numOfMoves * MOVE_PENALTY;
+
+  const bonuses = exitBonus + cheeseBonus + harvestBonus;
+  const penalties = actionPenalty + movePenalty;
+
+  // Calculate the net score
+  const netScore = bonuses - penalties;
 
   // Add up everything, but don't let the score go below 0.
-  return Math.floor(Math.max(0, exitBonus + moveEfficiencyBonus + cheeseBonus - actionPenalty));
+  return Math.max(0, netScore);
 };
 
 // Returns the rankings for all participants for the given maze ids
@@ -72,7 +80,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
       }
 
       const actions = await MazeService.getActions(userId, mazeId);
-      const score = ScoreService.getScore(userId, mazes[mazeId], actions);
+      const score = ScoreService.calculateScore(actions);
 
       totalScore += score;
     }

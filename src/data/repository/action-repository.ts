@@ -1,9 +1,25 @@
 import { ActionType } from "@enums";
 import { pgQuery } from "data/db";
-import { Action, Coordinate } from "hackthelab";
+import { Action, Coordinate, UserActions } from "hackthelab";
 
-export const getAll = (userId: number, mazeId: string): Promise<Action[]> => {
+export const getAllForUserMaze = (userId: number, mazeId: string): Promise<Action[]> => {
   return pgQuery("SELECT * FROM actions WHERE user_id = $1 AND maze_id = $2 ORDER BY time_ts DESC", [userId, mazeId]);
+};
+
+export const GetAllForMaze = (mazeId: string): Promise<UserActions[]> => {
+  return pgQuery(
+    `
+SELECT a.user_id,
+       u.name                           AS user_name,
+       JSON_AGG(a.* ORDER BY a.time_ts) AS actions
+FROM actions a
+         JOIN users u
+              ON a.user_id = u.id
+WHERE a.maze_id = $1
+GROUP BY a.user_id, u.name;
+        `,
+    [mazeId],
+  );
 };
 
 export const deleteForUserMaze = async (userId: number, mazeId: string): Promise<void> => {
