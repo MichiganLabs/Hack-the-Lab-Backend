@@ -3,6 +3,7 @@ import { Router } from "express";
 import { hasRole, mazePathSchema, resolveMaze, validate } from "middleware/interceptors";
 import { Controller } from "../index";
 import getActions, { actionsSchema } from "./getActions";
+import getAllActions from "./getAllActions";
 import getMaze from "./getMaze";
 import getMazes, { mazesSchema } from "./getMazes";
 import putMaze, { mazeUpdateSchema } from "./putMaze";
@@ -23,6 +24,7 @@ export class MazeController implements Controller {
     const mazeMiddleware = [validate(mazePathSchema), resolveMaze];
 
     router.put("/maze/:mazeId", hasRole(Role.Developer), validate(mazeUpdateSchema), mazeMiddleware, putMaze);
+    router.get("/maze/:mazeId/actions", hasRole(Role.Admin), ...mazeMiddleware, getAllActions);
     router.get("/maze/:mazeId/actions/:userId", hasRole(Role.Admin), ...mazeMiddleware, validate(actionsSchema), getActions);
     router.get("/maze/:mazeId", hasRole(Role.Developer), ...mazeMiddleware, getMaze);
     router.get("/mazes", validate(mazesSchema), getMazes);

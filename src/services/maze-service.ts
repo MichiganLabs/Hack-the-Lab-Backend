@@ -1,6 +1,6 @@
-import { ActionType, Environment } from "@enums";
+import { Environment } from "@enums";
 import { ActionRepository, MazeRepository } from "data/repository";
-import { Action, AdminCell, AdminMaze, Coordinate, Maze, MazeDictionary } from "hackthelab";
+import { Action, AdminCell, AdminMaze, Coordinate, Maze, MazeDictionary, UserActions } from "hackthelab";
 
 const mazeStore: { [key in Environment]: MazeDictionary } = {
   [Environment.Competition]: {},
@@ -8,7 +8,11 @@ const mazeStore: { [key in Environment]: MazeDictionary } = {
 };
 
 export const getActions = (userId: number, mazeId: string): Promise<Action[]> => {
-  return ActionRepository.getAll(userId, mazeId);
+  return ActionRepository.getAllForUserMaze(userId, mazeId);
+};
+
+export const getAllActions = async (mazeId: string): Promise<UserActions[]> => {
+  return ActionRepository.GetAllForMaze(mazeId);
 };
 
 export const getMazes = async (): Promise<MazeDictionary> => {
@@ -62,54 +66,4 @@ export const setLocked = async (mazeId: string, locked: boolean): Promise<void> 
 
 export const isLocked = async (mazeId: string): Promise<boolean> => {
   return (await getMazeById(mazeId)).locked;
-};
-
-export const getScore = (userId: number, maze: Maze, actions: Action[]): number => {
-  const EXIT_BONUS = 5000;
-  const CHEESE_BONUS = 1000;
-  const HARVEST_BONUS = 2500;
-  const MOVE_PENALTY = 2;
-  const ACTION_PENALTY = 1;
-
-  // Get the maze open spaces
-  // const openSpaceCount = maze.cells.length - wallCount.length;
-
-  // Get stats based on the rat's actions
-  const numOfActions = actions.length;
-
-  let numOfMoves = 0;
-  let numOfCheeseEaten = 0;
-  let numOfCheeseHarvested = 0;
-  let didExit = false;
-
-  actions.forEach(action => {
-    if (action.success) {
-      switch (action.actionType) {
-        case ActionType.Move:
-          numOfMoves++;
-          break;
-        case ActionType.Eat:
-          numOfCheeseEaten++;
-          break;
-        case ActionType.Exit:
-          didExit = true;
-          break;
-        case ActionType.Drop:
-          numOfCheeseHarvested++;
-          break;
-      }
-    }
-  });
-
-  // Calculate the score
-  const exitBonus = didExit ? EXIT_BONUS : 0;
-  const cheeseBonus = numOfCheeseEaten * CHEESE_BONUS;
-  const harvestBonus = numOfCheeseHarvested * HARVEST_BONUS;
-  const actionPenalty = numOfActions * ACTION_PENALTY;
-  const movePenalty = numOfMoves * MOVE_PENALTY;
-
-  const netScore = exitBonus + cheeseBonus + harvestBonus - (actionPenalty + movePenalty);
-
-  // Add up everything, but don't let the score go below 0.
-  return Math.max(0, netScore);
 };

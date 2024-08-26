@@ -222,6 +222,34 @@ declare module "hackthelab" {
     score: number;
   }
 
+  interface UserActions {
+    userId: number;
+    userName: string;
+    actions: ACtion[];
+  }
+
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     AllActionResponseItem:
+   *       type: object
+   *       properties:
+   *         userId:
+   *           type: string
+   *         userName:
+   *           type: string
+   *         actions:
+   *           type: array
+   *           items:
+   *             $ref: '#/components/schemas/Action'
+   *         score:
+   *           type: number
+   */
+  interface AllActionResponseItem extends UserActions {
+    score: number;
+  }
+
   /**
    * @swagger
    * components:

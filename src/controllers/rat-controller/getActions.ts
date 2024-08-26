@@ -1,5 +1,5 @@
 import { ActionsResponse, MazeRequest } from "hackthelab";
-import { MazeService } from "services";
+import { MazeService, ScoreService } from "services";
 import { asyncHandler, rethrowOrCreateError } from "utils";
 
 /**
@@ -31,7 +31,7 @@ const getActions = asyncHandler(async (req, res) => {
 
   try {
     const actions = await MazeService.getActions(user.id, maze.id);
-    const score = MazeService.getScore(user.id, maze, actions);
+    const score = ScoreService.calculateScore(actions);
 
     const response: ActionsResponse = {
       actions,
