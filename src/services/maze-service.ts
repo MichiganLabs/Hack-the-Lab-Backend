@@ -53,6 +53,10 @@ export const getAdminCellAtPosition = (maze: Maze, position: Coordinate): AdminC
 };
 
 export const loadMazes = async (): Promise<void> => {
+  for (const environment of Object.values(Environment)) {
+    mazeStore[environment] = {};
+  }
+
   const mazes = await MazeRepository.getAll();
 
   for (const mazeDbo of mazes) {
