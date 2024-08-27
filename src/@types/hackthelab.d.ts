@@ -329,14 +329,14 @@ declare module "hackthelab" {
    *         description:
    *           type: string
    *           example: "Awarded to the rat with the highest score."
-   *         user:
-   *           $ref: '#/components/schemas/User'
+   *         userName:
+   *           type: string
+   *           example: "Alice"
    */
   interface Award {
     name: string;
     description: string;
-    user: User;
-    value: string | number;
+    winners: { userName: string; value: string | number }[];
   }
 
   /**
@@ -346,14 +346,15 @@ declare module "hackthelab" {
    *     Score:
    *       type: object
    *       properties:
-   *         user:
-   *           $ref: '#/components/schemas/User'
+   *         userName:
+   *           type: string
+   *           example: "Alice"
    *         score:
    *           type: integer
    *           example: 1234
    */
   interface Score {
-    user: User;
+    userName: string;
     score: number;
   }
 
