@@ -8,7 +8,7 @@
             "surroundings": {
                 "east": "Wall",
                 "north": "Wall",
-                "south": "Open",
+                "south": "Wall",
                 "west": "Wall"
             },
             "type": "Wall"
@@ -635,7 +635,7 @@
                 "south": "Wall",
                 "west": "Wall"
             },
-            "type": "Open"
+            "type": "Wall"
         },
         {
             "coordinates": {
@@ -646,7 +646,7 @@
                 "east": "Wall",
                 "north": "Wall",
                 "south": "Wall",
-                "west": "Open"
+                "west": "Wall"
             },
             "type": "Wall"
         },
@@ -1255,7 +1255,7 @@
             },
             "surroundings": {
                 "east": "Wall",
-                "north": "Open",
+                "north": "Wall",
                 "south": "Wall",
                 "west": "Wall"
             },
@@ -20623,7 +20623,7 @@
         "x": 1,
         "y": 31
     },
-    "openSquareCount": 534,
+    "openSquareCount": 533,
     "start": {
         "x": 40,
         "y": 5
