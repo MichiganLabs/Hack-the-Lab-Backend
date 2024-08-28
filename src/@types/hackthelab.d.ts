@@ -329,15 +329,14 @@ declare module "hackthelab" {
    *         description:
    *           type: string
    *           example: "Awarded to the rat with the highest score."
-   *         userId:
+   *         userName:
    *           type: string
-   *           example: "34"
+   *           example: "Alice"
    */
   interface Award {
     name: string;
     description: string;
-    userId: number;
-    value: string;
+    winners: { userName: string; value: string | number }[];
   }
 
   /**
@@ -347,15 +346,15 @@ declare module "hackthelab" {
    *     Score:
    *       type: object
    *       properties:
-   *         userId:
-   *           type: integer
-   *           example: 34
+   *         userName:
+   *           type: string
+   *           example: "Alice"
    *         score:
    *           type: integer
    *           example: 1234
    */
   interface Score {
-    userId: number;
+    userName: string;
     score: number;
   }
 

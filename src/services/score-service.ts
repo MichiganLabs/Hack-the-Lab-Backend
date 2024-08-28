@@ -1,8 +1,10 @@
 import { ActionType, Environment, Role } from "@enums";
 import { pgQuery } from "data/db";
 import { UserRepository } from "data/repository";
-import { Action, Award, RankingResult, Score } from "hackthelab";
-import { MazeService, ScoreService } from "services";
+import { Action, AuthUser, Award, RankingResult, Score, User } from "hackthelab";
+import { MazeService } from "services";
+
+type AwardWithProps<P = unknown> = (P & { userId: number })[];
 
 export const calculateScore = (actions: Action[]): number => {
   const EXIT_BONUS = 5000;
@@ -61,15 +63,17 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
   const mazes = await MazeService.getMazesForEnvironments([environment], true);
   const mazeIds = Object.keys(mazes);
 
-  // Get all participants in the competition
-  const participants = await UserRepository.getUsersOfRole(Role.Participant);
-  const participantIds = participants.map(participant => participant.id);
+  const reduceFunc = (acc: { [key: string]: User }, { id, name, role }: AuthUser) => {
+    acc[id.toString()] = { id, name, role };
+    return acc;
+  };
 
-  const scores: Score[] = [];
+  const participants = (await UserRepository.getUsersOfRole(Role.Participant)).reduce(reduceFunc, {});
+  let scores: Score[] = [];
 
   // For each participant, calculate their score
   // Loop through all of the participants of the provided mazes
-  for (const userId of participantIds) {
+  for (const participant of Object.values(participants)) {
     let totalScore: number = 0;
 
     // Loop through each maze to determine the participant's score for each maze
@@ -79,23 +83,25 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
         continue;
       }
 
-      const actions = await MazeService.getActions(userId, mazeId);
-      const score = ScoreService.calculateScore(actions);
+      const actions = await MazeService.getActions(participant.id, mazeId);
+      const score = calculateScore(actions);
 
       totalScore += score;
     }
 
     scores.push({
-      userId: userId,
+      userName: participant.name,
       score: totalScore,
     });
   }
+
+  scores = scores.sort((a, b) => b.score - a.score);
 
   const awards: Award[] = [];
 
   // Most moves (successful only)
   // -------------------------
-  const mostMoves = await pgQuery(
+  const mostMoves = await pgQuery<AwardWithProps<{ moveCount: number }>>(
     `
     SELECT user_id, COUNT(*) as move_count
     FROM actions
@@ -106,28 +112,32 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds, ActionType.Move],
   );
 
+  const mostMovesAward: Award = {
+    name: "World Traveler",
+    description: "The rat who made the most moves",
+    winners: [],
+  };
+
   // *AWARD* Most Moves
   if (mostMoves.length > 0) {
     // Because the query is ordered by move_count DESC, the first item represents the most moves
     const maxMoveCount = mostMoves[0].moveCount;
     for (const result of mostMoves) {
-      if (result != maxMoveCount) {
+      if (result.moveCount != maxMoveCount) {
         break;
       }
 
-      const mostMovesAward: Award = {
-        name: "World Traveler",
-        description: "The rat who made the most moves",
-        userId: result.userId,
+      mostMovesAward.winners.push({
+        userName: participants[result.userId.toString()].name,
         value: result.moveCount,
-      };
-      awards.push(mostMovesAward);
+      });
     }
+    awards.push(mostMovesAward);
   }
 
   // Least moves and most completed mazes
   // -------------------------
-  const leastMoves = await pgQuery(
+  const leastMoves = await pgQuery<AwardWithProps<{ exitCount: number; moveCount: string }>>(
     `
     WITH exit_counts AS (
       SELECT user_id, COUNT(*) as exit_count
@@ -151,6 +161,12 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds, ActionType.Exit, ActionType.Move],
   );
 
+  const leastMovesAward: Award = {
+    name: "Move Strategist",
+    description: "The rat who made the least amount of moves and completed the most mazes",
+    winners: [],
+  };
+
   // *AWARD* Least Moves
   if (leastMoves.length > 0) {
     // Because the query is ordered by exit_count DESC and move_count ASC, the first item represents the least moves
@@ -160,19 +176,17 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
         break;
       }
 
-      const leastMovesAward: Award = {
-        name: "Move Strategist",
-        description: "The rat who made the least amount of moves and completed the most mazes",
-        userId: result.userId,
+      leastMovesAward.winners.push({
+        userName: participants[result.userId.toString()].name,
         value: result.moveCount,
-      };
-      awards.push(leastMovesAward);
+      });
     }
+    awards.push(leastMovesAward);
   }
 
   // Most Cheese Eaten
   // -------------------------
-  const cheeseEaten = await pgQuery(
+  const cheeseEaten = await pgQuery<AwardWithProps<{ cheeseCount: number }>>(
     `
     SELECT user_id, COUNT(*) as cheese_count
     FROM actions
@@ -183,6 +197,18 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds, ActionType.Eat],
   );
 
+  const mostCheeseEatenAward: Award = {
+    name: "Cheese Hoarder",
+    description: "The rat who ate the most cheese",
+    winners: [],
+  };
+
+  const leastCheeseEatenAward: Award = {
+    name: "Famished",
+    description: "The rat who ate the least amount of cheese",
+    winners: [],
+  };
+
   // *AWARD* Most Cheese Eaten
   if (cheeseEaten.length > 0) {
     // Because the query is ordered by cheese_count DESC, the first item represents the most cheese eaten
@@ -192,34 +218,34 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
         break;
       }
 
-      const mostCheeseEatenAward: Award = {
-        name: "Cheese Hoarder",
-        description: "The rat who ate the most cheese",
-        userId: result.userId,
+      mostCheeseEatenAward.winners.push({
+        userName: participants[result.userId.toString()].name,
         value: result.cheeseCount,
-      };
-      awards.push(mostCheeseEatenAward);
+      });
     }
 
+    awards.push(mostCheeseEatenAward);
+
     const minCheeseCount = cheeseEaten[cheeseEaten.length - 1].cheeseCount;
-    for (const result of cheeseEaten.reverse()) {
-      if (result.cheeseCount != minCheeseCount) {
-        break;
+    if (minCheeseCount !== maxCheeseCount) {
+      for (const result of cheeseEaten.reverse()) {
+        if (result.cheeseCount != minCheeseCount) {
+          break;
+        }
+
+        leastCheeseEatenAward.winners.push({
+          userName: participants[result.userId.toString()].name,
+          value: result.cheeseCount,
+        });
       }
 
-      const leastCheeseEatenAward: Award = {
-        name: "Famished",
-        description: "The rat who ate the least amount of cheese",
-        userId: result.userId,
-        value: result.cheeseCount,
-      };
       awards.push(leastCheeseEatenAward);
     }
   }
 
   // Most smells
   // -------------------------
-  const mostSmells = await pgQuery(
+  const mostSmells = await pgQuery<AwardWithProps<{ smellCount: number }>>(
     `
     SELECT user_id, COUNT(*) as smell_count
     FROM actions
@@ -230,6 +256,12 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds, ActionType.Smell],
   );
 
+  const mostSmellsAward: Award = {
+    name: "Nosiest",
+    description: "The rat who smelled the most",
+    winners: [],
+  };
+
   // *AWARD* Most Smells
   if (mostSmells.length > 0) {
     // Because the query is ordered by smell_count DESC, the first item represents the most smells
@@ -239,36 +271,36 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
         break;
       }
 
-      const mostSmellsAward: Award = {
-        name: "Nosiest",
-        description: "The rat who smelled the most",
-        userId: result.userId,
+      mostSmellsAward.winners.push({
+        userName: participants[result.userId.toString()].name,
         value: result.smellCount,
-      };
-      awards.push(mostSmellsAward);
+      });
     }
+    awards.push(mostSmellsAward);
   }
 
   // Did not smell
   // -------------------------
-  const noSmells = participants.filter(participant => !mostSmells.some(item => item.user_id === participant.id));
+  const noSmells = Object.values(participants).filter(participant => !mostSmells.some(item => item.userId === participant.id));
+  const neverSmelledAward: Award = {
+    name: "Nose Blind",
+    description: "The rat who never used their nose",
+    winners: [],
+  };
 
   // *AWARD* Never using smell
   if (noSmells.length > 0) {
-    for (const participant of noSmells) {
-      const neverSmelledAward: Award = {
-        name: "Nose Blind",
-        description: "The rat who never used their nose",
-        userId: participant.id,
-        value: "0",
-      };
-      awards.push(neverSmelledAward);
-    }
+    neverSmelledAward.winners = noSmells.map(participant => ({
+      userName: participant.name,
+      value: 0,
+    }));
+
+    awards.push(neverSmelledAward);
   }
 
   // Ran into the most walls
   // -------------------------
-  const wallsHit = await pgQuery(
+  const wallsHit = await pgQuery<AwardWithProps<{ wallCount: number }>>(
     `
     SELECT user_id, COUNT(*) as wall_count
     FROM actions
@@ -279,6 +311,12 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds, ActionType.Move],
   );
 
+  const mostWallsHitAward: Award = {
+    name: "Dazed",
+    description: "The rat who ran into the most walls",
+    winners: [],
+  };
+
   // *AWARD* Most Walls Hit
   if (wallsHit.length > 0) {
     // Because the query is ordered by wall_count DESC, the first item represents the most walls hit
@@ -288,19 +326,17 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
         break;
       }
 
-      const mostWallsHitAward: Award = {
-        name: "Dazed",
-        description: "The rat who ran into the most walls",
-        userId: result.userId,
+      mostWallsHitAward.winners.push({
+        userName: participants[result.userId.toString()].name,
         value: result.wallCount,
-      };
-      awards.push(mostWallsHitAward);
+      });
     }
+    awards.push(mostWallsHitAward);
   }
 
   // Revisited the same cell the most
   // -------------------------
-  const mostRevisitedCell = await pgQuery(
+  const mostRevisitedCell = await pgQuery<AwardWithProps<{ mazeId: string; position: string; revisitCount: number }>>(
     `
     SELECT user_id, maze_id, position::text, COUNT(*) as revisit_count
     FROM actions
@@ -312,6 +348,12 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds, ActionType.Move],
   );
 
+  const mostRevisitedCellAward: Award = {
+    name: "Favorite Spot",
+    description: "The rat who revisited a single cell the most",
+    winners: [],
+  };
+
   // *AWARD* Most Revisited Cell
   if (mostRevisitedCell.length > 0) {
     // Because the query is ordered by revisit_count DESC, the first item represents the most revisited cell
@@ -321,19 +363,17 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
         break;
       }
 
-      const mostRevisitedCellAward: Award = {
-        name: "Favorite Spot",
-        description: "The rat who revisited a single cell the most",
-        userId: result.userId,
+      mostRevisitedCellAward.winners.push({
+        userName: participants[result.userId.toString()].name,
         value: result.revisitCount,
-      };
-      awards.push(mostRevisitedCellAward);
+      });
     }
+    awards.push(mostRevisitedCellAward);
   }
 
   // Most Revisited Cells
   // -------------------------
-  const mostRevisitedCells = await pgQuery(
+  const mostRevisitedCells = await pgQuery<AwardWithProps<{ cellsRevisited: number }>>(
     `
     SELECT user_id, count(user_id) as cells_revisited
     FROM (
@@ -349,28 +389,32 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds, ActionType.Move],
   );
 
+  const mostRevisitedCellsAward: Award = {
+    name: "Deja Vu",
+    description: "The rat who revisited the most cells",
+    winners: [],
+  };
+
   // *AWARD* Most Revisited Cells
   if (mostRevisitedCells.length > 0) {
     // Because the query is ordered by cells_revisited DESC, the first item represents the most revisited cells
-    const maxRevisitedCount = mostRevisitedCells[0].revisitCount;
+    const maxRevisitedCount = mostRevisitedCells[0].cellsRevisited;
     for (const result of mostRevisitedCells) {
-      if (result.revisitCount != maxRevisitedCount) {
+      if (result.cellsRevisited != maxRevisitedCount) {
         break;
       }
 
-      const mostRevisitedCellsAward: Award = {
-        name: "Deja Vu",
-        description: "The rat who revisited the most cells",
-        userId: result.userId,
-        value: result.revisitCount,
-      };
-      awards.push(mostRevisitedCellsAward);
+      mostRevisitedCellsAward.winners.push({
+        userName: participants[result.userId.toString()].name,
+        value: result.cellsRevisited,
+      });
     }
+    awards.push(mostRevisitedCellsAward);
   }
 
   // Most failed actions
   // -------------------------
-  const mostFailedActions = await pgQuery(
+  const mostFailedActions = await pgQuery<AwardWithProps<{ failCount: number }>>(
     `
     SELECT user_id, COUNT(*) as fail_count
     FROM actions
@@ -381,6 +425,12 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds],
   );
 
+  const mostFailedActionsAward: Award = {
+    name: "Clumsiest",
+    description: "The rat who attempted actions that failed the most",
+    winners: [],
+  };
+
   // *AWARD* Most Failed Actions
   if (mostFailedActions.length > 0) {
     // Because the query is ordered by fail_count DESC, the first item represents the most failed actions
@@ -390,19 +440,17 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
         break;
       }
 
-      const mostFailedActionsAward: Award = {
-        name: "Clumsiest",
-        description: "The rat who attempted actions that failed the most",
-        userId: result.userId,
+      mostFailedActionsAward.winners.push({
+        userName: participants[result.userId.toString()].name,
         value: result.failCount,
-      };
-      awards.push(mostFailedActionsAward);
+      });
     }
+    awards.push(mostFailedActionsAward);
   }
 
   // Least failed actions while completing the most mazes
   // -------------------------
-  const leastFailedActions = await pgQuery(
+  const leastFailedActions = await pgQuery<AwardWithProps<{ exitCount: number; failedCount: number }>>(
     `
     WITH exit_counts AS (
       SELECT user_id, COUNT(*) as exit_count
@@ -426,22 +474,25 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds, ActionType.Exit],
   );
 
+  const noFailedActionsAward: Award = {
+    name: "Coordinated",
+    description: "The rat who made the least amount of failed actions while completing the most mazes",
+    winners: [],
+  };
+
   // *AWARD* No Failed Actions
   if (leastFailedActions.length > 0) {
-    for (const result of leastFailedActions) {
-      const noFailedActionsAward: Award = {
-        name: "Coordinated",
-        description: "The rat who made the least amount of failed actions while completing the most mazes",
-        userId: result.id,
-        value: result.failedCount,
-      };
-      awards.push(noFailedActionsAward);
-    }
+    noFailedActionsAward.winners = leastFailedActions.map(p => ({
+      userName: participants[p.userId.toString()].name,
+      value: p.failedCount,
+    }));
+
+    awards.push(noFailedActionsAward);
   }
 
   // Last to hit the API (Sandbox OR Competition)
   // -------------------------
-  const lastToHitAPI = await pgQuery(
+  const lastToHitAPI = await pgQuery<AwardWithProps<{ lastHit: string }>>(
     `
     SELECT user_id, MAX(time_ts) as last_hit
     FROM analytics
@@ -450,23 +501,26 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     ORDER BY last_hit DESC
     LIMIT 1
     `,
-    [participantIds],
+    [Object.keys(participants)],
   );
+  const lastToHitAPIAward: Award = {
+    name: "Procrastinator",
+    description: "The last rat to hit the API",
+    winners: [],
+  };
 
   // *AWARD* Last to hit the API
   if (lastToHitAPI.length > 0) {
-    const lastToHitAPIAward: Award = {
-      name: "Procrastinator",
-      description: "The last rat to hit the API",
-      userId: lastToHitAPI[0].userId,
+    lastToHitAPIAward.winners.push({
+      userName: participants[lastToHitAPI[0].userId.toString()].name,
       value: lastToHitAPI[0].lastHit,
-    };
+    });
     awards.push(lastToHitAPIAward);
   }
 
   // Hit the API first (Sandbox OR Competition)
   // -------------------------
-  const firstToHitAPI = await pgQuery(
+  const firstToHitAPI = await pgQuery<AwardWithProps<{ firstHit: string }>>(
     `
     SELECT user_id, MIN(time_ts) as first_hit
     FROM analytics
@@ -475,23 +529,27 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     ORDER BY first_hit ASC
     LIMIT 1
     `,
-    [participantIds],
+    [Object.keys(participants)],
   );
+
+  const firstToHitAPIAward: Award = {
+    name: "Is This Thing On?",
+    description: "The first rat to hit the API",
+    winners: [],
+  };
 
   // *AWARD* First to hit the API
   if (firstToHitAPI.length > 0) {
-    const firstToHitAPIAward: Award = {
-      name: "Is This Thing On?",
-      description: "The first rat to hit the API",
-      userId: firstToHitAPI[0].userId,
+    firstToHitAPIAward.winners.push({
+      userName: participants[firstToHitAPI[0].userId.toString()].name,
       value: firstToHitAPI[0].firstHit,
-    };
+    });
     awards.push(firstToHitAPIAward);
   }
 
   // First to make a move in one of the competition mazes
   // -------------------------
-  const firstToMove = await pgQuery(
+  const firstToMove = await pgQuery<AwardWithProps<{ firstMove: string }>>(
     `
     SELECT user_id, MIN(time_ts) as first_move
     FROM actions
@@ -503,19 +561,20 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     [mazeIds, ActionType.Move],
   );
 
+  const firstToMoveAward: Award = {
+    name: "Trail Blazer",
+    description: "The first rat to make a move in one of the competition mazes",
+    winners: [],
+  };
+
   // *AWARD* First to make a move
   if (firstToMove.length > 0) {
-    const firstToMoveAward: Award = {
-      name: "Trail Blazer",
-      description: "The first rat to make a move in one of the competition mazes",
-      userId: firstToMove[0].userId,
+    firstToMoveAward.winners.push({
+      userName: participants[firstToMove[0].userId.toString()].name,
       value: firstToMove[0].firstMove,
-    };
+    });
     awards.push(firstToMoveAward);
   }
 
-  return {
-    scores: scores,
-    awards: awards,
-  };
+  return { scores, awards };
 };

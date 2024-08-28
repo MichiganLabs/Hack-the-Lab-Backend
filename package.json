@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "npm run docker && npm run sync-mazes && NODE_ENV=development nodemon",
-    "docker": "docker compose up -d",
+    "docker": "docker compose -p hack_the_lab up -d",
     "rm-docker": "docker compose down -v",
     "build": "node_modules/.bin/rimraf ./dist && npx tsc && npx tsc-alias && npm run post:build",
     "start": "npm run build && node dist/index.js",
@@ -55,6 +55,7 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.7",
