@@ -3,7 +3,6 @@ import { Request } from "express";
 
 declare module "hackthelab" {
   /**
-   * @swagger
    * components:
    *   schemas:
    *     User:
@@ -229,7 +228,6 @@ declare module "hackthelab" {
   }
 
   /**
-   * @swagger
    * components:
    *   schemas:
    *     AllActionResponseItem:
@@ -251,7 +249,6 @@ declare module "hackthelab" {
   }
 
   /**
-   * @swagger
    * components:
    *   schemas:
    *     AdminCell:
@@ -317,7 +314,6 @@ declare module "hackthelab" {
   }
 
   /**
-   * @swagger
    * components:
    *   schemas:
    *     Award:
@@ -340,7 +336,6 @@ declare module "hackthelab" {
   }
 
   /**
-   * @swagger
    * components:
    *   schemas:
    *     Score:
@@ -359,7 +354,6 @@ declare module "hackthelab" {
   }
 
   /**
-   * @swagger
    * components:
    *   schemas:
    *     RankingResult:

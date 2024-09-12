@@ -3,7 +3,6 @@ import { UserService } from "services";
 import { asyncHandler, rethrowOrCreateError } from "utils";
 
 /**
- * @swagger
  * /v1/participants:
  *   get:
  *     tags: [General (ADMIN)]

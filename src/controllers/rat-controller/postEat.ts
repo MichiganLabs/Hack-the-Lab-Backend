@@ -7,17 +7,19 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  * /v1/rat/eat:
  *   post:
  *     tags: [Rat]
- *     summary: Gives a rat the ability to eat a cheese (if already on a cheese cell).
+ *     summary: Attempts to eat a cheese.
+ *     description: Cheese will be eaten if either the rat is currently positioned at a cell of type `CHEESE` or currently holding a cheese.
+ *                  If the both are true, the cheese at the rat's current position will be eaten and the cheese held by the rat will remain.
+ *                  After a cheese is successfully eaten, the cell type will be updated to `OPEN`.
  *     requestBody:
  *       description: Eat request.
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/MazeRequest'
+ *             $  ref: '#/components/schemas/MazeRequest'
  *     responses:
  *       200:
- *         description: Eat successful
  *         content:
  *           application/json:
  *             schema:

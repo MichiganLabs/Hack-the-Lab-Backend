@@ -14,7 +14,6 @@ export const actionsSchema = [
 ];
 
 /**
- * @swagger
  * /v1/maze/{mazeId}/actions/{userId}:
  *   get:
  *     tags: [Maze (ADMIN)]

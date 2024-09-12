@@ -7,7 +7,11 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  * /v1/rat/grab:
  *   post:
  *     tags: [Rat]
- *     summary: Allows the rat to grab a cheese in the maze.
+ *     summary: Attempts to grab a cheese.
+ *     description: Cheese will be grabbed if the rat is currently positioned at a cell of type `CHEESE` and is not already holding a cheese, otherwise the action will fail.<br>
+ *                  <br>
+ *                  After a cheese is successfully grabbed, the cell type will be updated to `OPEN`.
+ *
  *     requestBody:
  *       description: Grab request.
  *       required: true
@@ -17,7 +21,6 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  *             $ref: '#/components/schemas/MazeRequest'
  *     responses:
  *       200:
- *         description: Grab successful
  *         content:
  *           application/json:
  *             schema:

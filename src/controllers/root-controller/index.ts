@@ -13,7 +13,7 @@ let counter: number = 1;
  * components:
  *   responses:
  *     Unauthorized:
- *       description: Unauthorized
+ *       description: Request is unauthorized. Make sure to include your token in the `X-API-KEY` request header.
  *       content:
  *         application/json:
  *           schema:
@@ -23,7 +23,7 @@ let counter: number = 1;
  *             title: "Unauthorized"
  *             detail: "User is not authorized!"
  *     Forbidden:
- *       description: Forbidden
+ *       description: Forbidden. User is not authorized to access this resource.
  *       content:
  *         application/json:
  *           schema:
@@ -49,7 +49,7 @@ let counter: number = 1;
  *                 location: "body"
  *
  *     ServerError:
- *       description: Internal Server Error
+ *       description: Internal Server Error. Contact the administrator if the problem persists.
  *       content:
  *         application/json:
  *           schema:

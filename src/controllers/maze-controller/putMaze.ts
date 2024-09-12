@@ -3,7 +3,6 @@ import { MazeRequest } from "hackthelab";
 import { MazeService } from "services";
 
 /**
- * @swagger
  * components:
  *   schemas:
  *     MazeUpdateRequestBody:
@@ -15,7 +14,6 @@ import { MazeService } from "services";
 export const mazeUpdateSchema = [body("locked").isBoolean().withMessage("'locked' must be provided and a boolean type.")];
 
 /**
- * @swagger
  * /v1/maze/{mazeId}:
  *   put:
  *     tags: [Maze (ADMIN)]

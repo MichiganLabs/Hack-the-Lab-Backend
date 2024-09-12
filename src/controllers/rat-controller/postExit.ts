@@ -7,7 +7,9 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  * /v1/rat/exit:
  *   post:
  *     tags: [Rat]
- *     summary: Gives a rat the ability to exit a maze.
+ *     summary: Attempts to exit a maze.
+ *     description: The rat will exit a maze if the rat is currently positioned at a cell of type `EXIT`, otherwise the action will fail.
+ *                  After the rat has exited the maze, the rat will no longer be able to perform any actions for the maze.
  *     requestBody:
  *       description: Exit request.
  *       required: true
@@ -17,7 +19,6 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  *             $ref: '#/components/schemas/MazeRequest'
  *     responses:
  *       200:
- *         description: Exit successful.
  *         content:
  *           application/json:
  *             schema:

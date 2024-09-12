@@ -3,7 +3,6 @@ import { ScoreService } from "services";
 import { asyncHandler, rethrowOrCreateError } from "utils";
 
 /**
- * @swagger
  * /v1/rankings:
  *   get:
  *     tags: [General (ADMIN)]
