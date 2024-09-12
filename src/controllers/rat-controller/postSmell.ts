@@ -7,7 +7,8 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  * /v1/rat/smell:
  *   post:
  *     tags: [Rat]
- *     summary: Allows the rat to smell the cheese in the maze.
+ *     summary: Attempts to smell a cheese.
+ *     description: The distance to the nearest cheese, within the smell radius, will be returned. If there are no cheeses in the maze, the distance will be `null`.
  *     requestBody:
  *       description: Smell request.
  *       required: true

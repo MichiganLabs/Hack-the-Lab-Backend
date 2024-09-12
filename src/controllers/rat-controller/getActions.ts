@@ -7,12 +7,12 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  * /v1/rat/{mazeId}/actions:
  *   get:
  *     tags: [Rat (SANDBOX)]
- *     summary: Returns recorded actions and score for the rat in a maze.
+ *     summary: Returns the rats progress for a maze.
+ *     description: Returns the actions the rat has taken in the maze and the score.
  *     parameters:
  *       - $ref: '#/components/parameters/MazeRequestPathBase'
  *     responses:
  *       200:
- *         description: Actions successful
  *         content:
  *           application/json:
  *             schema:

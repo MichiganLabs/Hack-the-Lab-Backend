@@ -7,7 +7,11 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  * /v1/rat/drop:
  *   post:
  *     tags: [Rat]
- *     summary: Allows the rat to drop a cheese in the maze.
+ *     summary: Attempts to drop a cheese.
+ *     description: Cheese will be dropped if the rat is holding a cheese and is currently positioned at a cell of type `EXIT`, otherwise the action will fail.
+ *                  After a cheese is successfully dropped, the rat will be free to grab another cheese.
+ *                  <br><br>
+ *                  **Note:** Cheese will not automatically be dropped when the rat exits the maze.
  *     requestBody:
  *       description: Drop request.
  *       required: true
@@ -17,7 +21,6 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  *             $ref: '#/components/schemas/MazeRequest'
  *     responses:
  *       200:
- *         description: Drop successful
  *         content:
  *           application/json:
  *             schema:

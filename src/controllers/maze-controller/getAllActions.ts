@@ -4,7 +4,6 @@ import { asyncHandler } from "utils";
 import { rethrowOrCreateError } from "utils/create-error";
 
 /**
- * @swagger
  * /v1/maze/{mazeId}/actions:
  *   get:
  *     tags: [Maze (ADMIN)]

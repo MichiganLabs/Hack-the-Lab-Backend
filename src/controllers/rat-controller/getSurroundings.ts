@@ -8,6 +8,8 @@ import { asyncHandler } from "utils";
  *   get:
  *     tags: [Rat]
  *     summary: Returns the rat's immediate surroundings for the provided maze ID.
+ *     description: Response object includes the cell type for the rat's current position (`type`)
+ *                  and the cell type for each direction (`north`, `east`, `south`, `west`) from the rat's current position.
  *     parameters:
  *       - $ref: '#/components/parameters/MazeRequestPathBase'
  *     responses:

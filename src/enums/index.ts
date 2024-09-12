@@ -4,7 +4,6 @@ export enum Environment {
 }
 
 /**
- * @swagger
  * components:
  *   schemas:
  *     Role:
@@ -57,8 +56,8 @@ export enum Direction {
  *   schemas:
  *     ActionType:
  *       type: string
- *       enum: [MOVE]
- *       example: NORTH
+ *       enum: [MOVE, START, EAT, EXIT, SMELL, GRAB, DROP]
+ *       example: MOVE
  */
 export enum ActionType {
   Move = "MOVE",

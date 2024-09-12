@@ -18,9 +18,9 @@ export const resetSchema = [
  * /v1/rat/reset:
  *   post:
  *     tags: [Rat (SANDBOX)]
- *     summary: Reset a maze so that it can be solved again.
+ *     summary: Reset a maze.
+ *     description: Resets all of the rat's actions for a maze. Allowing for the rat to start from the beginning.
  *     requestBody:
- *       description: Reset request. (Admin may input a userId in the request to reset a specific rat's maze.)
  *       required: true
  *       content:
  *         application/json:

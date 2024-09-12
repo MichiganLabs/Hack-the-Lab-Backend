@@ -11,10 +11,14 @@ export const mazesSchema = [query("env").optional().isEnvironment()];
  * /v1/mazes:
  *   get:
  *     tags: [Maze]
- *     summary: Returns a list of available maze IDs.
+ *     summary: Returns a list of mazes.
+ *     description: Each maze has an ID, number of cheese count, and dimensions.
+ *       Depending on the API key used (Sandbox or Competition) the respective list of mazes will be returned.
+ *       <br><br>
+ *       **Note:** The list of competition mazes will be limited until announced.
  *     responses:
  *       200:
- *         description: Fetch successful
+ *         description: Maze list successful.
  *         content:
  *           application/json:
  *             schema:
@@ -22,8 +26,6 @@ export const mazesSchema = [query("env").optional().isEnvironment()];
  *               items:
  *                 $ref: '#/components/schemas/MazeResponse'
  *                 type: object
- *       400:
- *         $ref: '#/components/responses/BadRequest'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  *       403:

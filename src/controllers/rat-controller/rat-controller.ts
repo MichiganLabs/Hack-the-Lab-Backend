@@ -25,9 +25,9 @@ import postSmell from "./postSmell";
  * @swagger
  * tags:
  *   - name: Rat
- *     description: Rat management
+ *     description: Endpoints used to control a rat.
  *   - name: Rat (SANDBOX)
- *     description: Rat management for sandbox
+ *     description: Set of utility endpoints for rat management to be used in the sandbox environment.
  */
 export class RatController implements Controller {
   initialize(router: Router): void {

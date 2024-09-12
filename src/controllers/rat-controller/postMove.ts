@@ -31,7 +31,8 @@ export const moveSchema = [
  * /v1/rat/move:
  *   post:
  *     tags: [Rat]
- *     summary: Moves a rat in a direction for a specific maze.
+ *     summary: Attempts to move in a direction.
+ *     description: The rat will move in the provided direction if the cell in that direction is not a wall, otherwise the action will fail.
  *     requestBody:
  *       description: Move request.
  *       required: true
@@ -41,7 +42,6 @@ export const moveSchema = [
  *             $ref: '#/components/schemas/MoveRequest'
  *     responses:
  *       200:
- *         description: Move successful
  *         content:
  *           application/json:
  *             schema:

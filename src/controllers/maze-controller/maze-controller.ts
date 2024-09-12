@@ -12,9 +12,11 @@ import putMaze, { mazeUpdateSchema } from "./putMaze";
  * @swagger
  * tags:
  *   - name: Maze
- *     description: Maze management
+ *     description: Maze management.
  *   - name: Maze (SANDBOX)
- *     description: Maze management for sandbox
+ *     description: Maze management endpoint to be used in the sandbox environment.
+ */
+/**
  *   - name: Maze (ADMIN)
  *     description: Maze management for administrators
  */
