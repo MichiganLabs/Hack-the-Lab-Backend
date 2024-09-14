@@ -17,7 +17,7 @@ import { asyncHandler, rethrowOrCreateError } from "utils";
  *       content:
  *         application/json:
  *           schema:
- *             $  ref: '#/components/schemas/MazeRequest'
+ *             $ref: '#/components/schemas/MazeRequest'
  *     responses:
  *       200:
  *         content:
