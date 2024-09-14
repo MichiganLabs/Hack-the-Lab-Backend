@@ -68,7 +68,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
     return acc;
   };
 
-  const participants = (await UserRepository.getUsersOfRole(Role.Participant)).reduce(reduceFunc, {});
+  const participants = (await UserRepository.getUsersOfRole(Role.Participant)).filter(p => !p.disabled).reduce(reduceFunc, {});
   let scores: Score[] = [];
 
   // For each participant, calculate their score
@@ -137,28 +137,17 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
 
   // Least moves and most completed mazes
   // -------------------------
-  const leastMoves = await pgQuery<AwardWithProps<{ exitCount: number; moveCount: string }>>(
+  const leastMoves = await pgQuery<AwardWithProps<{ exitCount: string; moveCount: string }>>(
     `
-    WITH exit_counts AS (
-      SELECT user_id, COUNT(*) as exit_count
-      FROM actions
-      WHERE maze_id = ANY($1) AND action_type = $2 AND success = true
-      GROUP BY user_id
-    ),
-    move_counts AS (
-      SELECT user_id, COUNT(*) as move_count
-      FROM actions
-      WHERE maze_id = ANY($1) AND action_type = $3
-      GROUP BY user_id
-    )
-    SELECT e.user_id, e.exit_count, m.move_count
-    FROM exit_counts e
-    JOIN move_counts m ON e.user_id = m.user_id
-    WHERE e.exit_count = (SELECT MAX(exit_count) FROM exit_counts)
-    AND m.move_count = (SELECT MIN(move_count) FROM move_counts)
-    ORDER BY e.exit_count DESC, m.move_count ASC
+    SELECT users.id as user_id,
+           (SELECT COUNT(*) FROM actions WHERE user_id = users.id AND action_type = $1 AND success = TRUE)  AS exit_count,
+           (SELECT COUNT(*) FROM actions WHERE user_id = users.id AND action_type = $2 AND success = TRUE) AS move_count
+    FROM users
+    WHERE role = $3
+    ORDER BY exit_count DESC, move_count ASC
+    LIMIT 1;
     `,
-    [mazeIds, ActionType.Exit, ActionType.Move],
+    [ActionType.Exit, ActionType.Move, Role.Participant],
   );
 
   const leastMovesAward: Award = {
@@ -169,18 +158,13 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
 
   // *AWARD* Least Moves
   if (leastMoves.length > 0) {
-    // Because the query is ordered by exit_count DESC and move_count ASC, the first item represents the least moves
-    const minMoveCount = leastMoves[0].moveCount;
-    for (const result of leastMoves) {
-      if (result.moveCount != minMoveCount) {
-        break;
-      }
+    const result = leastMoves[0];
 
-      leastMovesAward.winners.push({
-        userName: participants[result.userId.toString()].name,
-        value: result.moveCount,
-      });
-    }
+    leastMovesAward.winners.push({
+      userName: participants[result.userId.toString()].name,
+      value: result.exitCount,
+    });
+
     awards.push(leastMovesAward);
   }
 
@@ -241,6 +225,43 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
 
       awards.push(leastCheeseEatenAward);
     }
+  }
+
+  // Most Cheese Eaten
+  // -------------------------
+  const cheeseDropped = await pgQuery<AwardWithProps<{ cheeseCount: number }>>(
+    `
+    SELECT user_id, COUNT(*) as cheese_count
+    FROM actions
+    WHERE maze_id = ANY($1) AND action_type = $2 AND success = true
+    GROUP BY user_id
+    ORDER BY cheese_count DESC
+    `,
+    [mazeIds, ActionType.Drop],
+  );
+
+  const mostCheeseDroppedAward: Award = {
+    name: "Cheese Hoarder",
+    description: "The rat who dropped the most cheese",
+    winners: [],
+  };
+
+  // *AWARD* Most Cheese Eaten
+  if (cheeseDropped.length > 0) {
+    // Because the query is ordered by cheese_count DESC, the first item represents the most cheese eaten
+    const maxCheeseCount = cheeseDropped[0].cheeseCount;
+    for (const result of cheeseDropped) {
+      if (result.cheeseCount != maxCheeseCount) {
+        break;
+      }
+
+      mostCheeseDroppedAward.winners.push({
+        userName: participants[result.userId.toString()].name,
+        value: result.cheeseCount,
+      });
+    }
+
+    awards.push(mostCheeseDroppedAward);
   }
 
   // Most smells
@@ -416,13 +437,16 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
   // -------------------------
   const mostFailedActions = await pgQuery<AwardWithProps<{ failCount: number }>>(
     `
-    SELECT user_id, COUNT(*) as fail_count
-    FROM actions
-    WHERE maze_id = ANY($1) AND success = false
-    GROUP BY user_id
-    ORDER BY fail_count DESC
+      SELECT 
+        users.id as user_id,
+        (SELECT COUNT(*) FROM actions WHERE user_id = users.id AND success = FALSE) AS fail_count
+      FROM users
+      WHERE role = $1
+        AND disabled = FALSE
+      ORDER BY fail_count DESC
+      LIMIT 1;
     `,
-    [mazeIds],
+    [Role.Participant],
   );
 
   const mostFailedActionsAward: Award = {
@@ -494,14 +518,16 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
   // -------------------------
   const lastToHitAPI = await pgQuery<AwardWithProps<{ lastHit: string }>>(
     `
-    SELECT user_id, MAX(time_ts) as last_hit
-    FROM analytics
-    WHERE user_id = ANY($1)
-    GROUP BY user_id
-    ORDER BY last_hit DESC
-    LIMIT 1
+      SELECT first_hits.user_id, first_hits.time_ts AS last_hit
+      FROM (SELECT user_id, u.name AS name, MIN(time_ts) AS time_ts
+            FROM analytics a
+                    LEFT JOIN users u ON a.user_id = u.id
+            WHERE role = $1
+            GROUP BY user_id, name) first_hits
+      ORDER BY first_hits.time_ts DESC
+      LIMIT 1;
     `,
-    [Object.keys(participants)],
+    [Role.Participant],
   );
   const lastToHitAPIAward: Award = {
     name: "Procrastinator",
@@ -520,16 +546,15 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
 
   // Hit the API first (Sandbox OR Competition)
   // -------------------------
-  const firstToHitAPI = await pgQuery<AwardWithProps<{ firstHit: string }>>(
+  const firstToHitAPI = await pgQuery<AwardWithProps<{ name: string; firstHit: string }>>(
     `
-    SELECT user_id, MIN(time_ts) as first_hit
-    FROM analytics
-    WHERE user_id = ANY($1)
-    GROUP BY user_id
-    ORDER BY first_hit ASC
-    LIMIT 1
+      SELECT user_id, u.name as name, MIN(time_ts) as first_hit
+      FROM analytics a left join users u on u.id = a.user_id
+      GROUP BY user_id, u.name
+      ORDER BY first_hit ASC
+      LIMIT 1
     `,
-    [Object.keys(participants)],
+    [],
   );
 
   const firstToHitAPIAward: Award = {
@@ -541,7 +566,7 @@ export const getRankings = async (environment: Environment): Promise<RankingResu
   // *AWARD* First to hit the API
   if (firstToHitAPI.length > 0) {
     firstToHitAPIAward.winners.push({
-      userName: participants[firstToHitAPI[0].userId.toString()].name,
+      userName: firstToHitAPI[0].name,
       value: firstToHitAPI[0].firstHit,
     });
     awards.push(firstToHitAPIAward);
