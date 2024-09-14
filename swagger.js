@@ -24,6 +24,8 @@ exports.getOpenapiSpecification = additionalApis => {
       info: {
         title: "Hack the Lab 2024 API",
         version: "1.0.0",
+        description:
+          "<a href='https://rb.gy/6xov18'>Hack The Lab (Details Handout)</a>.<br><a href='https://discord.gg/5sf8v4x3'>Join Hack the Lab Discord</a><br><a href='http://dash.milabs.xyz'>Hack-the-Lab Dashboard </a>",
       },
       security: [
         {
